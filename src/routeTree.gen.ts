@@ -17,6 +17,7 @@ import { Route as ExercicesRouteImport } from './routes/exercices'
 import { Route as FormationsRouteImport } from './routes/formations'
 import { Route as OutilsIaRouteImport } from './routes/outils-ia'
 import { Route as RessourcesRouteImport } from './routes/ressources'
+import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -58,6 +59,11 @@ const RessourcesRoute = RessourcesRouteImport.update({
   path: '/ressources',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationsSlugRoute = FormationsSlugRouteImport.update({
+  id: '/formations_/$slug',
+  path: '/formations/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -68,6 +74,7 @@ export interface FileRoutesByFullPath {
   '/formations': typeof FormationsRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
+  '/formations/$slug': typeof FormationsSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -78,6 +85,7 @@ export interface FileRoutesByTo {
   '/formations': typeof FormationsRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
+  '/formations/$slug': typeof FormationsSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -89,6 +97,7 @@ export interface FileRoutesById {
   '/formations': typeof FormationsRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
+  '/formations_/$slug': typeof FormationsSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -101,6 +110,7 @@ export interface FileRouteTypes {
     | '/formations'
     | '/outils-ia'
     | '/ressources'
+    | '/formations/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -111,6 +121,7 @@ export interface FileRouteTypes {
     | '/formations'
     | '/outils-ia'
     | '/ressources'
+    | '/formations/$slug'
   id:
     | '__root__'
     | '/'
@@ -121,6 +132,7 @@ export interface FileRouteTypes {
     | '/formations'
     | '/outils-ia'
     | '/ressources'
+    | '/formations_/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -132,6 +144,7 @@ export interface RootRouteChildren {
   FormationsRoute: typeof FormationsRoute
   OutilsIaRoute: typeof OutilsIaRoute
   RessourcesRoute: typeof RessourcesRoute
+  FormationsSlugRoute: typeof FormationsSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -192,6 +205,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RessourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formations_/$slug': {
+      id: '/formations_/$slug'
+      path: '/formations/$slug'
+      fullPath: '/formations/$slug'
+      preLoaderRoute: typeof FormationsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -204,6 +224,7 @@ const rootRouteChildren: RootRouteChildren = {
   FormationsRoute: FormationsRoute,
   OutilsIaRoute: OutilsIaRoute,
   RessourcesRoute: RessourcesRoute,
+  FormationsSlugRoute: FormationsSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

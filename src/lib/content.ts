@@ -4,6 +4,27 @@ export const levels = [
   { name: "Avancé", courses: ["Analyse de données avec l'IA", "Méthodologie de recherche assistée", "Automatisation des tâches scientifiques", "Rédaction et valorisation des résultats"] },
 ];
 
+/**
+ * Modules consultables sur /formations/$slug. Laisser `pdfUrl` vide tant que le support n'est pas disponible.
+ */
+export type FormationModule = {
+  slug: string;
+  title: string;
+  description: string;
+  pdfUrl: string;
+};
+
+export const formationModules: FormationModule[] = [
+  {
+    slug: "comprendre-ia",
+    title: "Comprendre l'IA",
+    description: "Découvre les fondamentaux de l'intelligence artificielle et ses applications dans la recherche.",
+    pdfUrl: "/pdfs/comprendre-ia.pdf",
+  },
+];
+
+export const getFormationModule = (slug: string) => formationModules.find((m) => m.slug === slug);
+
 export const courseFeatures = ["Vidéos pédagogiques", "Supports PDF", "Leçons structurées", "Exemples concrets", "Exercices associés", "Suivi de progression"];
 
 export type Question = {

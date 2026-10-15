@@ -66,15 +66,6 @@ export const challenges = [
   { title: "Construire une revue de littérature", task: "Organiser plusieurs résumés d'articles autour d'une problématique commune.", evaluation: "Cohérence, synthèse et qualité de l'organisation." },
 ];
 
-export const tools = [
-  { name: "Semantic Scholar", category: "Recherche documentaire", description: "Moteur de recherche académique enrichi par l'IA.", use: "Trouver des articles et suivre les citations.", pros: "Gratuit, résumés automatiques (TLDR).", cons: "Couverture inégale selon les disciplines.", url: "https://www.semanticscholar.org" },
-  { name: "Elicit", category: "Analyse scientifique", description: "Assistant de recherche qui extrait les données d'articles.", use: "Accélérer les revues de littérature.", pros: "Tableaux d'extraction structurés.", cons: "Résultats à vérifier systématiquement.", url: "https://elicit.com" },
-  { name: "Zotero", category: "Gestion bibliographique", description: "Gestionnaire de références libre et open source.", use: "Collecter, organiser et citer ses sources.", pros: "Gratuit, intégrations Word et navigateur.", cons: "Stockage cloud gratuit limité.", url: "https://www.zotero.org" },
-  { name: "DeepL Write", category: "Rédaction et reformulation", description: "Outil d'amélioration de la rédaction.", use: "Améliorer la clarté de ses textes.", pros: "Très bonne qualité en français et en anglais.", cons: "Peut lisser le style de l'auteur.", url: "https://www.deepl.com/write" },
-  { name: "JASP", category: "Analyse statistique", description: "Logiciel libre d'analyse statistique.", use: "Réaliser des tests statistiques sans coder.", pros: "Interface simple, gratuit.", cons: "Moins flexible que R ou Python.", url: "https://jasp-stats.org" },
-  { name: "Gamma", category: "Création de présentations", description: "Génération de présentations assistée par IA.", use: "Préparer rapidement une soutenance.", pros: "Mise en page automatique soignée.", cons: "Contenu à relire et sourcer.", url: "https://gamma.app" },
-];
-
 export const resources = [
   { title: "Guide : bien rédiger un prompt de recherche", kind: "Guide", text: "Structure rôle – contexte – tâche – format, avec exemples par discipline." },
   { title: "Vérifier une référence générée par IA", kind: "Tutoriel", text: "Retrouver un DOI, consulter Crossref et Google Scholar, repérer les citations fictives." },

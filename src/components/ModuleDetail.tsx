@@ -104,9 +104,12 @@ export function ModuleDetail({ module }: { module: FormationModule }) {
     <SiteLayout>
       <PageHero badge="Module de formation" title={module.title} description={module.description} />
       <div className="mx-auto max-w-7xl px-4 py-12 md:px-8">
-        <BackLink />
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <BackLink />
+          <Link to="/outils-ia" className="text-sm font-semibold text-primary hover:underline">Comparer les outils de recherche →</Link>
+        </div>
 
-        {module.manuelTitle && <ManuelSection module={module} pdfStatus={status} />}
+        {module.manuelTitle &&<ManuelSection module={module} pdfStatus={status} />}
 
         <section id="visionneuse" className="mt-8 scroll-mt-24 rounded-2xl bg-card p-5 shadow-card md:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">

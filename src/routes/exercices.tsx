@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { BookOpen, CheckCircle2, SkipForward, Target, Trophy, XCircle, Award, Flame } from "lucide-react";
+import { ExercicesPratiques } from "@/components/ExercicesPratiques";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { challenges } from "@/lib/content";
 import { CATEGORIES, NIVEAUX, filtrerQuestions, questionsComprendreIA as questions, type Niveau } from "@/lib/qcm-comprendre-ia";
@@ -150,6 +151,10 @@ function Exercices() {
             </div>
           )}
         </div>
+
+        <h2 className="mt-14 text-3xl font-bold text-navy">Exercices pratiques</h2>
+        <p className="mt-2 text-muted-foreground">Vrai ou faux justifié, associations, remise en ordre, construction de prompts, équations de recherche et études de cas, tirés du support de cours.</p>
+        <ExercicesPratiques />
 
         <h2 className="mt-14 text-3xl font-bold text-navy">Défis pratiques</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2">

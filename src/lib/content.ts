@@ -6,12 +6,17 @@ export const levels = [
 
 /**
  * Modules consultables sur /formations/$slug. Laisser `pdfUrl` vide tant que le support n'est pas disponible.
+ * La section « Manuel officiel » s'affiche si `manuelTitle` est renseigné ; `manuelUrl` pointe vers le .docx (téléchargement seul).
  */
 export type FormationModule = {
   slug: string;
   title: string;
   description: string;
   pdfUrl: string;
+  manuelUrl?: string;
+  manuelTitle?: string;
+  manuelSubtitle?: string;
+  manuelFileName?: string;
 };
 
 export const formationModules: FormationModule[] = [
@@ -20,6 +25,10 @@ export const formationModules: FormationModule[] = [
     title: "Comprendre l'IA",
     description: "Découvre les fondamentaux de l'intelligence artificielle et ses applications dans la recherche.",
     pdfUrl: "/pdfs/comprendre-ia.pdf",
+    manuelUrl: "/manuels/cours-ia-et-recherche.docx",
+    manuelTitle: "L'intelligence artificielle et la recherche — Support de cours",
+    manuelSubtitle: "Formateur : Bamba Mahama · Octobre 2026 · 27 pages",
+    manuelFileName: "Cours_IA_et_Recherche.docx",
   },
 ];
 

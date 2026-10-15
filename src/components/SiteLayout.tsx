@@ -1,6 +1,7 @@
-import { Link } from "@tanstack/react-router";
-import { Brain, Search, User, Menu, X, Home, GraduationCap, PenLine, BookOpen, Wrench } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { Brain, Search, User, Menu, X, Home, GraduationCap, PenLine, BookOpen, Wrench, LogOut, Users } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { seDeconnecter, useAuth } from "@/lib/auth";
 
 const nav = [
   { to: "/", label: "Accueil" },
@@ -14,6 +15,14 @@ const nav = [
 
 export function Header() {
   const [open, setOpen] = useState(false);
+  const { user, profile } = useAuth();
+  const navigate = useNavigate();
+  const formateur = profile?.role === "formateur";
+  const deconnexion = async () => {
+    setOpen(false);
+    await seDeconnecter();
+    void navigate({ to: "/" });
+  };
   return (
     <header className="sticky top-0 z-40 border-b bg-card/95 backdrop-blur">
       <div className="mx-auto flex h-20 max-w-7xl items-center gap-6 px-4 md:px-8">
@@ -42,9 +51,20 @@ export function Header() {
           <Link to="/ressources" aria-label="Rechercher" className="rounded-full p-2 hover:bg-muted">
             <Search className="h-5 w-5" />
           </Link>
-          <Link to="/connexion" className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 sm:flex">
-            <User className="h-4 w-4" /> Se connecter
-          </Link>
+          {user ? (
+            <>
+              <Link to={formateur ? "/formateur" : "/mon-espace"} className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 sm:flex">
+                {formateur ? <Users className="h-4 w-4" /> : <User className="h-4 w-4" />} {formateur ? "Espace formateur" : "Mon espace"}
+              </Link>
+              <button onClick={deconnexion} className="hidden items-center gap-2 rounded-full px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted sm:flex">
+                <LogOut className="h-4 w-4" /> Se déconnecter
+              </button>
+            </>
+          ) : (
+            <Link to="/connexion" className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 sm:flex">
+              <User className="h-4 w-4" /> Se connecter
+            </Link>
+          )}
           <button className="rounded-full p-2 hover:bg-muted lg:hidden" onClick={() => setOpen(!open)} aria-label="Menu">
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -52,11 +72,21 @@ export function Header() {
       </div>
       {open && (
         <nav className="border-t bg-card px-4 py-3 lg:hidden">
-          {[...nav, { to: "/connexion", label: "Se connecter" } as const].map((n) => (
+          {[
+            ...nav,
+            ...(user
+              ? [{ to: "/mon-espace", label: "Mon espace" } as const, ...(formateur ? [{ to: "/formateur", label: "Espace formateur" } as const] : [])]
+              : [{ to: "/connexion", label: "Se connecter" } as const]),
+          ].map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted data-[status=active]:text-primary">
               {n.label}
             </Link>
           ))}
+          {user && (
+            <button onClick={deconnexion} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:bg-muted">
+              <LogOut className="h-4 w-4" /> Se déconnecter
+            </button>
+          )}
         </nav>
       )}
     </header>

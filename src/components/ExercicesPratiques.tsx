@@ -1,6 +1,7 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowDown, ArrowUp, BookOpen, CheckCircle2, ChevronLeft, ChevronRight, GripVertical, RotateCcw, XCircle } from "lucide-react";
 import { useEffect, useState } from "react";
+import { CLE_EXERCICES, enregistrerTentatives } from "@/lib/progression";
 import { CATEGORIES, NIVEAUX, type Niveau } from "@/lib/qcm-comprendre-ia";
 import {
   ELEMENTS_PROMPT,
@@ -17,7 +18,7 @@ import {
   type ExoVraiFaux,
 } from "@/lib/exercices-comprendre-ia";
 
-const KEY = "iar-exercices-pratiques";
+const KEY = CLE_EXERCICES;
 
 /* ───────── Utilitaires ───────── */
 
@@ -52,7 +53,7 @@ const chipClass = (active: boolean) =>
   `rounded-full px-4 py-2 text-sm font-medium transition ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`;
 const niveauBadge: Record<string, string> = { green: "bg-tint-green text-tint-green-fg", orange: "bg-tint-amber text-tint-amber-fg", red: "bg-tint-rose text-tint-rose-fg" };
 
-type Props<T> = { exo: T; seed: string; onResult: (ok: number, total: number) => void };
+type Props<T> = { exo: T; seed: string; onResult: (ok: number, total: number, resume: string) => void };
 
 function Correction({ exo, ok, total }: { exo: Exercice; ok: number; total: number }) {
   const reussi = ok === total;
@@ -92,7 +93,7 @@ function VraiFaux({ exo, seed, onResult }: Props<ExoVraiFaux>) {
   const [checked, setChecked] = useState(false);
   const ordre = melanger(exo.justifications.map((_, i) => i), seed);
   const ok = Number(rep === exo.reponse) + Number(just === exo.justificationCorrecte);
-  const valider = () => { setChecked(true); onResult(ok, 2); };
+  const valider = () => { setChecked(true); onResult(ok, 2, `${rep ? "Vrai" : "Faux"} · ${exo.justifications[just ?? -1] ?? ""}`); };
 
   return (
     <>
@@ -122,7 +123,7 @@ function Association({ exo, seed, onResult }: Props<ExoAssociation>) {
   const [choix, setChoix] = useState<Record<number, string>>({});
   const [checked, setChecked] = useState(false);
   const ok = exo.paires.filter((p, i) => choix[i] === p.droite).length;
-  const valider = () => { setChecked(true); onResult(ok, exo.paires.length); };
+  const valider = () => { setChecked(true); onResult(ok, exo.paires.length, exo.paires.flatMap((p, i) => (choix[i] === p.droite ? [] : [`${p.gauche} → ${choix[i] ?? "?"}`])).join(" ; ")); };
 
   return (
     <>
@@ -148,7 +149,7 @@ function Ordre({ exo, seed, onResult }: Props<ExoOrdre>) {
   const [drag, setDrag] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
   const ok = items.filter((el, i) => el === exo.elements[i]).length;
-  const valider = () => { setChecked(true); onResult(ok, items.length); };
+  const valider = () => { setChecked(true); onResult(ok, items.length, items.join(" > ")); };
   const deplacer = (from: number, to: number) => {
     if (to < 0 || to >= items.length || from === to) return;
     const a = [...items];
@@ -199,7 +200,7 @@ function ConstruirePrompt({ exo, seed, onResult }: Props<ExoPrompt>) {
   const [choix, setChoix] = useState<Record<string, ElementPrompt>>({});
   const [checked, setChecked] = useState(false);
   const ok = exo.morceaux.filter((m) => choix[m.texte] === m.element).length;
-  const valider = () => { setChecked(true); onResult(ok, exo.morceaux.length); };
+  const valider = () => { setChecked(true); onResult(ok, exo.morceaux.length, exo.morceaux.filter((m) => choix[m.texte] !== m.element).map((m) => `« ${m.texte.slice(0, 40)}… » → ${labelDe(choix[m.texte]!)}`).join(" ; ")); };
   const labelDe = (id: ElementPrompt) => ELEMENTS_PROMPT.find((e) => e.id === id)?.label ?? id;
 
   return (
@@ -233,7 +234,7 @@ function Equation({ exo, onResult }: Props<ExoEquation>) {
   const [checked, setChecked] = useState(false);
   const parts = exo.gabarit.split(/\{(\d+)\}/); // indices impairs = numéros des trous
   const ok = exo.trous.filter((t, i) => choix[i] === t.reponse).length;
-  const valider = () => { setChecked(true); onResult(ok, exo.trous.length); };
+  const valider = () => { setChecked(true); onResult(ok, exo.trous.length, parts.map((p, k) => (k % 2 ? exo.trous[Number(p)]!.options[choix[Number(p)]!] ?? "?" : p)).join("")); };
   const correcte = parts.map((p, k) => (k % 2 ? exo.trous[Number(p)]!.options[exo.trous[Number(p)]!.reponse] : p)).join("");
 
   return (
@@ -269,7 +270,7 @@ function EtudeCas({ exo, onResult }: Props<ExoEtudeCas>) {
   const [choix, setChoix] = useState<Record<number, boolean>>({}); // true = garder
   const [checked, setChecked] = useState(false);
   const ok = exo.references.filter((r, i) => choix[i] === r.fiable).length;
-  const valider = () => { setChecked(true); onResult(ok, exo.references.length); };
+  const valider = () => { setChecked(true); onResult(ok, exo.references.length, exo.references.filter((r, i) => choix[i] !== r.fiable).map((r) => `${r.fiable ? "Rejetée" : "Gardée"} : ${r.texte.slice(0, 50)}…`).join(" ; ")); };
 
   return (
     <>
@@ -332,8 +333,14 @@ export function ExercicesPratiques() {
 
   const aller = (i: number) => { setIdx(i); setEssai(0); };
   const filtrer = (f: () => void) => { f(); aller(0); };
-  const onResult = (ok: number, total: number) => {
-    if (!exo || ok !== total) return;
+  const onResult = (ok: number, total: number, resume: string) => {
+    if (!exo) return;
+    // Un exercice = une tentative ; sa réponse est « correcte » seulement si tout est juste.
+    void enregistrerTentatives([{
+      cours: exo.cours, type: "exercice", categorie: exo.categorie, niveau: exo.niveau, score: ok, total,
+      reponses: [{ question_id: exo.id, correcte: ok === total, reponse_donnee: ok === total ? null : resume.slice(0, 2000) || null }],
+    }]);
+    if (ok !== total) return;
     const next = { ...reussis, [exo.id]: true };
     setReussis(next);
     try { localStorage.setItem(KEY, JSON.stringify(next)); } catch { /* ignore */ }

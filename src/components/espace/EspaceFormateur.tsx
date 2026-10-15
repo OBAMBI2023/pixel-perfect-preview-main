@@ -1,0 +1,486 @@
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
+import { AlertTriangle, ArrowDown, ArrowUp, BookOpen, Check, Copy, Download, Plus, Search, Users, X } from "lucide-react";
+import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { TableHistorique } from "@/components/espace/TableHistorique";
+import { btnPrimary, btnSecondary, formatDate, formatPct, inputClass } from "@/components/espace/styles";
+import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
+import { infoQuestion, labelNiveau, titreCategorie } from "@/lib/progression";
+import { NIVEAUX, type Niveau } from "@/lib/qcm-comprendre-ia";
+import { getSupabase, type Database, type Groupe } from "@/lib/supabase";
+
+type Fn = Database["public"]["Functions"];
+type LigneApprenant = Fn["resultats_apprenants"]["Returns"][number];
+type Filtres = { p_groupe: string; p_debut?: string; p_niveau?: string };
+
+const PERIODES = [
+  { id: "7", label: "7 jours", jours: 7 },
+  { id: "30", label: "30 jours", jours: 30 },
+  { id: "90", label: "3 mois", jours: 90 },
+  { id: "tout", label: "Tout", jours: null },
+] as const;
+type PeriodeId = (typeof PERIODES)[number]["id"];
+
+const chipClass = (active: boolean) =>
+  `rounded-full px-4 py-2 text-sm font-medium transition ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`;
+
+/** Lance une RPC et renvoie ses lignes (ou lève l'erreur pour React Query). */
+async function rpc<K extends keyof Fn>(nom: K, args: Fn[K]["Args"]): Promise<Fn[K]["Returns"]> {
+  const sb = getSupabase();
+  if (!sb) throw new Error("Supabase non configuré");
+  // Le typage générique de .rpc() ne suit pas une clé variable : on le reprend ici.
+  const { data, error } = await (sb.rpc as unknown as (n: K, a: Fn[K]["Args"]) => Promise<{ data: Fn[K]["Returns"]; error: { message: string } | null }>)(nom, args);
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+function ChapitreLien({ cours, chapitre }: { cours: string; chapitre: string }) {
+  return (
+    <Link to="/formations/$slug" params={{ slug: cours }} className="inline-flex items-center gap-1 font-semibold text-primary hover:underline">
+      <BookOpen className="h-3.5 w-3.5" /> Chapitre {chapitre}
+    </Link>
+  );
+}
+
+/* ───────────────────────── Page ───────────────────────── */
+
+export function EspaceFormateur({ userId }: { userId: string }) {
+  const sb = getSupabase()!;
+  const qc = useQueryClient();
+  const [groupeChoisi, setGroupeChoisi] = useState<string | null>(null);
+  const [nom, setNom] = useState("");
+
+  const groupes = useQuery({
+    queryKey: ["groupes-formateur", userId],
+    queryFn: async () => {
+      const { data, error } = await sb.from("groupes").select("*").eq("formateur_id", userId).order("created_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+  const creer = useMutation({
+    mutationFn: async (n: string) => {
+      const { data, error } = await sb.from("groupes").insert({ nom: n }).select().single();
+      if (error) throw new Error("Impossible de créer le groupe.");
+      return data;
+    },
+    onSuccess: (g) => {
+      setNom("");
+      setGroupeChoisi(g.id);
+      void qc.invalidateQueries({ queryKey: ["groupes-formateur", userId] });
+    },
+  });
+  const soumettre = (e: FormEvent) => {
+    e.preventDefault();
+    if (nom.trim()) creer.mutate(nom.trim());
+  };
+
+  const liste = groupes.data ?? [];
+  const groupe = liste.find((g) => g.id === groupeChoisi) ?? liste[0];
+
+  return (
+    <div className="space-y-6">
+      <Carte titre={<span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Mes groupes</span>}>
+        <div className="flex flex-wrap gap-2">
+          {liste.map((g) => (
+            <button key={g.id} onClick={() => setGroupeChoisi(g.id)} className={chipClass(g.id === groupe?.id)}>{g.nom}</button>
+          ))}
+          {groupes.isLoading && <span className="text-sm text-muted-foreground">Chargement…</span>}
+          {groupes.data?.length === 0 && <span className="text-sm text-muted-foreground">Crée ton premier groupe pour obtenir un code d'invitation.</span>}
+        </div>
+        <form onSubmit={soumettre} className="mt-4 flex flex-col gap-3 sm:flex-row">
+          <input aria-label="Nom du nouveau groupe" placeholder="Ex. : Master 1 — Promotion 2026" maxLength={120} value={nom} onChange={(e) => setNom(e.target.value)} className={inputClass} />
+          <button type="submit" disabled={!nom.trim() || creer.isPending} className={`${btnPrimary} shrink-0`}><Plus className="h-4 w-4" /> Créer le groupe</button>
+        </form>
+        {creer.isError && <div className="mt-3"><Message ton="erreur">{creer.error.message}</Message></div>}
+      </Carte>
+
+      {groupe && <TableauGroupe key={groupe.id} groupe={groupe} />}
+    </div>
+  );
+}
+
+/* ───────────────────────── Groupe ───────────────────────── */
+
+function TableauGroupe({ groupe }: { groupe: Groupe }) {
+  const [periode, setPeriode] = useState<PeriodeId>("tout");
+  const [niveau, setNiveau] = useState<Niveau | "">("");
+  const [onglet, setOnglet] = useState<"ensemble" | "apprenants" | "questions">("ensemble");
+  const [apprenant, setApprenant] = useState<LigneApprenant | null>(null);
+
+  // Début de période arrondi au jour, pour garder une clé de cache stable.
+  const filtres = useMemo<Filtres>(() => {
+    const jours = PERIODES.find((p) => p.id === periode)?.jours ?? null;
+    const debut = jours === null ? null : new Date(new Date().setHours(0, 0, 0, 0) - jours * 86_400_000).toISOString();
+    return { p_groupe: groupe.id, ...(debut && { p_debut: debut }), ...(niveau && { p_niveau: niveau }) };
+  }, [groupe.id, periode, niveau]);
+
+  const stats = useQuery({ queryKey: ["stats_groupe", filtres], queryFn: () => rpc("stats_groupe", filtres) });
+  const categories = useQuery({ queryKey: ["reussite_par_categorie", filtres], queryFn: () => rpc("reussite_par_categorie", filtres) });
+  const ratees = useQuery({ queryKey: ["questions_ratees", filtres], queryFn: () => rpc("questions_ratees", { ...filtres, p_min_reponses: 3 }) });
+  const s = stats.data?.[0];
+  const erreur = stats.error ?? categories.error ?? ratees.error;
+
+  return (
+    <div className="space-y-6">
+      <EnteteGroupe groupe={groupe} />
+
+      <div className="flex flex-wrap items-center gap-2">
+        {PERIODES.map((p) => (
+          <button key={p.id} onClick={() => setPeriode(p.id)} className={chipClass(p.id === periode)}>{p.label}</button>
+        ))}
+        <select aria-label="Niveau" value={niveau} onChange={(e) => setNiveau(e.target.value as Niveau | "")} className="rounded-full bg-card px-4 py-2 text-sm font-medium shadow-card">
+          <option value="">Tous les niveaux</option>
+          {NIVEAUX.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}
+        </select>
+        <ExportCsv groupe={groupe} filtres={filtres} />
+      </div>
+
+      {erreur && <Message ton="erreur">Impossible de charger les résultats : {erreur.message}</Message>}
+
+      <div role="tablist" className="flex gap-1 overflow-x-auto rounded-full bg-muted p-1">
+        {([["ensemble", "Vue d'ensemble"], ["apprenants", "Résultats par apprenant"], ["questions", "Questions les plus ratées"]] as const).map(([id, label]) => (
+          <button key={id} role="tab" aria-selected={onglet === id} onClick={() => setOnglet(id)} className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${onglet === id ? "bg-card text-navy shadow-card" : "text-muted-foreground hover:text-foreground"}`}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {onglet === "ensemble" && (
+        <>
+          <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
+            <Stat label="Membres" valeur={s?.nb_membres ?? "—"} />
+            <Stat label="Apprenants actifs" valeur={s?.nb_actifs ?? "—"} aide="Au moins une tentative sur la période" />
+            <Stat label="Tentatives" valeur={s?.nb_tentatives ?? "—"} />
+            <Stat label="Score moyen" valeur={formatPct(s?.score_moyen)} />
+          </div>
+          <div className="grid gap-6 lg:grid-cols-[3fr_2fr]">
+            <Carte titre="Taux de réussite par catégorie">
+              <Barres
+                lignes={(categories.data ?? []).map((c) => ({ cle: c.categorie, label: titreCategorie(c.categorie), taux: c.taux_reussite, detail: `${c.nb_tentatives} tent.` }))}
+                vide="Aucune tentative sur cette période."
+              />
+            </Carte>
+            <ARevoir categories={categories.data ?? []} ratees={ratees.data ?? []} />
+          </div>
+        </>
+      )}
+
+      {onglet === "apprenants" && (
+        <>
+          {apprenant && <FicheApprenant apprenant={apprenant} onFermer={() => setApprenant(null)} />}
+          <ResultatsApprenants filtres={filtres} onChoisir={setApprenant} />
+        </>
+      )}
+
+      {onglet === "questions" && <QuestionsRatees lignes={ratees.data} chargement={ratees.isLoading} />}
+    </div>
+  );
+}
+
+function EnteteGroupe({ groupe }: { groupe: Groupe }) {
+  const sb = getSupabase()!;
+  const [copie, setCopie] = useState(false);
+  const [ouvert, setOuvert] = useState(false);
+  const membres = useQuery({
+    queryKey: ["membres", groupe.id],
+    queryFn: async () => {
+      const { data, error } = await sb.from("membres_groupe").select("apprenant_id, joined_at, profil:profiles(nom_complet)").eq("groupe_id", groupe.id).order("joined_at");
+      if (error) throw error;
+      return data;
+    },
+  });
+  const copier = async () => {
+    try {
+      await navigator.clipboard.writeText(groupe.code_invitation);
+      setCopie(true);
+      setTimeout(() => setCopie(false), 2000);
+    } catch { /* presse-papiers indisponible : le code reste affiché */ }
+  };
+
+  return (
+    <Carte>
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div>
+          <h2 className="text-2xl font-bold text-navy">{groupe.nom}</h2>
+          <p className="mt-1 text-sm text-muted-foreground">Créé le {formatDate(groupe.created_at)} · {membres.data?.length ?? "…"} membre(s)</p>
+        </div>
+        <div className="flex items-center gap-3 rounded-2xl bg-muted px-4 py-3">
+          <div>
+            <div className="text-xs text-muted-foreground">Code d'invitation</div>
+            <div className="font-mono text-2xl font-bold tracking-[0.3em] text-navy">{groupe.code_invitation}</div>
+          </div>
+          <button onClick={copier} className={btnSecondary} aria-label="Copier le code d'invitation">
+            {copie ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />} {copie ? "Copié" : "Copier"}
+          </button>
+        </div>
+      </div>
+      <button onClick={() => setOuvert(!ouvert)} className="mt-4 text-sm font-semibold text-primary hover:underline" aria-expanded={ouvert}>
+        {ouvert ? "Masquer les membres" : "Voir les membres"}
+      </button>
+      {ouvert && (
+        <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+          {membres.data?.map((m) => (
+            <li key={m.apprenant_id} className="rounded-xl bg-muted px-3 py-2 text-sm">
+              <span className="font-medium">{m.profil?.nom_complet || "Sans nom"}</span>
+              <span className="block text-xs text-muted-foreground">depuis le {formatDate(m.joined_at)}</span>
+            </li>
+          ))}
+          {membres.data?.length === 0 && <li className="text-sm text-muted-foreground">Aucun membre. Partage le code d'invitation à tes apprenants : ils le saisissent dans « Mon espace ».</li>}
+        </ul>
+      )}
+    </Carte>
+  );
+}
+
+function ARevoir({ categories, ratees }: { categories: Fn["reussite_par_categorie"]["Returns"]; ratees: Fn["questions_ratees"]["Returns"] }) {
+  const cats = categories.slice(0, 3); // déjà triées du taux le plus faible au plus fort
+  const questions = ratees.slice(0, 5);
+  return (
+    <Carte titre={<span className="flex items-center gap-2"><AlertTriangle className="h-5 w-5 text-tint-amber-fg" /> À revoir en séance</span>} className="border-2 border-tint-amber">
+      {cats.length === 0 && questions.length === 0 ? (
+        <p className="text-sm text-muted-foreground">Pas encore assez de réponses pour dégager des priorités.</p>
+      ) : (
+        <div className="space-y-5 text-sm">
+          <div>
+            <h3 className="font-semibold text-navy">Catégories les plus fragiles</h3>
+            <ol className="mt-2 space-y-1.5">
+              {cats.map((c, i) => (
+                <li key={c.categorie} className="flex items-baseline justify-between gap-3">
+                  <span>{i + 1}. {titreCategorie(c.categorie)}</span>
+                  <span className="shrink-0 tabular-nums text-muted-foreground">{formatPct(c.taux_reussite)}</span>
+                </li>
+              ))}
+            </ol>
+          </div>
+          <div>
+            <h3 className="font-semibold text-navy">Questions les plus ratées</h3>
+            {questions.length === 0 && <p className="mt-2 text-muted-foreground">Aucune question avec au moins 3 réponses.</p>}
+            <ol className="mt-2 space-y-2.5">
+              {questions.map((q, i) => {
+                const info = infoQuestion(q.question_id);
+                return (
+                  <li key={q.question_id}>
+                    <p>{i + 1}. {info?.enonce ?? q.question_id}</p>
+                    <p className="mt-0.5 flex flex-wrap gap-x-3 text-xs text-muted-foreground">
+                      <span>{formatPct(q.taux_echec)} d'échec</span>
+                      {info && <ChapitreLien cours={info.cours} chapitre={info.chapitre} />}
+                    </p>
+                  </li>
+                );
+              })}
+            </ol>
+          </div>
+        </div>
+      )}
+    </Carte>
+  );
+}
+
+/* ───────────────────────── Résultats par apprenant ───────────────────────── */
+
+type Tri = "nom_complet" | "nb_tentatives" | "score_moyen" | "derniere_activite" | "categorie_faible";
+
+function ResultatsApprenants({ filtres, onChoisir }: { filtres: Filtres; onChoisir: (a: LigneApprenant) => void }) {
+  const resultats = useQuery({ queryKey: ["resultats_apprenants", filtres], queryFn: () => rpc("resultats_apprenants", filtres) });
+  const [recherche, setRecherche] = useState("");
+  const [tri, setTri] = useState<{ col: Tri; asc: boolean }>({ col: "nom_complet", asc: true });
+
+  const lignes = useMemo(() => {
+    const q = recherche.trim().toLocaleLowerCase("fr");
+    const filtrees = (resultats.data ?? []).filter((l) => !q || l.nom_complet.toLocaleLowerCase("fr").includes(q));
+    const val = (l: LigneApprenant): string | number | null => (tri.col === "categorie_faible" ? (l.categorie_faible ? titreCategorie(l.categorie_faible) : null) : l[tri.col]);
+    return [...filtrees].sort((a, b) => {
+      const va = val(a), vb = val(b);
+      if (va === vb) return 0;
+      if (va === null) return 1; // valeurs vides toujours en bas
+      if (vb === null) return -1;
+      const cmp = typeof va === "number" && typeof vb === "number" ? va - vb : String(va).localeCompare(String(vb), "fr");
+      return tri.asc ? cmp : -cmp;
+    });
+  }, [resultats.data, recherche, tri]);
+
+  const Entete = ({ col, children, droite }: { col: Tri; children: ReactNode; droite?: boolean }) => (
+    <th className={`py-2 pr-3 ${droite ? "text-right" : ""}`} aria-sort={tri.col === col ? (tri.asc ? "ascending" : "descending") : "none"}>
+      <button onClick={() => setTri({ col, asc: tri.col === col ? !tri.asc : col === "nom_complet" || col === "categorie_faible" })} className="inline-flex items-center gap-1 uppercase hover:text-foreground">
+        {children}
+        {tri.col === col && (tri.asc ? <ArrowUp className="h-3 w-3" /> : <ArrowDown className="h-3 w-3" />)}
+      </button>
+    </th>
+  );
+
+  return (
+    <Carte
+      titre="Résultats par apprenant"
+      action={
+        <label className="relative block w-full sm:w-64">
+          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input aria-label="Rechercher un apprenant" placeholder="Rechercher un apprenant" value={recherche} onChange={(e) => setRecherche(e.target.value)} className={`${inputClass} pl-9`} />
+        </label>
+      }
+    >
+      {resultats.isLoading && <p className="text-sm text-muted-foreground">Chargement…</p>}
+      {resultats.data?.length === 0 && <p className="text-sm text-muted-foreground">Aucun membre dans ce groupe pour l'instant.</p>}
+      {!!resultats.data?.length && (
+        <div className="overflow-x-auto">
+          <table className="w-full min-w-[680px] text-left text-sm">
+            <thead className="text-xs text-muted-foreground">
+              <tr>
+                <Entete col="nom_complet">Apprenant</Entete>
+                <Entete col="nb_tentatives" droite>Tentatives</Entete>
+                <Entete col="score_moyen" droite>Score moyen</Entete>
+                <Entete col="derniere_activite">Dernière activité</Entete>
+                <Entete col="categorie_faible">Catégorie la plus faible</Entete>
+              </tr>
+            </thead>
+            <tbody className="divide-y">
+              {lignes.map((l) => (
+                <tr key={l.apprenant_id} onClick={() => onChoisir(l)} className="cursor-pointer hover:bg-muted">
+                  <td className="py-2.5 pr-3">
+                    <button onClick={(e) => { e.stopPropagation(); onChoisir(l); }} className="font-semibold text-navy hover:underline">{l.nom_complet || "Sans nom"}</button>
+                  </td>
+                  <td className="py-2.5 pr-3 text-right tabular-nums">{l.nb_tentatives}</td>
+                  <td className="py-2.5 pr-3 text-right tabular-nums">{formatPct(l.score_moyen)}</td>
+                  <td className="py-2.5 pr-3">{formatDate(l.derniere_activite)}</td>
+                  <td className="py-2.5 pr-3">{titreCategorie(l.categorie_faible)}</td>
+                </tr>
+              ))}
+              {lignes.length === 0 && <tr><td colSpan={5} className="py-4 text-center text-muted-foreground">Aucun apprenant ne correspond à « {recherche} ».</td></tr>}
+            </tbody>
+          </table>
+        </div>
+      )}
+    </Carte>
+  );
+}
+
+function FicheApprenant({ apprenant, onFermer }: { apprenant: LigneApprenant; onFermer: () => void }) {
+  const sb = getSupabase()!;
+  const progression = useQuery({
+    queryKey: ["progression", apprenant.apprenant_id],
+    queryFn: () => rpc("progression_apprenant", { p_apprenant: apprenant.apprenant_id }),
+  });
+  const historique = useQuery({
+    queryKey: ["historique", apprenant.apprenant_id],
+    queryFn: async () => {
+      const { data, error } = await sb
+        .from("tentatives")
+        .select("id, type, categorie, niveau, score, total, created_at, reponses(question_id)")
+        .eq("user_id", apprenant.apprenant_id)
+        .order("created_at", { ascending: false })
+        .limit(30);
+      if (error) throw error;
+      return data;
+    },
+  });
+  const cats = (progression.data ?? []).filter((p) => p.dimension === "categorie").sort((a, b) => a.taux_reussite - b.taux_reussite);
+
+  return (
+    <Carte
+      titre={`Fiche de ${apprenant.nom_complet || "l'apprenant"}`}
+      action={<button onClick={onFermer} className="rounded-full p-2 hover:bg-muted" aria-label="Fermer la fiche"><X className="h-5 w-5" /></button>}
+      className="border-2 border-primary"
+    >
+      <p className="text-sm text-muted-foreground">
+        {apprenant.nb_tentatives} tentative(s) · score moyen {formatPct(apprenant.score_moyen)} · dernière activité {formatDate(apprenant.derniere_activite)}
+      </p>
+      <div className="mt-5 grid gap-6 lg:grid-cols-[2fr_3fr]">
+        <div>
+          <h3 className="mb-3 font-semibold text-navy">Réussite par catégorie</h3>
+          <Barres lignes={cats.map((c) => ({ cle: c.cle, label: titreCategorie(c.cle), taux: c.taux_reussite, detail: `${c.nb_tentatives} tent.` }))} vide="Aucune tentative." />
+        </div>
+        <div>
+          <h3 className="mb-3 font-semibold text-navy">Historique (30 dernières tentatives)</h3>
+          {historique.data?.length ? <TableHistorique lignes={historique.data} /> : <p className="text-sm text-muted-foreground">{historique.isLoading ? "Chargement…" : "Aucune tentative."}</p>}
+        </div>
+      </div>
+    </Carte>
+  );
+}
+
+/* ───────────────────────── Questions les plus ratées ───────────────────────── */
+
+function QuestionsRatees({ lignes, chargement }: { lignes: Fn["questions_ratees"]["Returns"] | undefined; chargement: boolean }) {
+  return (
+    <Carte titre="Questions les plus ratées" action={<span className="text-xs text-muted-foreground">Au moins 3 réponses pour figurer</span>}>
+      {chargement && <p className="text-sm text-muted-foreground">Chargement…</p>}
+      {lignes?.length === 0 && <p className="text-sm text-muted-foreground">Aucune question ratée avec au moins 3 réponses sur cette période.</p>}
+      <ol className="space-y-3">
+        {lignes?.map((q, i) => {
+          const info = infoQuestion(q.question_id);
+          return (
+            <li key={q.question_id} className="rounded-xl border-2 border-border p-4">
+              <div className="flex items-start gap-4">
+                <span className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted text-sm font-bold">{i + 1}</span>
+                <div className="min-w-0 flex-1">
+                  <p className="font-medium text-navy">{info?.enonce ?? `Question inconnue (${q.question_id})`}</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-2 text-xs">
+                    {info && <span className="rounded-full bg-secondary px-2.5 py-0.5 font-semibold text-secondary-foreground">{info.genre}</span>}
+                    {info && <span className="rounded-full bg-muted px-2.5 py-0.5">{titreCategorie(info.categorie)}</span>}
+                    {info && <span className="rounded-full bg-muted px-2.5 py-0.5">{labelNiveau(info.niveau)}</span>}
+                    {info && <ChapitreLien cours={info.cours} chapitre={info.chapitre} />}
+                  </div>
+                  {q.reponse_frequente && (
+                    <p className="mt-2 text-sm"><strong>Mauvaise réponse la plus choisie :</strong> {info ? info.lireReponse(q.reponse_frequente) : q.reponse_frequente}</p>
+                  )}
+                </div>
+                <div className="shrink-0 text-right">
+                  <div className="font-display text-xl font-bold text-destructive">{formatPct(q.taux_echec)}</div>
+                  <div className="text-xs text-muted-foreground">{q.nb_echecs} échec(s) / {q.nb_reponses}</div>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+    </Carte>
+  );
+}
+
+/* ───────────────────────── Export CSV ───────────────────────── */
+
+const champCsv = (v: unknown) => {
+  const s = v === null || v === undefined ? "" : String(v);
+  return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+function ExportCsv({ groupe, filtres }: { groupe: Groupe; filtres: Filtres }) {
+  const [enCours, setEnCours] = useState(false);
+  const [erreur, setErreur] = useState(false);
+  const exporter = async () => {
+    setEnCours(true);
+    setErreur(false);
+    try {
+      const lignes = await rpc("tentatives_groupe", filtres);
+      const entete = ["Apprenant", "Date", "Type", "Catégorie", "Niveau", "Score", "Total", "Réussite (%)"];
+      const corps = lignes.map((l) => [
+        l.nom_complet,
+        new Date(l.created_at).toLocaleString("fr-FR"),
+        l.type === "qcm" ? "QCM" : "Exercice",
+        titreCategorie(l.categorie),
+        labelNiveau(l.niveau),
+        l.score,
+        l.total,
+        Math.round((100 * l.score) / l.total),
+      ]);
+      // Point-virgule et BOM : ouverture directe dans Excel en français.
+      const csv = "﻿" + [entete, ...corps].map((r) => r.map(champCsv).join(";")).join("\r\n");
+      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `resultats-${groupe.nom.normalize("NFD").replace(/[^\w]+/g, "-").replace(/^-|-$/g, "").toLowerCase()}-${new Date().toISOString().slice(0, 10)}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch {
+      setErreur(true);
+    } finally {
+      setEnCours(false);
+    }
+  };
+  return (
+    <span className="ml-auto inline-flex items-center gap-2">
+      {erreur && <span className="text-xs text-destructive">Export impossible</span>}
+      <button onClick={exporter} disabled={enCours} className={btnSecondary}><Download className="h-4 w-4" /> {enCours ? "Export…" : "Exporter en CSV"}</button>
+    </span>
+  );
+}

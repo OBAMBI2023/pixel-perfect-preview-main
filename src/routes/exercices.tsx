@@ -3,7 +3,9 @@ import { useEffect, useState } from "react";
 import { BookOpen, CheckCircle2, SkipForward, Target, Trophy, XCircle, Award, Flame } from "lucide-react";
 import { ExercicesPratiques } from "@/components/ExercicesPratiques";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
+import { useAuth } from "@/lib/auth";
 import { challenges } from "@/lib/content";
+import { CLE_QCM, enregistrerTentatives } from "@/lib/progression";
 import { CATEGORIES, NIVEAUX, filtrerQuestions, questionsComprendreIA as questions, type Niveau } from "@/lib/qcm-comprendre-ia";
 
 export const Route = createFileRoute("/exercices")({
@@ -19,7 +21,7 @@ export const Route = createFileRoute("/exercices")({
 });
 
 const POINTS = 10;
-const KEY = "iar-progress";
+const KEY = CLE_QCM;
 type Progress = { done: Record<string, boolean> };
 
 const questionIds = new Set(questions.map((q) => q.id));
@@ -56,7 +58,12 @@ function Exercices() {
   const validate = () => {
     if (selected === null || !q) return;
     setChecked(true);
-    save({ done: { ...progress.done, [q.id]: selected === q.reponse } });
+    const correcte = selected === q.reponse;
+    save({ done: { ...progress.done, [q.id]: correcte } });
+    void enregistrerTentatives([{
+      cours: q.cours, type: "qcm", categorie: q.categorie, niveau: q.niveau, score: correcte ? 1 : 0, total: 1,
+      reponses: [{ question_id: q.id, correcte, reponse_donnee: String(selected) }],
+    }]);
   };
   const niveauInfo = q ? NIVEAUX.find((n) => n.id === q.niveau) : undefined;
 
@@ -71,6 +78,7 @@ function Exercices() {
     <SiteLayout>
       <PageHero badge="Espace exercices" title="Apprendre en pratiquant" description="Testez vos connaissances, réalisez des défis pratiques et développez vos compétences en intelligence artificielle." />
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-8">
+        <BandeauProgression />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map(({ icon: Icon, label, value }) => (
             <div key={label} className="rounded-2xl bg-card p-5 shadow-card">
@@ -169,5 +177,25 @@ function Exercices() {
         </div>
       </div>
     </SiteLayout>
+  );
+}
+
+function BandeauProgression() {
+  const { status, configured, user } = useAuth();
+  if (status === "loading" || !configured) return null;
+  if (user) {
+    return (
+      <p className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl bg-tint-green px-5 py-3 text-sm text-tint-green-fg">
+        <CheckCircle2 className="h-4 w-4" /> Ta progression est enregistrée dans ton espace.
+        <Link to="/mon-espace" className="font-semibold underline">Voir mon espace</Link>
+      </p>
+    );
+  }
+  return (
+    <p className="mb-6 flex flex-wrap items-center gap-2 rounded-2xl bg-secondary px-5 py-3 text-sm text-secondary-foreground">
+      Connecte-toi pour enregistrer ta progression et la partager avec ton formateur.
+      <Link to="/connexion" className="font-semibold underline">Se connecter</Link>
+      <Link to="/inscription" className="font-semibold underline">Créer un compte</Link>
+    </p>
   );
 }

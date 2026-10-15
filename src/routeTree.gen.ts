@@ -14,7 +14,10 @@ import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as ActualitesRouteImport } from './routes/actualites'
 import { Route as ConnexionRouteImport } from './routes/connexion'
 import { Route as ExercicesRouteImport } from './routes/exercices'
+import { Route as FormateurRouteImport } from './routes/formateur'
 import { Route as FormationsRouteImport } from './routes/formations'
+import { Route as InscriptionRouteImport } from './routes/inscription'
+import { Route as MonEspaceRouteImport } from './routes/mon-espace'
 import { Route as OutilsIaRouteImport } from './routes/outils-ia'
 import { Route as RessourcesRouteImport } from './routes/ressources'
 import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
@@ -44,9 +47,24 @@ const ExercicesRoute = ExercicesRouteImport.update({
   path: '/exercices',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormateurRoute = FormateurRouteImport.update({
+  id: '/formateur',
+  path: '/formateur',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormationsRoute = FormationsRouteImport.update({
   id: '/formations',
   path: '/formations',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const InscriptionRoute = InscriptionRouteImport.update({
+  id: '/inscription',
+  path: '/inscription',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MonEspaceRoute = MonEspaceRouteImport.update({
+  id: '/mon-espace',
+  path: '/mon-espace',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OutilsIaRoute = OutilsIaRouteImport.update({
@@ -71,7 +89,10 @@ export interface FileRoutesByFullPath {
   '/actualites': typeof ActualitesRoute
   '/connexion': typeof ConnexionRoute
   '/exercices': typeof ExercicesRoute
+  '/formateur': typeof FormateurRoute
   '/formations': typeof FormationsRoute
+  '/inscription': typeof InscriptionRoute
+  '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
   '/formations/$slug': typeof FormationsSlugRoute
@@ -82,7 +103,10 @@ export interface FileRoutesByTo {
   '/actualites': typeof ActualitesRoute
   '/connexion': typeof ConnexionRoute
   '/exercices': typeof ExercicesRoute
+  '/formateur': typeof FormateurRoute
   '/formations': typeof FormationsRoute
+  '/inscription': typeof InscriptionRoute
+  '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
   '/formations/$slug': typeof FormationsSlugRoute
@@ -94,7 +118,10 @@ export interface FileRoutesById {
   '/actualites': typeof ActualitesRoute
   '/connexion': typeof ConnexionRoute
   '/exercices': typeof ExercicesRoute
+  '/formateur': typeof FormateurRoute
   '/formations': typeof FormationsRoute
+  '/inscription': typeof InscriptionRoute
+  '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
   '/formations_/$slug': typeof FormationsSlugRoute
@@ -107,7 +134,10 @@ export interface FileRouteTypes {
     | '/actualites'
     | '/connexion'
     | '/exercices'
+    | '/formateur'
     | '/formations'
+    | '/inscription'
+    | '/mon-espace'
     | '/outils-ia'
     | '/ressources'
     | '/formations/$slug'
@@ -118,7 +148,10 @@ export interface FileRouteTypes {
     | '/actualites'
     | '/connexion'
     | '/exercices'
+    | '/formateur'
     | '/formations'
+    | '/inscription'
+    | '/mon-espace'
     | '/outils-ia'
     | '/ressources'
     | '/formations/$slug'
@@ -129,7 +162,10 @@ export interface FileRouteTypes {
     | '/actualites'
     | '/connexion'
     | '/exercices'
+    | '/formateur'
     | '/formations'
+    | '/inscription'
+    | '/mon-espace'
     | '/outils-ia'
     | '/ressources'
     | '/formations_/$slug'
@@ -141,7 +177,10 @@ export interface RootRouteChildren {
   ActualitesRoute: typeof ActualitesRoute
   ConnexionRoute: typeof ConnexionRoute
   ExercicesRoute: typeof ExercicesRoute
+  FormateurRoute: typeof FormateurRoute
   FormationsRoute: typeof FormationsRoute
+  InscriptionRoute: typeof InscriptionRoute
+  MonEspaceRoute: typeof MonEspaceRoute
   OutilsIaRoute: typeof OutilsIaRoute
   RessourcesRoute: typeof RessourcesRoute
   FormationsSlugRoute: typeof FormationsSlugRoute
@@ -184,11 +223,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ExercicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formateur': {
+      id: '/formateur'
+      path: '/formateur'
+      fullPath: '/formateur'
+      preLoaderRoute: typeof FormateurRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formations': {
       id: '/formations'
       path: '/formations'
       fullPath: '/formations'
       preLoaderRoute: typeof FormationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/inscription': {
+      id: '/inscription'
+      path: '/inscription'
+      fullPath: '/inscription'
+      preLoaderRoute: typeof InscriptionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mon-espace': {
+      id: '/mon-espace'
+      path: '/mon-espace'
+      fullPath: '/mon-espace'
+      preLoaderRoute: typeof MonEspaceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/outils-ia': {
@@ -221,7 +281,10 @@ const rootRouteChildren: RootRouteChildren = {
   ActualitesRoute: ActualitesRoute,
   ConnexionRoute: ConnexionRoute,
   ExercicesRoute: ExercicesRoute,
+  FormateurRoute: FormateurRoute,
   FormationsRoute: FormationsRoute,
+  InscriptionRoute: InscriptionRoute,
+  MonEspaceRoute: MonEspaceRoute,
   OutilsIaRoute: OutilsIaRoute,
   RessourcesRoute: RessourcesRoute,
   FormationsSlugRoute: FormationsSlugRoute,

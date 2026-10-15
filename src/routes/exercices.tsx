@@ -7,8 +7,17 @@ import { useAuth } from "@/lib/auth";
 import { challenges } from "@/lib/content";
 import { CLE_QCM, enregistrerTentatives } from "@/lib/progression";
 import { CATEGORIES, NIVEAUX, filtrerQuestions, questionsComprendreIA as questions, type Niveau } from "@/lib/qcm-comprendre-ia";
+import type { TypeTentative } from "@/lib/supabase";
+
+/** Filtres de départ passés dans l'URL (bouton « Commencer » d'un travail assigné). */
+type RechercheExercices = { type?: TypeTentative; categorie?: string; niveau?: Niveau };
 
 export const Route = createFileRoute("/exercices")({
+  validateSearch: (s: Record<string, unknown>): RechercheExercices => ({
+    ...((s["type"] === "qcm" || s["type"] === "exercice") && { type: s["type"] }),
+    ...(CATEGORIES.some((c) => c.id === s["categorie"]) && { categorie: s["categorie"] as string }),
+    ...(NIVEAUX.some((n) => n.id === s["niveau"]) && { niveau: s["niveau"] as Niveau }),
+  }),
   head: () => ({
     meta: [
       { title: "Exercices — IA et la Recherche" },
@@ -30,8 +39,10 @@ const niveauBadge: Record<string, string> = { green: "bg-tint-green text-tint-gr
 const chipClass = (active: boolean) => `rounded-full px-4 py-2 text-sm font-medium transition ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`;
 
 function Exercices() {
-  const [cat, setCat] = useState<string | undefined>(undefined);
-  const [niveau, setNiveau] = useState<Niveau | undefined>(undefined);
+  const recherche = Route.useSearch();
+  const pourQcm = recherche.type === "qcm";
+  const [cat, setCat] = useState<string | undefined>(pourQcm ? recherche.categorie : undefined);
+  const [niveau, setNiveau] = useState<Niveau | undefined>(pourQcm ? recherche.niveau : undefined);
   const list = filtrerQuestions({ ...(cat && { categorie: cat }), ...(niveau && { niveau }) });
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -89,7 +100,7 @@ function Exercices() {
           ))}
         </div>
 
-        <div className="mt-8 flex flex-wrap gap-2">
+        <div id="qcm" className="mt-8 flex scroll-mt-24 flex-wrap gap-2">
           <button onClick={() => { setCat(undefined); reset(0); }} className={chipClass(cat === undefined)}>Toutes les catégories</button>
           {CATEGORIES.map((c) => (
             <button key={c.id} onClick={() => { setCat(c.id); reset(0); }} title={c.description} className={chipClass(c.id === cat)}>{c.titre}</button>
@@ -160,9 +171,9 @@ function Exercices() {
           )}
         </div>
 
-        <h2 className="mt-14 text-3xl font-bold text-navy">Exercices pratiques</h2>
+        <h2 id="exercices-pratiques" className="mt-14 scroll-mt-24 text-3xl font-bold text-navy">Exercices pratiques</h2>
         <p className="mt-2 text-muted-foreground">Vrai ou faux justifié, associations, remise en ordre, construction de prompts, équations de recherche et études de cas, tirés du support de cours.</p>
-        <ExercicesPratiques />
+        <ExercicesPratiques {...(recherche.type === "exercice" && { categorieInitiale: recherche.categorie, niveauInitial: recherche.niveau })} />
 
         <h2 className="mt-14 text-3xl font-bold text-navy">Défis pratiques</h2>
         <div className="mt-6 grid gap-5 md:grid-cols-2">

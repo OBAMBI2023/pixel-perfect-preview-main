@@ -1,4 +1,5 @@
 import type { Session, User } from "@supabase/supabase-js";
+import { useNavigate } from "@tanstack/react-router";
 import { useEffect, useSyncExternalStore } from "react";
 import { getSupabase, supabaseConfigured, type Profile } from "@/lib/supabase";
 import { importerProgressionLocale } from "@/lib/progression";
@@ -63,6 +64,21 @@ export function useAuth(): AuthState {
   );
 }
 
+/**
+ * Pages formateur : renvoie l'utilisateur s'il est formateur, sinon redirige (connexion ou espace apprenant).
+ * La session n'existe que dans le navigateur : la vérification se fait ici, puis la RLS protège les données.
+ */
+export function useGardeFormateur(): { status: AuthState["status"]; user: User | null } {
+  const { status, user, profile } = useAuth();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (status !== "ready") return;
+    if (!user) void navigate({ to: "/connexion", replace: true });
+    else if (profile?.role !== "formateur") void navigate({ to: "/mon-espace", replace: true });
+  }, [status, user, profile, navigate]);
+  return { status, user: status === "ready" && user && profile?.role === "formateur" ? user : null };
+}
+
 const messagesErreur: [RegExp, string][] = [
   [/invalid login credentials/i, "E-mail ou mot de passe incorrect."],
   [/email not confirmed/i, "Confirme d'abord ton adresse e-mail grâce au lien reçu par courriel."],
@@ -85,14 +101,20 @@ export async function seConnecter(email: string, motDePasse: string): Promise<st
   return error ? traduireErreur(error.message) : null;
 }
 
-/** Renvoie { erreur } ou { confirmation: true } si l'e-mail doit être confirmé avant la connexion. */
-export async function sInscrire(nomComplet: string, email: string, motDePasse: string): Promise<{ erreur?: string; confirmation?: boolean }> {
+/**
+ * Renvoie { erreur } ou { confirmation: true } si l'e-mail doit être confirmé avant la connexion.
+ * Avec un code d'invitation, le lien de confirmation ramène vers /connexion qui fera rejoindre le groupe.
+ */
+export async function sInscrire(nomComplet: string, email: string, motDePasse: string, invitation?: string): Promise<{ erreur?: string; confirmation?: boolean }> {
   const sb = getSupabase();
   if (!sb) return { erreur: NON_CONFIGURE };
   const { data, error } = await sb.auth.signUp({
     email,
     password: motDePasse,
-    options: { data: { nom_complet: nomComplet }, emailRedirectTo: `${window.location.origin}/connexion` },
+    options: {
+      data: { nom_complet: nomComplet },
+      emailRedirectTo: `${window.location.origin}/connexion${invitation ? `?invitation=${invitation}` : ""}`,
+    },
   });
   if (error) return { erreur: traduireErreur(error.message) };
   return data.session ? {} : { confirmation: true };

@@ -24,12 +24,13 @@ export type Role = "apprenant" | "formateur";
 export type NiveauDb = "debutant" | "intermediaire" | "avance";
 
 export type Profile = { id: string; nom_complet: string; role: Role; created_at: string };
-export type Groupe = { id: string; nom: string; formateur_id: string; code_invitation: string; created_at: string };
+export type Groupe = { id: string; nom: string; formateur_id: string; code_invitation: string; archive_le: string | null; created_at: string };
+export type TypeTentative = "qcm" | "exercice";
 export type Tentative = {
   id: string;
   user_id: string;
   cours: string;
-  type: "qcm" | "exercice";
+  type: TypeTentative;
   categorie: string | null;
   niveau: NiveauDb | null;
   score: number;
@@ -38,10 +39,22 @@ export type Tentative = {
 };
 export type Reponse = { id: string; tentative_id: string; question_id: string; correcte: boolean; reponse_donnee: string | null; created_at: string };
 
+/** Travail assigné à un groupe ; categorie / niveau à null = tous. date_limite au format AAAA-MM-JJ. */
+export type Devoir = {
+  id: string;
+  groupe_id: string;
+  titre: string;
+  type: TypeTentative;
+  categorie: string | null;
+  niveau: NiveauDb | null;
+  date_limite: string | null;
+  created_at: string;
+};
+
 /** Tentative à enregistrer via la RPC enregistrer_tentatives. */
 export type NouvelleTentative = {
   cours: string;
-  type: "qcm" | "exercice";
+  type: TypeTentative;
   categorie: string | null;
   niveau: NiveauDb | null;
   score: number;
@@ -53,7 +66,7 @@ export type NouvelleTentative = {
 type FiltresGroupe = { p_groupe: string; p_debut?: string; p_niveau?: string };
 
 // Types de la base (équivalent de `supabase gen types`, écrit à la main pour la migration
-// supabase/migrations/20261015120000_espace_formateur.sql).
+// supabase/migrations/20261015120000_espace_formateur.sql et suivantes).
 export type Database = {
   public: {
     Tables: {
@@ -66,7 +79,7 @@ export type Database = {
       groupes: {
         Row: Groupe;
         Insert: { nom: string };
-        Update: { nom?: string };
+        Update: { nom?: string; archive_le?: string | null };
         Relationships: [
           { foreignKeyName: "groupes_formateur_id_fkey"; columns: ["formateur_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
@@ -86,6 +99,14 @@ export type Database = {
         Update: never;
         Relationships: [
           { foreignKeyName: "tentatives_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
+      devoirs: {
+        Row: Devoir;
+        Insert: Omit<Devoir, "id" | "created_at">;
+        Update: { titre?: string; date_limite?: string | null };
+        Relationships: [
+          { foreignKeyName: "devoirs_groupe_id_fkey"; columns: ["groupe_id"]; isOneToOne: false; referencedRelation: "groupes"; referencedColumns: ["id"] },
         ];
       };
       reponses: {
@@ -127,6 +148,22 @@ export type Database = {
         Returns: { nom_complet: string; created_at: string; type: string; categorie: string | null; niveau: string | null; score: number; total: number }[];
       };
       est_formateur: { Args: Record<string, never>; Returns: boolean };
+      regenerer_code_invitation: { Args: { p_groupe: string }; Returns: string };
+      suivi_devoirs: {
+        Args: { p_groupe: string };
+        Returns: {
+          devoir_id: string;
+          apprenant_id: string;
+          nom_complet: string;
+          nb_tentatives: number;
+          nb_questions: number;
+          score_moyen: number | null;
+          derniere_tentative: string | null;
+          fait: boolean;
+        }[];
+      };
+      mes_devoirs: { Args: Record<string, never>; Returns: (Devoir & { groupe_nom: string; nb_questions: number; fait: boolean })[] };
+      activite_membres: { Args: { p_groupe: string }; Returns: { apprenant_id: string; joined_at: string; derniere_activite: string | null }[] };
     };
     Enums: { [_ in never]: never };
     CompositeTypes: { [_ in never]: never };

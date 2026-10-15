@@ -1,12 +1,15 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { History, LogIn, UserPlus, Users } from "lucide-react";
+import { CheckCircle2, ClipboardList, History, LogIn, Play, UserPlus, Users } from "lucide-react";
 import { useState, type FormEvent } from "react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
+import { BadgesDevoir, Echeance, EtatDevoir } from "@/components/espace/Devoirs";
 import { TableHistorique } from "@/components/espace/TableHistorique";
 import { btnPrimary, btnSecondary, formatDate, inputClass } from "@/components/espace/styles";
 import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
 import { useAuth } from "@/lib/auth";
+import { SEUIL_DEVOIR_QCM } from "@/lib/formateur";
+import { erreurRejoindre } from "@/lib/invitation";
 import { labelNiveau, titreCategorie } from "@/lib/progression";
 import { NIVEAUX } from "@/lib/qcm-comprendre-ia";
 import { getSupabase } from "@/lib/supabase";
@@ -93,12 +96,13 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
   const rejoindre = useMutation({
     mutationFn: async (c: string) => {
       const { data, error } = await sb.rpc("rejoindre_groupe", { p_code: c });
-      if (error) throw new Error(/inconnu/i.test(error.message) ? "Code d'invitation inconnu. Vérifie-le auprès de ton formateur." : "Impossible de rejoindre le groupe.");
+      if (error) throw new Error(erreurRejoindre(error.message));
       return data[0];
     },
     onSuccess: () => {
       setCode("");
       void qc.invalidateQueries({ queryKey: ["mes-groupes", userId] });
+      void qc.invalidateQueries({ queryKey: ["mes-devoirs", userId] });
     },
   });
   const soumettre = (e: FormEvent) => {
@@ -121,6 +125,8 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
         <Stat label="Réussite moyenne" valeur={tauxGlobal === null ? "—" : `${Math.round(tauxGlobal)} %`} aide="Moyenne pondérée par tentative" />
         <Stat label="Groupes rejoints" valeur={groupes.data?.length ?? 0} />
       </div>
+
+      <AFaire userId={userId} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Carte titre={<span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Mes groupes</span>}>
@@ -170,5 +176,59 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
         {!!historique.data?.lignes.length && <TableHistorique lignes={historique.data.lignes} />}
       </Carte>
     </Coquille>
+  );
+}
+
+/** Travaux assignés par les formateurs : à faire d'abord, puis ceux déjà faits. */
+function AFaire({ userId }: { userId: string }) {
+  const devoirs = useQuery({
+    queryKey: ["mes-devoirs", userId],
+    queryFn: async () => {
+      const { data, error } = await getSupabase()!.rpc("mes_devoirs", {});
+      if (error) throw error;
+      return data;
+    },
+  });
+  const liste = devoirs.data ?? [];
+  if (devoirs.isLoading || (!devoirs.isError && liste.length === 0)) return null;
+  const aFaire = liste.filter((d) => !d.fait);
+  const faits = liste.filter((d) => d.fait);
+
+  return (
+    <Carte
+      titre={<span className="flex items-center gap-2"><ClipboardList className="h-5 w-5 text-primary" /> À faire</span>}
+      action={liste.length > 0 ? <span className="text-xs text-muted-foreground">{faits.length} / {liste.length} fait{faits.length > 1 ? "s" : ""}</span> : undefined}
+    >
+      {devoirs.isError && <Message ton="erreur">Impossible de charger tes travaux à faire.</Message>}
+      {liste.length > 0 && aFaire.length === 0 && <Message ton="succes">Bravo, tous tes travaux sont faits.</Message>}
+      <ul className="space-y-3">
+        {[...aFaire, ...faits].map((d) => (
+          <li key={d.id} className={`flex flex-wrap items-center justify-between gap-3 rounded-xl border-2 p-4 ${d.fait ? "border-border opacity-75" : "border-primary/40"}`}>
+            <div className="min-w-0 space-y-1.5">
+              <p className="font-semibold text-navy">{d.titre}</p>
+              <p className="text-xs text-muted-foreground">Groupe « {d.groupe_nom} »</p>
+              <BadgesDevoir devoir={d} />
+              <p className="text-sm"><Echeance jour={d.date_limite} fait={d.fait} /></p>
+              {d.type === "qcm" && !d.fait && <p className="text-xs text-muted-foreground">Réponds à au moins {SEUIL_DEVOIR_QCM} questions de cette sélection.</p>}
+            </div>
+            {d.fait ? (
+              <span className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-tint-green px-3 py-1.5 text-sm font-semibold text-tint-green-fg"><CheckCircle2 className="h-4 w-4" /> Fait</span>
+            ) : (
+              <span className="flex shrink-0 flex-wrap items-center gap-2">
+                {d.nb_questions > 0 && <EtatDevoir type={d.type} nbQuestions={d.nb_questions} fait={false} />}
+                <Link
+                  to="/exercices"
+                  search={{ type: d.type, ...(d.categorie && { categorie: d.categorie }), ...(d.niveau && { niveau: d.niveau }) }}
+                  hash={d.type === "qcm" ? "qcm" : "exercices-pratiques"}
+                  className={btnPrimary}
+                >
+                  <Play className="h-4 w-4" /> {d.nb_questions > 0 ? "Continuer" : "Commencer"}
+                </Link>
+              </span>
+            )}
+          </li>
+        ))}
+      </ul>
+    </Carte>
   );
 }

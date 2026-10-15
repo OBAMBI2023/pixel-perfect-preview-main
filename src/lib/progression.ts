@@ -1,5 +1,5 @@
 import { CATEGORIES, NIVEAUX, questionsComprendreIA } from "@/lib/qcm-comprendre-ia";
-import { exercicesComprendreIA, TYPES_EXERCICE } from "@/lib/exercices-comprendre-ia";
+import { ELEMENTS_PROMPT, exercicesComprendreIA, TYPES_EXERCICE, type Exercice } from "@/lib/exercices-comprendre-ia";
 import { getSupabase, type NouvelleTentative } from "@/lib/supabase";
 
 /** Clés localStorage utilisées par /exercices (progression sans compte). */
@@ -81,13 +81,32 @@ export type InfoQuestion = {
   cours: string;
   /** Texte lisible d'une réponse enregistrée (index d'option pour un QCM). */
   lireReponse: (r: string | null) => string;
+  /** Corrigé en une ligne (fiche de séance). */
+  bonneReponse: string;
 };
+
+function corrige(e: Exercice): string {
+  switch (e.type) {
+    case "vrai-faux": return `${e.reponse ? "Vrai" : "Faux"} — ${e.justifications[e.justificationCorrecte] ?? ""}`;
+    case "association": return e.paires.map((p) => `${p.gauche} → ${p.droite}`).join(" ; ");
+    case "ordre": return e.elements.join(" → ");
+    case "construire-prompt":
+      return ELEMENTS_PROMPT.filter((el) => el.id !== "a-exclure")
+        .map((el) => [el.label, e.morceaux.filter((m) => m.element === el.id).map((m) => m.texte)] as const)
+        .filter(([, textes]) => textes.length)
+        .map(([label, textes]) => `${label} : ${textes.join(" / ")}`)
+        .join(" ; ");
+    case "equation": return e.gabarit.replace(/\{(\d+)\}/g, (_, i: string) => { const t = e.trous[Number(i)]; return t?.options[t.reponse] ?? "…"; });
+    case "etude-cas": return `Références fiables : ${e.references.filter((r) => r.fiable).map((r) => r.texte).join(" ; ") || "aucune"}`;
+  }
+}
 
 const index = new Map<string, InfoQuestion>();
 for (const q of questionsComprendreIA) {
   index.set(q.id, {
     id: q.id, type: "qcm", genre: "QCM", enonce: q.question, categorie: q.categorie, niveau: q.niveau, chapitre: q.chapitre, cours: q.cours,
     lireReponse: (r) => (r === null ? "—" : q.options[Number(r)] ?? r),
+    bonneReponse: q.options[q.reponse] ?? "—",
   });
 }
 for (const e of exercicesComprendreIA) {
@@ -96,6 +115,7 @@ for (const e of exercicesComprendreIA) {
     enonce: e.type === "vrai-faux" ? `${e.titre} — « ${e.affirmation} »` : e.titre,
     categorie: e.categorie, niveau: e.niveau, chapitre: e.chapitre, cours: e.cours,
     lireReponse: (r) => r || "—",
+    bonneReponse: corrige(e),
   });
 }
 

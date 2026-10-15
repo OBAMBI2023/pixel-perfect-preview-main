@@ -1,38 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { AlertTriangle, ArrowDown, ArrowUp, BookOpen, Check, Copy, Download, Plus, Search, Users, X } from "lucide-react";
-import { useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { AlertTriangle, ArchiveRestore, ArrowDown, ArrowUp, BarChart3, BookOpen, Download, Plus, Printer, Search, Share2, UserPlus, Users, X } from "lucide-react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
+import { ComparaisonGroupes } from "@/components/espace/ComparaisonGroupes";
+import { DevoirsGroupe } from "@/components/espace/Devoirs";
+import { EnteteGroupe } from "@/components/espace/GestionGroupe";
 import { TableHistorique } from "@/components/espace/TableHistorique";
 import { btnPrimary, btnSecondary, formatDate, formatPct, inputClass } from "@/components/espace/styles";
 import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
+import { chipClass, construireFiltres, joursInactif, JOURS_INACTIVITE, PERIODES, rpc, useMembres, type Filtres, type Fn, type PeriodeId } from "@/lib/formateur";
 import { infoQuestion, labelNiveau, titreCategorie } from "@/lib/progression";
 import { NIVEAUX, type Niveau } from "@/lib/qcm-comprendre-ia";
-import { getSupabase, type Database, type Groupe } from "@/lib/supabase";
+import { getSupabase, type Groupe } from "@/lib/supabase";
 
-type Fn = Database["public"]["Functions"];
 type LigneApprenant = Fn["resultats_apprenants"]["Returns"][number];
-type Filtres = { p_groupe: string; p_debut?: string; p_niveau?: string };
-
-const PERIODES = [
-  { id: "7", label: "7 jours", jours: 7 },
-  { id: "30", label: "30 jours", jours: 30 },
-  { id: "90", label: "3 mois", jours: 90 },
-  { id: "tout", label: "Tout", jours: null },
-] as const;
-type PeriodeId = (typeof PERIODES)[number]["id"];
-
-const chipClass = (active: boolean) =>
-  `rounded-full px-4 py-2 text-sm font-medium transition ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`;
-
-/** Lance une RPC et renvoie ses lignes (ou lève l'erreur pour React Query). */
-async function rpc<K extends keyof Fn>(nom: K, args: Fn[K]["Args"]): Promise<Fn[K]["Returns"]> {
-  const sb = getSupabase();
-  if (!sb) throw new Error("Supabase non configuré");
-  // Le typage générique de .rpc() ne suit pas une clé variable : on le reprend ici.
-  const { data, error } = await (sb.rpc as unknown as (n: K, a: Fn[K]["Args"]) => Promise<{ data: Fn[K]["Returns"]; error: { message: string } | null }>)(nom, args);
-  if (error) throw new Error(error.message);
-  return data;
-}
 
 function ChapitreLien({ cours, chapitre }: { cours: string; chapitre: string }) {
   return (
@@ -44,11 +25,15 @@ function ChapitreLien({ cours, chapitre }: { cours: string; chapitre: string }) 
 
 /* ───────────────────────── Page ───────────────────────── */
 
+const COMPARER = "comparer";
+
 export function EspaceFormateur({ userId }: { userId: string }) {
   const sb = getSupabase()!;
   const qc = useQueryClient();
-  const [groupeChoisi, setGroupeChoisi] = useState<string | null>(null);
+  const [vue, setVue] = useState<string | null>(null); // id du groupe affiché, ou COMPARER
   const [nom, setNom] = useState("");
+  const [cree, setCree] = useState<string | null>(null);
+  const [voirArchives, setVoirArchives] = useState(false);
 
   const groupes = useQuery({
     queryKey: ["groupes-formateur", userId],
@@ -65,9 +50,22 @@ export function EspaceFormateur({ userId }: { userId: string }) {
       return data;
     },
     onSuccess: (g) => {
+      // Ajout direct au cache : le nouveau groupe s'ouvre sans attendre le rechargement de la liste.
+      qc.setQueryData<Groupe[]>(["groupes-formateur", userId], (l) => [...(l ?? []), g]);
       setNom("");
-      setGroupeChoisi(g.id);
-      void qc.invalidateQueries({ queryKey: ["groupes-formateur", userId] });
+      setVue(g.id);
+      setCree(g.nom);
+    },
+  });
+  const desarchiver = useMutation({
+    mutationFn: async (id: string) => {
+      const { data, error } = await sb.from("groupes").update({ archive_le: null }).eq("id", id).select().single();
+      if (error) throw new Error("Impossible de désarchiver le groupe.");
+      return data;
+    },
+    onSuccess: (g) => {
+      qc.setQueryData<Groupe[]>(["groupes-formateur", userId], (l) => l?.map((x) => (x.id === g.id ? g : x)));
+      setVue(g.id);
     },
   });
   const soumettre = (e: FormEvent) => {
@@ -75,26 +73,59 @@ export function EspaceFormateur({ userId }: { userId: string }) {
     if (nom.trim()) creer.mutate(nom.trim());
   };
 
-  const liste = groupes.data ?? [];
-  const groupe = liste.find((g) => g.id === groupeChoisi) ?? liste[0];
+  useEffect(() => {
+    if (!cree) return;
+    const t = setTimeout(() => setCree(null), 5000);
+    return () => clearTimeout(t);
+  }, [cree]);
+
+  const actifs = (groupes.data ?? []).filter((g) => !g.archive_le);
+  const archives = (groupes.data ?? []).filter((g) => g.archive_le);
+  const comparer = vue === COMPARER && actifs.length >= 2;
+  const groupe = comparer ? undefined : actifs.find((g) => g.id === vue) ?? actifs[0];
 
   return (
     <div className="space-y-6">
       <Carte titre={<span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Mes groupes</span>}>
         <div className="flex flex-wrap gap-2">
-          {liste.map((g) => (
-            <button key={g.id} onClick={() => setGroupeChoisi(g.id)} className={chipClass(g.id === groupe?.id)}>{g.nom}</button>
+          {actifs.map((g) => (
+            <button key={g.id} onClick={() => setVue(g.id)} className={chipClass(g.id === groupe?.id)}>{g.nom}</button>
           ))}
+          {actifs.length >= 2 && (
+            <button onClick={() => setVue(COMPARER)} className={`${chipClass(comparer)} inline-flex items-center gap-1.5`}><BarChart3 className="h-4 w-4" /> Comparer</button>
+          )}
           {groupes.isLoading && <span className="text-sm text-muted-foreground">Chargement…</span>}
-          {groupes.data?.length === 0 && <span className="text-sm text-muted-foreground">Crée ton premier groupe pour obtenir un code d'invitation.</span>}
+          {groupes.data && actifs.length === 0 && <span className="text-sm text-muted-foreground">Crée ton premier groupe pour obtenir un lien d'invitation.</span>}
         </div>
         <form onSubmit={soumettre} className="mt-4 flex flex-col gap-3 sm:flex-row">
-          <input aria-label="Nom du nouveau groupe" placeholder="Ex. : Master 1 — Promotion 2026" maxLength={120} value={nom} onChange={(e) => setNom(e.target.value)} className={inputClass} />
+          <input aria-label="Nom du nouveau groupe" placeholder="Ex. : Master 1 — Promotion 2026" maxLength={120} value={nom} onChange={(e) => { setNom(e.target.value); setCree(null); }} className={inputClass} />
           <button type="submit" disabled={!nom.trim() || creer.isPending} className={`${btnPrimary} shrink-0`}><Plus className="h-4 w-4" /> Créer le groupe</button>
         </form>
         {creer.isError && <div className="mt-3"><Message ton="erreur">{creer.error.message}</Message></div>}
+        {cree && <div className="mt-3"><Message ton="succes">Groupe créé : « {cree} ». Partage maintenant le lien d'invitation à tes apprenants.</Message></div>}
+        {archives.length > 0 && (
+          <div className="mt-4 border-t pt-3">
+            <button onClick={() => setVoirArchives(!voirArchives)} aria-expanded={voirArchives} className="text-sm font-semibold text-muted-foreground hover:text-foreground hover:underline">
+              {voirArchives ? "Masquer les groupes archivés" : `Groupes archivés (${archives.length})`}
+            </button>
+            {voirArchives && (
+              <ul className="mt-2 divide-y">
+                {archives.map((g) => (
+                  <li key={g.id} className="flex flex-wrap items-center justify-between gap-2 py-2 text-sm">
+                    <span><span className="font-medium">{g.nom}</span> <span className="text-muted-foreground">· archivé le {formatDate(g.archive_le)}</span></span>
+                    <button onClick={() => desarchiver.mutate(g.id)} disabled={desarchiver.isPending} className="inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 font-semibold text-primary hover:bg-muted disabled:opacity-50">
+                      <ArchiveRestore className="h-4 w-4" /> Désarchiver
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+            {desarchiver.isError && <div className="mt-2"><Message ton="erreur">{desarchiver.error.message}</Message></div>}
+          </div>
+        )}
       </Carte>
 
+      {comparer && <ComparaisonGroupes groupes={actifs} />}
       {groupe && <TableauGroupe key={groupe.id} groupe={groupe} />}
     </div>
   );
@@ -102,18 +133,59 @@ export function EspaceFormateur({ userId }: { userId: string }) {
 
 /* ───────────────────────── Groupe ───────────────────────── */
 
+const ONGLETS = [
+  ["ensemble", "Vue d'ensemble"],
+  ["apprenants", "Résultats par apprenant"],
+  ["questions", "Questions les plus ratées"],
+  ["devoirs", "Travaux assignés"],
+] as const;
+type Onglet = (typeof ONGLETS)[number][0];
+
 function TableauGroupe({ groupe }: { groupe: Groupe }) {
+  const membres = useMembres(groupe.id);
+
+  return (
+    <div className="space-y-6">
+      <EnteteGroupe groupe={groupe} />
+      {membres.isError && <Message ton="erreur">Impossible de charger les membres du groupe.</Message>}
+      {membres.data?.length === 0 && <GuideDemarrage />}
+      {!!membres.data?.length && <SuiviGroupe groupe={groupe} />}
+    </div>
+  );
+}
+
+/** État vide : tant que personne n'a rejoint le groupe, on explique la marche à suivre. */
+function GuideDemarrage() {
+  const etapes = [
+    { icone: Share2, titre: "Partage le lien d'invitation", texte: "Copie le lien, envoie-le sur WhatsApp ou projette le QR code en séance." },
+    { icone: UserPlus, titre: "Tes apprenants rejoignent le groupe", texte: "Ils se connectent ou créent leur compte, puis rejoignent le groupe automatiquement." },
+    { icone: BarChart3, titre: "Leurs résultats apparaissent ici", texte: "Statistiques, réussite par catégorie, questions ratées et travaux assignés, dès le premier membre." },
+  ];
+  return (
+    <Carte titre="Pour bien démarrer">
+      <ol className="grid gap-4 md:grid-cols-3">
+        {etapes.map(({ icone: Icone, titre, texte }, i) => (
+          <li key={titre} className="rounded-2xl bg-muted p-5">
+            <div className="flex items-center gap-3">
+              <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary font-bold text-primary-foreground">{i + 1}</span>
+              <Icone className="h-5 w-5 text-primary" />
+            </div>
+            <h3 className="mt-3 font-semibold text-navy">{i + 1}. {titre}</h3>
+            <p className="mt-1 text-sm text-muted-foreground">{texte}</p>
+          </li>
+        ))}
+      </ol>
+    </Carte>
+  );
+}
+
+function SuiviGroupe({ groupe }: { groupe: Groupe }) {
   const [periode, setPeriode] = useState<PeriodeId>("tout");
   const [niveau, setNiveau] = useState<Niveau | "">("");
-  const [onglet, setOnglet] = useState<"ensemble" | "apprenants" | "questions">("ensemble");
+  const [onglet, setOnglet] = useState<Onglet>("ensemble");
   const [apprenant, setApprenant] = useState<LigneApprenant | null>(null);
 
-  // Début de période arrondi au jour, pour garder une clé de cache stable.
-  const filtres = useMemo<Filtres>(() => {
-    const jours = PERIODES.find((p) => p.id === periode)?.jours ?? null;
-    const debut = jours === null ? null : new Date(new Date().setHours(0, 0, 0, 0) - jours * 86_400_000).toISOString();
-    return { p_groupe: groupe.id, ...(debut && { p_debut: debut }), ...(niveau && { p_niveau: niveau }) };
-  }, [groupe.id, periode, niveau]);
+  const filtres = useMemo<Filtres>(() => construireFiltres(groupe.id, periode, niveau), [groupe.id, periode, niveau]);
 
   const stats = useQuery({ queryKey: ["stats_groupe", filtres], queryFn: () => rpc("stats_groupe", filtres) });
   const categories = useQuery({ queryKey: ["reussite_par_categorie", filtres], queryFn: () => rpc("reussite_par_categorie", filtres) });
@@ -122,9 +194,7 @@ function TableauGroupe({ groupe }: { groupe: Groupe }) {
   const erreur = stats.error ?? categories.error ?? ratees.error;
 
   return (
-    <div className="space-y-6">
-      <EnteteGroupe groupe={groupe} />
-
+    <>
       <div className="flex flex-wrap items-center gap-2">
         {PERIODES.map((p) => (
           <button key={p.id} onClick={() => setPeriode(p.id)} className={chipClass(p.id === periode)}>{p.label}</button>
@@ -133,13 +203,24 @@ function TableauGroupe({ groupe }: { groupe: Groupe }) {
           <option value="">Tous les niveaux</option>
           {NIVEAUX.map((n) => <option key={n.id} value={n.id}>{n.label}</option>)}
         </select>
-        <ExportCsv groupe={groupe} filtres={filtres} />
+        <span className="ml-auto inline-flex flex-wrap items-center gap-2">
+          <Link
+            to="/formateur/seance/$groupeId"
+            params={{ groupeId: groupe.id }}
+            search={{ periode, ...(niveau && { niveau }) }}
+            target="_blank"
+            className={btnSecondary}
+          >
+            <Printer className="h-4 w-4" /> Fiche de séance
+          </Link>
+          <ExportCsv groupe={groupe} filtres={filtres} />
+        </span>
       </div>
 
       {erreur && <Message ton="erreur">Impossible de charger les résultats : {erreur.message}</Message>}
 
       <div role="tablist" className="flex gap-1 overflow-x-auto rounded-full bg-muted p-1">
-        {([["ensemble", "Vue d'ensemble"], ["apprenants", "Résultats par apprenant"], ["questions", "Questions les plus ratées"]] as const).map(([id, label]) => (
+        {ONGLETS.map(([id, label]) => (
           <button key={id} role="tab" aria-selected={onglet === id} onClick={() => setOnglet(id)} className={`shrink-0 rounded-full px-4 py-2 text-sm font-semibold transition ${onglet === id ? "bg-card text-navy shadow-card" : "text-muted-foreground hover:text-foreground"}`}>
             {label}
           </button>
@@ -169,67 +250,14 @@ function TableauGroupe({ groupe }: { groupe: Groupe }) {
       {onglet === "apprenants" && (
         <>
           {apprenant && <FicheApprenant apprenant={apprenant} onFermer={() => setApprenant(null)} />}
-          <ResultatsApprenants filtres={filtres} onChoisir={setApprenant} />
+          <ResultatsApprenants groupeId={groupe.id} filtres={filtres} onChoisir={setApprenant} />
         </>
       )}
 
       {onglet === "questions" && <QuestionsRatees lignes={ratees.data} chargement={ratees.isLoading} />}
-    </div>
-  );
-}
 
-function EnteteGroupe({ groupe }: { groupe: Groupe }) {
-  const sb = getSupabase()!;
-  const [copie, setCopie] = useState(false);
-  const [ouvert, setOuvert] = useState(false);
-  const membres = useQuery({
-    queryKey: ["membres", groupe.id],
-    queryFn: async () => {
-      const { data, error } = await sb.from("membres_groupe").select("apprenant_id, joined_at, profil:profiles(nom_complet)").eq("groupe_id", groupe.id).order("joined_at");
-      if (error) throw error;
-      return data;
-    },
-  });
-  const copier = async () => {
-    try {
-      await navigator.clipboard.writeText(groupe.code_invitation);
-      setCopie(true);
-      setTimeout(() => setCopie(false), 2000);
-    } catch { /* presse-papiers indisponible : le code reste affiché */ }
-  };
-
-  return (
-    <Carte>
-      <div className="flex flex-wrap items-start justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold text-navy">{groupe.nom}</h2>
-          <p className="mt-1 text-sm text-muted-foreground">Créé le {formatDate(groupe.created_at)} · {membres.data?.length ?? "…"} membre(s)</p>
-        </div>
-        <div className="flex items-center gap-3 rounded-2xl bg-muted px-4 py-3">
-          <div>
-            <div className="text-xs text-muted-foreground">Code d'invitation</div>
-            <div className="font-mono text-2xl font-bold tracking-[0.3em] text-navy">{groupe.code_invitation}</div>
-          </div>
-          <button onClick={copier} className={btnSecondary} aria-label="Copier le code d'invitation">
-            {copie ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />} {copie ? "Copié" : "Copier"}
-          </button>
-        </div>
-      </div>
-      <button onClick={() => setOuvert(!ouvert)} className="mt-4 text-sm font-semibold text-primary hover:underline" aria-expanded={ouvert}>
-        {ouvert ? "Masquer les membres" : "Voir les membres"}
-      </button>
-      {ouvert && (
-        <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
-          {membres.data?.map((m) => (
-            <li key={m.apprenant_id} className="rounded-xl bg-muted px-3 py-2 text-sm">
-              <span className="font-medium">{m.profil?.nom_complet || "Sans nom"}</span>
-              <span className="block text-xs text-muted-foreground">depuis le {formatDate(m.joined_at)}</span>
-            </li>
-          ))}
-          {membres.data?.length === 0 && <li className="text-sm text-muted-foreground">Aucun membre. Partage le code d'invitation à tes apprenants : ils le saisissent dans « Mon espace ».</li>}
-        </ul>
-      )}
-    </Carte>
+      {onglet === "devoirs" && <DevoirsGroupe groupeId={groupe.id} />}
+    </>
   );
 }
 
@@ -281,14 +309,26 @@ function ARevoir({ categories, ratees }: { categories: Fn["reussite_par_categori
 
 type Tri = "nom_complet" | "nb_tentatives" | "score_moyen" | "derniere_activite" | "categorie_faible";
 
-function ResultatsApprenants({ filtres, onChoisir }: { filtres: Filtres; onChoisir: (a: LigneApprenant) => void }) {
+function ResultatsApprenants({ groupeId, filtres, onChoisir }: { groupeId: string; filtres: Filtres; onChoisir: (a: LigneApprenant) => void }) {
   const resultats = useQuery({ queryKey: ["resultats_apprenants", filtres], queryFn: () => rpc("resultats_apprenants", filtres) });
+  // Inactivité calculée sur toute l'activité, indépendamment des filtres de période et de niveau.
+  const activite = useQuery({ queryKey: ["activite_membres", groupeId], queryFn: () => rpc("activite_membres", { p_groupe: groupeId }) });
   const [recherche, setRecherche] = useState("");
+  const [aRelancer, setARelancer] = useState(false);
   const [tri, setTri] = useState<{ col: Tri; asc: boolean }>({ col: "nom_complet", asc: true });
+
+  const inactifs = useMemo(() => {
+    const m = new Map<string, number>();
+    for (const a of activite.data ?? []) {
+      const j = joursInactif(a.derniere_activite, a.joined_at);
+      if (j !== null) m.set(a.apprenant_id, j);
+    }
+    return m;
+  }, [activite.data]);
 
   const lignes = useMemo(() => {
     const q = recherche.trim().toLocaleLowerCase("fr");
-    const filtrees = (resultats.data ?? []).filter((l) => !q || l.nom_complet.toLocaleLowerCase("fr").includes(q));
+    const filtrees = (resultats.data ?? []).filter((l) => (!q || l.nom_complet.toLocaleLowerCase("fr").includes(q)) && (!aRelancer || inactifs.has(l.apprenant_id)));
     const val = (l: LigneApprenant): string | number | null => (tri.col === "categorie_faible" ? (l.categorie_faible ? titreCategorie(l.categorie_faible) : null) : l[tri.col]);
     return [...filtrees].sort((a, b) => {
       const va = val(a), vb = val(b);
@@ -298,7 +338,7 @@ function ResultatsApprenants({ filtres, onChoisir }: { filtres: Filtres; onChois
       const cmp = typeof va === "number" && typeof vb === "number" ? va - vb : String(va).localeCompare(String(vb), "fr");
       return tri.asc ? cmp : -cmp;
     });
-  }, [resultats.data, recherche, tri]);
+  }, [resultats.data, recherche, tri, aRelancer, inactifs]);
 
   const Entete = ({ col, children, droite }: { col: Tri; children: ReactNode; droite?: boolean }) => (
     <th className={`py-2 pr-3 ${droite ? "text-right" : ""}`} aria-sort={tri.col === col ? (tri.asc ? "ascending" : "descending") : "none"}>
@@ -313,10 +353,20 @@ function ResultatsApprenants({ filtres, onChoisir }: { filtres: Filtres; onChois
     <Carte
       titre="Résultats par apprenant"
       action={
-        <label className="relative block w-full sm:w-64">
-          <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-          <input aria-label="Rechercher un apprenant" placeholder="Rechercher un apprenant" value={recherche} onChange={(e) => setRecherche(e.target.value)} className={`${inputClass} pl-9`} />
-        </label>
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          <button
+            onClick={() => setARelancer(!aRelancer)}
+            aria-pressed={aRelancer}
+            title={`Aucune tentative depuis au moins ${JOURS_INACTIVITE} jours`}
+            className={`${chipClass(aRelancer)} shrink-0`}
+          >
+            À relancer ({inactifs.size})
+          </button>
+          <label className="relative block w-full sm:w-64">
+            <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input aria-label="Rechercher un apprenant" placeholder="Rechercher un apprenant" value={recherche} onChange={(e) => setRecherche(e.target.value)} className={`${inputClass} pl-9`} />
+          </label>
+        </div>
       }
     >
       {resultats.isLoading && <p className="text-sm text-muted-foreground">Chargement…</p>}
@@ -338,6 +388,11 @@ function ResultatsApprenants({ filtres, onChoisir }: { filtres: Filtres; onChois
                 <tr key={l.apprenant_id} onClick={() => onChoisir(l)} className="cursor-pointer hover:bg-muted">
                   <td className="py-2.5 pr-3">
                     <button onClick={(e) => { e.stopPropagation(); onChoisir(l); }} className="font-semibold text-navy hover:underline">{l.nom_complet || "Sans nom"}</button>
+                    {inactifs.has(l.apprenant_id) && (
+                      <span className="ml-2 inline-block whitespace-nowrap rounded-full bg-tint-amber px-2 py-0.5 text-xs font-semibold text-tint-amber-fg">
+                        Inactif depuis {inactifs.get(l.apprenant_id)} jours
+                      </span>
+                    )}
                   </td>
                   <td className="py-2.5 pr-3 text-right tabular-nums">{l.nb_tentatives}</td>
                   <td className="py-2.5 pr-3 text-right tabular-nums">{formatPct(l.score_moyen)}</td>
@@ -345,7 +400,13 @@ function ResultatsApprenants({ filtres, onChoisir }: { filtres: Filtres; onChois
                   <td className="py-2.5 pr-3">{titreCategorie(l.categorie_faible)}</td>
                 </tr>
               ))}
-              {lignes.length === 0 && <tr><td colSpan={5} className="py-4 text-center text-muted-foreground">Aucun apprenant ne correspond à « {recherche} ».</td></tr>}
+              {lignes.length === 0 && (
+                <tr>
+                  <td colSpan={5} className="py-4 text-center text-muted-foreground">
+                    {aRelancer && !recherche.trim() ? `Personne à relancer : tous les membres ont été actifs ces ${JOURS_INACTIVITE} derniers jours.` : `Aucun apprenant ne correspond à « ${recherche} »${aRelancer ? " parmi ceux à relancer" : ""}.`}
+                  </td>
+                </tr>
+              )}
             </tbody>
           </table>
         </div>

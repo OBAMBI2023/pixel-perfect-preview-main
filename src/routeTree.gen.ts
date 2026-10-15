@@ -21,6 +21,8 @@ import { Route as MonEspaceRouteImport } from './routes/mon-espace'
 import { Route as OutilsIaRouteImport } from './routes/outils-ia'
 import { Route as RessourcesRouteImport } from './routes/ressources'
 import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
+import { Route as RejoindreCodeRouteImport } from './routes/rejoindre.$code'
+import { Route as FormateurSeanceGroupeIdRouteImport } from './routes/formateur_.seance.$groupeId'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -82,6 +84,16 @@ const FormationsSlugRoute = FormationsSlugRouteImport.update({
   path: '/formations/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RejoindreCodeRoute = RejoindreCodeRouteImport.update({
+  id: '/rejoindre/$code',
+  path: '/rejoindre/$code',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormateurSeanceGroupeIdRoute = FormateurSeanceGroupeIdRouteImport.update({
+  id: '/formateur_/seance/$groupeId',
+  path: '/formateur/seance/$groupeId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -96,6 +108,8 @@ export interface FileRoutesByFullPath {
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
   '/formations/$slug': typeof FormationsSlugRoute
+  '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -110,6 +124,8 @@ export interface FileRoutesByTo {
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
   '/formations/$slug': typeof FormationsSlugRoute
+  '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -125,6 +141,8 @@ export interface FileRoutesById {
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
   '/formations_/$slug': typeof FormationsSlugRoute
+  '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/formateur_/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -141,6 +159,8 @@ export interface FileRouteTypes {
     | '/outils-ia'
     | '/ressources'
     | '/formations/$slug'
+    | '/rejoindre/$code'
+    | '/formateur/seance/$groupeId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -155,6 +175,8 @@ export interface FileRouteTypes {
     | '/outils-ia'
     | '/ressources'
     | '/formations/$slug'
+    | '/rejoindre/$code'
+    | '/formateur/seance/$groupeId'
   id:
     | '__root__'
     | '/'
@@ -169,6 +191,8 @@ export interface FileRouteTypes {
     | '/outils-ia'
     | '/ressources'
     | '/formations_/$slug'
+    | '/rejoindre/$code'
+    | '/formateur_/seance/$groupeId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -184,6 +208,8 @@ export interface RootRouteChildren {
   OutilsIaRoute: typeof OutilsIaRoute
   RessourcesRoute: typeof RessourcesRoute
   FormationsSlugRoute: typeof FormationsSlugRoute
+  RejoindreCodeRoute: typeof RejoindreCodeRoute
+  FormateurSeanceGroupeIdRoute: typeof FormateurSeanceGroupeIdRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -272,6 +298,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/rejoindre/$code': {
+      id: '/rejoindre/$code'
+      path: '/rejoindre/$code'
+      fullPath: '/rejoindre/$code'
+      preLoaderRoute: typeof RejoindreCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formateur_/seance/$groupeId': {
+      id: '/formateur_/seance/$groupeId'
+      path: '/formateur/seance/$groupeId'
+      fullPath: '/formateur/seance/$groupeId'
+      preLoaderRoute: typeof FormateurSeanceGroupeIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -288,6 +328,8 @@ const rootRouteChildren: RootRouteChildren = {
   OutilsIaRoute: OutilsIaRoute,
   RessourcesRoute: RessourcesRoute,
   FormationsSlugRoute: FormationsSlugRoute,
+  RejoindreCodeRoute: RejoindreCodeRoute,
+  FormateurSeanceGroupeIdRoute: FormateurSeanceGroupeIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

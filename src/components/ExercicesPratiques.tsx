@@ -313,10 +313,10 @@ function ExerciceCorps({ exo, seed, onResult }: Props<Exercice>) {
 
 /* ───────── Rubrique ───────── */
 
-export function ExercicesPratiques() {
+export function ExercicesPratiques({ categorieInitiale, niveauInitial }: { categorieInitiale?: string | undefined; niveauInitial?: Niveau | undefined } = {}) {
   const [type, setType] = useState<Exercice["type"] | undefined>(undefined);
-  const [niveau, setNiveau] = useState<Niveau | undefined>(undefined);
-  const [cat, setCat] = useState<string | undefined>(undefined);
+  const [niveau, setNiveau] = useState<Niveau | undefined>(niveauInitial);
+  const [cat, setCat] = useState<string | undefined>(categorieInitiale);
   const [idx, setIdx] = useState(0);
   const [essai, setEssai] = useState(0);
   const [reussis, setReussis] = useState<Record<string, boolean>>({});

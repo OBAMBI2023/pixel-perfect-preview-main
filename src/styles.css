@@ -98,6 +98,11 @@
   h1, h2, h3, h4 { font-family: var(--font-display); }
 }
 
+@media print {
+  @page { margin: 1.5cm; }
+  body { background: white; }
+}
+
 @utility shadow-card { box-shadow: var(--shadow-card); }
 @utility bg-hero-fade { background: var(--gradient-hero); }
 @utility animate-rise {

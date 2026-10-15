@@ -5,8 +5,10 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { btnPrimary, inputClass } from "@/components/espace/styles";
 import { Message } from "@/components/espace/ui";
 import { seConnecter, useAuth } from "@/lib/auth";
+import { lireInvitation, rechercheInvitation } from "@/lib/invitation";
 
 export const Route = createFileRoute("/connexion")({
+  validateSearch: rechercheInvitation,
   head: () => ({
     meta: [
       { title: "Se connecter — IA et la Recherche" },
@@ -20,16 +22,20 @@ export const Route = createFileRoute("/connexion")({
 
 function Connexion() {
   const { status, configured, user, profile } = useAuth();
+  const { invitation } = Route.useSearch();
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [motDePasse, setMotDePasse] = useState("");
   const [erreur, setErreur] = useState<string | null>(null);
   const [envoi, setEnvoi] = useState(false);
 
-  // Une fois connecté (et le profil chargé), direction l'espace adapté au rôle.
+  // Une fois connecté (et le profil chargé) : rejoindre le groupe en attente, sinon l'espace adapté au rôle.
   useEffect(() => {
-    if (status === "ready" && user) void navigate({ to: profile?.role === "formateur" ? "/formateur" : "/mon-espace" });
-  }, [status, user, profile, navigate]);
+    if (status !== "ready" || !user) return;
+    const code = profile?.role === "formateur" ? null : invitation ?? lireInvitation();
+    if (code) void navigate({ to: "/rejoindre/$code", params: { code }, replace: true });
+    else void navigate({ to: profile?.role === "formateur" ? "/formateur" : "/mon-espace" });
+  }, [status, user, profile, invitation, navigate]);
 
   const soumettre = async (e: FormEvent) => {
     e.preventDefault();
@@ -44,7 +50,9 @@ function Connexion() {
         <div className="rounded-2xl bg-card p-8 shadow-card">
           <Lock className="mx-auto h-10 w-10 text-primary" />
           <h1 className="mt-4 text-center text-2xl font-bold text-navy">Se connecter</h1>
-          <p className="mt-2 text-center text-sm text-muted-foreground">Enregistre ta progression et partage-la avec ton formateur.</p>
+          <p className="mt-2 text-center text-sm text-muted-foreground">
+            {invitation ? "Connecte-toi pour rejoindre le groupe de ton formateur." : "Enregistre ta progression et partage-la avec ton formateur."}
+          </p>
 
           {!configured ? (
             <div className="mt-6">
@@ -66,7 +74,7 @@ function Connexion() {
                 <LogIn className="h-4 w-4" /> {envoi ? "Connexion…" : "Se connecter"}
               </button>
               <p className="text-center text-sm text-muted-foreground">
-                Pas encore de compte ? <Link to="/inscription" className="font-semibold text-primary hover:underline">Créer un compte</Link>
+                Pas encore de compte ? <Link to="/inscription" search={invitation ? { invitation } : {}} className="font-semibold text-primary hover:underline">Créer un compte</Link>
               </p>
             </form>
           )}

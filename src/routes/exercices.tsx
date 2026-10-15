@@ -1,8 +1,9 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { CheckCircle2, Lightbulb, SkipForward, Target, Trophy, XCircle, Award, Flame } from "lucide-react";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { BookOpen, CheckCircle2, SkipForward, Target, Trophy, XCircle, Award, Flame } from "lucide-react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
-import { challenges, questions } from "@/lib/content";
+import { challenges } from "@/lib/content";
+import { CATEGORIES, NIVEAUX, filtrerQuestions, questionsComprendreIA as questions, type Niveau } from "@/lib/qcm-comprendre-ia";
 
 export const Route = createFileRoute("/exercices")({
   head: () => ({
@@ -20,14 +21,18 @@ const POINTS = 10;
 const KEY = "iar-progress";
 type Progress = { done: Record<string, boolean> };
 
+const questionIds = new Set(questions.map((q) => q.id));
+const categorieTitre = (id: string) => CATEGORIES.find((c) => c.id === id)?.titre ?? id;
+const niveauBadge: Record<string, string> = { green: "bg-tint-green text-tint-green-fg", orange: "bg-tint-amber text-tint-amber-fg", red: "bg-tint-rose text-tint-rose-fg" };
+const chipClass = (active: boolean) => `rounded-full px-4 py-2 text-sm font-medium transition ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`;
+
 function Exercices() {
-  const categories = useMemo(() => ["Toutes", ...Array.from(new Set(questions.map((q) => q.category)))], []);
-  const [cat, setCat] = useState("Toutes");
-  const list = cat === "Toutes" ? questions : questions.filter((q) => q.category === cat);
+  const [cat, setCat] = useState<string | undefined>(undefined);
+  const [niveau, setNiveau] = useState<Niveau | undefined>(undefined);
+  const list = filtrerQuestions({ ...(cat && { categorie: cat }), ...(niveau && { niveau }) });
   const [idx, setIdx] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
   const [checked, setChecked] = useState(false);
-  const [hint, setHint] = useState(false);
   const [progress, setProgress] = useState<Progress>({ done: {} });
 
   useEffect(() => {
@@ -35,20 +40,24 @@ function Exercices() {
   }, []);
   const save = (p: Progress) => { setProgress(p); localStorage.setItem(KEY, JSON.stringify(p)); };
 
-  const attempted = Object.keys(progress.done).length;
-  const correct = Object.values(progress.done).filter(Boolean).length;
+  // On ignore les réponses enregistrées pour d'anciennes questions qui n'existent plus.
+  const done = Object.entries(progress.done).filter(([id]) => questionIds.has(id));
+  const attempted = done.length;
+  const correct = done.filter(([, ok]) => ok).length;
   const rate = attempted ? Math.round((correct / attempted) * 100) : 0;
   const points = correct * POINTS;
-  const level = points >= 50 ? "Avancé" : points >= 20 ? "Intermédiaire" : "Débutant";
+  const maxPoints = questions.length * POINTS;
+  const level = points >= (maxPoints * 5) / 6 ? "Avancé" : points >= maxPoints / 3 ? "Intermédiaire" : "Débutant";
   const finished = idx >= list.length;
   const q = list[idx];
 
-  const reset = (i: number) => { setIdx(i); setSelected(null); setChecked(false); setHint(false); };
+  const reset = (i: number) => { setIdx(i); setSelected(null); setChecked(false); };
   const validate = () => {
     if (selected === null || !q) return;
     setChecked(true);
-    save({ done: { ...progress.done, [q.id]: selected === q.answer } });
+    save({ done: { ...progress.done, [q.id]: selected === q.reponse } });
   };
+  const niveauInfo = q ? NIVEAUX.find((n) => n.id === q.niveau) : undefined;
 
   const stats = [
     { icon: Target, label: "Exercices réalisés", value: `${attempted}/${questions.length}` },
@@ -72,16 +81,25 @@ function Exercices() {
         </div>
 
         <div className="mt-8 flex flex-wrap gap-2">
-          {categories.map((c) => (
-            <button key={c} onClick={() => { setCat(c); reset(0); }} className={`rounded-full px-4 py-2 text-sm font-medium transition ${c === cat ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`}>{c}</button>
+          <button onClick={() => { setCat(undefined); reset(0); }} className={chipClass(cat === undefined)}>Toutes les catégories</button>
+          {CATEGORIES.map((c) => (
+            <button key={c.id} onClick={() => { setCat(c.id); reset(0); }} title={c.description} className={chipClass(c.id === cat)}>{c.titre}</button>
+          ))}
+        </div>
+        <div className="mt-3 flex flex-wrap gap-2">
+          <button onClick={() => { setNiveau(undefined); reset(0); }} className={chipClass(niveau === undefined)}>Tous les niveaux</button>
+          {NIVEAUX.map((n) => (
+            <button key={n.id} onClick={() => { setNiveau(n.id); reset(0); }} title={n.description} className={chipClass(n.id === niveau)}>{n.label}</button>
           ))}
         </div>
 
         <div className="mt-6 rounded-2xl bg-card p-6 shadow-card md:p-8">
           <div className="h-2 overflow-hidden rounded-full bg-muted">
-            <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${(Math.min(idx, list.length) / list.length) * 100}%` }} />
+            <div className="h-full rounded-full bg-primary transition-all" style={{ width: `${list.length ? (Math.min(idx, list.length) / list.length) * 100 : 0}%` }} />
           </div>
-          {finished ? (
+          {list.length === 0 ? (
+            <p className="py-10 text-center text-muted-foreground">Aucune question pour cette combinaison de filtres.</p>
+          ) : finished ? (
             <div className="py-10 text-center">
               <Trophy className="mx-auto h-14 w-14 text-tint-amber-fg" />
               <h2 className="mt-4 text-2xl font-bold text-navy">Série terminée !</h2>
@@ -91,38 +109,38 @@ function Exercices() {
           ) : q && (
             <div className="mt-6">
               <div className="flex flex-wrap items-center gap-2 text-xs font-semibold">
-                <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">{q.type}</span>
-                <span className="rounded-full bg-muted px-3 py-1">{q.level}</span>
-                <span className="rounded-full bg-muted px-3 py-1">{q.category}</span>
+                <span className="rounded-full bg-secondary px-3 py-1 text-secondary-foreground">QCM</span>
+                <span className={`rounded-full px-3 py-1 ${niveauBadge[niveauInfo?.couleur ?? ""] ?? "bg-muted"}`}>{niveauInfo?.label ?? q.niveau}</span>
+                <span className="rounded-full bg-muted px-3 py-1">{categorieTitre(q.categorie)}</span>
                 <span className="ml-auto text-muted-foreground">Question {idx + 1} / {list.length}</span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">Consigne : choisissez la bonne réponse puis validez.</p>
               <h2 className="mt-4 text-xl font-bold text-navy md:text-2xl">{q.question}</h2>
               <div className="mt-5 grid gap-3">
                 {q.options.map((o, i) => {
-                  const state = checked ? (i === q.answer ? "border-success bg-tint-green" : i === selected ? "border-destructive bg-tint-rose" : "border-border") : i === selected ? "border-primary bg-secondary" : "border-border hover:bg-muted";
+                  const state = checked ? (i === q.reponse ? "border-success bg-tint-green" : i === selected ? "border-destructive bg-tint-rose" : "border-border") : i === selected ? "border-primary bg-secondary" : "border-border hover:bg-muted";
                   return (
                     <button key={o} disabled={checked} onClick={() => setSelected(i)} className={`rounded-xl border-2 p-4 text-left font-medium transition ${state}`}>{o}</button>
                   );
                 })}
               </div>
-              {hint && !checked && <p className="mt-4 flex gap-2 rounded-xl bg-tint-amber p-4 text-sm"><Lightbulb className="h-5 w-5 shrink-0 text-tint-amber-fg" />{q.hint}</p>}
               {checked && (
                 <div className="mt-5 space-y-2 rounded-xl bg-muted p-5 text-sm">
-                  <p className={`flex items-center gap-2 font-bold ${selected === q.answer ? "text-success" : "text-destructive"}`}>
-                    {selected === q.answer ? <><CheckCircle2 className="h-5 w-5" /> Bonne réponse ! +{POINTS} points</> : <><XCircle className="h-5 w-5" /> Réponse incorrecte</>}
+                  <p className={`flex items-center gap-2 font-bold ${selected === q.reponse ? "text-success" : "text-destructive"}`}>
+                    {selected === q.reponse ? <><CheckCircle2 className="h-5 w-5" /> Bonne réponse ! +{POINTS} points</> : <><XCircle className="h-5 w-5" /> Réponse incorrecte</>}
                   </p>
-                  <p><strong>Bonne réponse :</strong> {q.options[q.answer]}</p>
-                  <p><strong>Pourquoi :</strong> {q.explanation}</p>
-                  <p><strong>Erreur fréquente :</strong> {q.commonError}</p>
-                  <p><strong>Pour approfondir :</strong> {q.resource}</p>
+                  <p><strong>Bonne réponse :</strong> {q.options[q.reponse]}</p>
+                  <p><strong>Pourquoi :</strong> {q.explication}</p>
+                  <p className="flex flex-wrap items-center gap-1">
+                    <strong>Pour approfondir :</strong> chapitre {q.chapitre} du
+                    <Link to="/formations/$slug" params={{ slug: q.cours }} className="inline-flex items-center gap-1 font-semibold text-primary hover:underline"><BookOpen className="h-4 w-4" />support de cours</Link>
+                  </p>
                 </div>
               )}
               <div className="mt-6 flex flex-wrap gap-3">
                 {!checked ? (
                   <>
                     <button onClick={validate} disabled={selected === null} className="rounded-full bg-primary px-6 py-3 font-semibold text-primary-foreground disabled:opacity-50">Valider ma réponse</button>
-                    <button onClick={() => setHint(true)} className="inline-flex items-center gap-2 rounded-full bg-secondary px-5 py-3 font-semibold text-secondary-foreground"><Lightbulb className="h-4 w-4" />Indice</button>
                     <button onClick={() => reset(idx + 1)} className="inline-flex items-center gap-2 rounded-full px-5 py-3 font-semibold text-muted-foreground hover:bg-muted"><SkipForward className="h-4 w-4" />Passer la question</button>
                   </>
                 ) : (

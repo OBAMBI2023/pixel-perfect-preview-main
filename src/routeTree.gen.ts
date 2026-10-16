@@ -22,6 +22,7 @@ import { Route as OutilsIaRouteImport } from './routes/outils-ia'
 import { Route as RessourcesRouteImport } from './routes/ressources'
 import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
 import { Route as RejoindreCodeRouteImport } from './routes/rejoindre.$code'
+import { Route as ExercicesARendreIdRouteImport } from './routes/exercices_.a-rendre.$id'
 import { Route as FormateurSeanceGroupeIdRouteImport } from './routes/formateur_.seance.$groupeId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -89,6 +90,11 @@ const RejoindreCodeRoute = RejoindreCodeRouteImport.update({
   path: '/rejoindre/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ExercicesARendreIdRoute = ExercicesARendreIdRouteImport.update({
+  id: '/exercices_/a-rendre/$id',
+  path: '/exercices/a-rendre/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormateurSeanceGroupeIdRoute = FormateurSeanceGroupeIdRouteImport.update({
   id: '/formateur_/seance/$groupeId',
   path: '/formateur/seance/$groupeId',
@@ -109,6 +115,7 @@ export interface FileRoutesByFullPath {
   '/ressources': typeof RessourcesRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
   '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRoutesByTo {
@@ -125,6 +132,7 @@ export interface FileRoutesByTo {
   '/ressources': typeof RessourcesRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
   '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRoutesById {
@@ -142,6 +150,7 @@ export interface FileRoutesById {
   '/ressources': typeof RessourcesRoute
   '/formations_/$slug': typeof FormationsSlugRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/exercices_/a-rendre/$id': typeof ExercicesARendreIdRoute
   '/formateur_/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRouteTypes {
@@ -160,6 +169,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/formations/$slug'
     | '/rejoindre/$code'
+    | '/exercices/a-rendre/$id'
     | '/formateur/seance/$groupeId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -176,6 +186,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/formations/$slug'
     | '/rejoindre/$code'
+    | '/exercices/a-rendre/$id'
     | '/formateur/seance/$groupeId'
   id:
     | '__root__'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/formations_/$slug'
     | '/rejoindre/$code'
+    | '/exercices_/a-rendre/$id'
     | '/formateur_/seance/$groupeId'
   fileRoutesById: FileRoutesById
 }
@@ -209,6 +221,7 @@ export interface RootRouteChildren {
   RessourcesRoute: typeof RessourcesRoute
   FormationsSlugRoute: typeof FormationsSlugRoute
   RejoindreCodeRoute: typeof RejoindreCodeRoute
+  ExercicesARendreIdRoute: typeof ExercicesARendreIdRoute
   FormateurSeanceGroupeIdRoute: typeof FormateurSeanceGroupeIdRoute
 }
 
@@ -305,6 +318,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RejoindreCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/exercices_/a-rendre/$id': {
+      id: '/exercices_/a-rendre/$id'
+      path: '/exercices/a-rendre/$id'
+      fullPath: '/exercices/a-rendre/$id'
+      preLoaderRoute: typeof ExercicesARendreIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formateur_/seance/$groupeId': {
       id: '/formateur_/seance/$groupeId'
       path: '/formateur/seance/$groupeId'
@@ -329,6 +349,7 @@ const rootRouteChildren: RootRouteChildren = {
   RessourcesRoute: RessourcesRoute,
   FormationsSlugRoute: FormationsSlugRoute,
   RejoindreCodeRoute: RejoindreCodeRoute,
+  ExercicesARendreIdRoute: ExercicesARendreIdRoute,
   FormateurSeanceGroupeIdRoute: FormateurSeanceGroupeIdRoute,
 }
 export const routeTree = rootRouteImport

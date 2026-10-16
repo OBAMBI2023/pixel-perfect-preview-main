@@ -63,5 +63,46 @@ export function joursInactif(derniereActivite: string | null, arrivee: string, m
   return jours >= JOURS_INACTIVITE ? jours : null;
 }
 
+/* ───────── Export CSV ───────── */
+
+const champCsv = (v: unknown) => {
+  const s = v === null || v === undefined ? "" : String(v);
+  return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+};
+
+/** Nom de fichier sans accents ni espaces (ex. « Master 1 — 2026 » → « master-1-2026 »). */
+export const slugFichier = (texte: string) =>
+  texte.normalize("NFD").replace(/[^\w]+/g, "-").replace(/^-|-$/g, "").toLowerCase();
+
+/** Télécharge un CSV ; point-virgule et BOM pour une ouverture directe dans Excel en français. */
+export function telechargerCsv(nomFichier: string, lignes: unknown[][]) {
+  const csv = "﻿" + lignes.map((r) => r.map(champCsv).join(";")).join("\r\n");
+  const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = nomFichier;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+/* ───────── Copies à corriger ───────── */
+
+/** Copies des groupes du formateur (la RLS limite aux groupes dont il est formateur), avec le nom de l'apprenant. */
+export function useCopiesFormateur(userId: string) {
+  return useQuery({
+    queryKey: ["copies-formateur", userId],
+    queryFn: async () => {
+      const { data, error } = await getSupabase()!
+        .from("soumissions")
+        .select("*, apprenant:profiles!soumissions_apprenant_id_fkey(nom_complet)")
+        .neq("apprenant_id", userId)
+        .order("soumis_le");
+      if (error) throw error;
+      return data;
+    },
+  });
+}
+export type CopieFormateur = NonNullable<ReturnType<typeof useCopiesFormateur>["data"]>[number];
+
 export const chipClass = (active: boolean) =>
   `rounded-full px-4 py-2 text-sm font-medium transition ${active ? "bg-primary text-primary-foreground" : "bg-card text-foreground shadow-card hover:bg-muted"}`;

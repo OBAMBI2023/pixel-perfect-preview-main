@@ -6,9 +6,24 @@ import { ComparaisonGroupes } from "@/components/espace/ComparaisonGroupes";
 import { DevoirsGroupe } from "@/components/espace/Devoirs";
 import { EnteteGroupe } from "@/components/espace/GestionGroupe";
 import { TableHistorique } from "@/components/espace/TableHistorique";
+import { CopiesACorriger } from "@/components/rendre/CopiesACorriger";
 import { btnPrimary, btnSecondary, formatDate, formatPct, inputClass } from "@/components/espace/styles";
 import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
-import { chipClass, construireFiltres, joursInactif, JOURS_INACTIVITE, PERIODES, rpc, useMembres, type Filtres, type Fn, type PeriodeId } from "@/lib/formateur";
+import {
+  chipClass,
+  construireFiltres,
+  joursInactif,
+  JOURS_INACTIVITE,
+  PERIODES,
+  rpc,
+  slugFichier,
+  telechargerCsv,
+  useCopiesFormateur,
+  useMembres,
+  type Filtres,
+  type Fn,
+  type PeriodeId,
+} from "@/lib/formateur";
 import { infoQuestion, labelNiveau, titreCategorie } from "@/lib/progression";
 import { NIVEAUX, type Niveau } from "@/lib/qcm-comprendre-ia";
 import { getSupabase, type Groupe } from "@/lib/supabase";
@@ -34,6 +49,9 @@ export function EspaceFormateur({ userId }: { userId: string }) {
   const [nom, setNom] = useState("");
   const [cree, setCree] = useState<string | null>(null);
   const [voirArchives, setVoirArchives] = useState(false);
+  const [rubrique, setRubrique] = useState<"suivi" | "copies">("suivi");
+  const copies = useCopiesFormateur(userId);
+  const aCorriger = (copies.data ?? []).filter((c) => c.statut === "soumis").length;
 
   const groupes = useQuery({
     queryKey: ["groupes-formateur", userId],
@@ -86,6 +104,23 @@ export function EspaceFormateur({ userId }: { userId: string }) {
 
   return (
     <div className="space-y-6">
+      <div role="tablist" aria-label="Rubriques de l'espace formateur" className="flex w-fit flex-wrap gap-1 rounded-full bg-muted p-1">
+        {([["suivi", "Suivi des groupes"], ["copies", "Copies à corriger"]] as const).map(([id, label]) => (
+          <button
+            key={id}
+            role="tab"
+            aria-selected={rubrique === id}
+            onClick={() => setRubrique(id)}
+            className={`inline-flex items-center gap-2 rounded-full px-5 py-2 text-sm font-semibold transition ${rubrique === id ? "bg-card text-navy shadow-card" : "text-muted-foreground hover:text-foreground"}`}
+          >
+            {label}
+            {id === "copies" && aCorriger > 0 && (
+              <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground" aria-label={`${aCorriger} en attente`}>{aCorriger}</span>
+            )}
+          </button>
+        ))}
+      </div>
+      {rubrique === "copies" ? <CopiesACorriger userId={userId} groupes={groupes.data ?? []} /> : <>
       <Carte titre={<span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Mes groupes</span>}>
         <div className="flex flex-wrap gap-2">
           {actifs.map((g) => (
@@ -127,6 +162,7 @@ export function EspaceFormateur({ userId }: { userId: string }) {
 
       {comparer && <ComparaisonGroupes groupes={actifs} />}
       {groupe && <TableauGroupe key={groupe.id} groupe={groupe} />}
+      </>}
     </div>
   );
 }
@@ -500,11 +536,6 @@ function QuestionsRatees({ lignes, chargement }: { lignes: Fn["questions_ratees"
 
 /* ───────────────────────── Export CSV ───────────────────────── */
 
-const champCsv = (v: unknown) => {
-  const s = v === null || v === undefined ? "" : String(v);
-  return /[";\n\r]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
-};
-
 function ExportCsv({ groupe, filtres }: { groupe: Groupe; filtres: Filtres }) {
   const [enCours, setEnCours] = useState(false);
   const [erreur, setErreur] = useState(false);
@@ -524,14 +555,7 @@ function ExportCsv({ groupe, filtres }: { groupe: Groupe; filtres: Filtres }) {
         l.total,
         Math.round((100 * l.score) / l.total),
       ]);
-      // Point-virgule et BOM : ouverture directe dans Excel en français.
-      const csv = "﻿" + [entete, ...corps].map((r) => r.map(champCsv).join(";")).join("\r\n");
-      const url = URL.createObjectURL(new Blob([csv], { type: "text/csv;charset=utf-8" }));
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `resultats-${groupe.nom.normalize("NFD").replace(/[^\w]+/g, "-").replace(/^-|-$/g, "").toLowerCase()}-${new Date().toISOString().slice(0, 10)}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
+      telechargerCsv(`resultats-${slugFichier(groupe.nom)}-${new Date().toISOString().slice(0, 10)}.csv`, [entete, ...corps]);
     } catch {
       setErreur(true);
     } finally {

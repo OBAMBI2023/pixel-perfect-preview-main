@@ -51,6 +51,26 @@ export type Devoir = {
   created_at: string;
 };
 
+export type StatutSoumission = "soumis" | "corrige" | "a_refaire";
+/** Copie d'un exercice à rendre ; note / commentaire / statut ne changent que via corriger_soumission. */
+export type Soumission = {
+  id: string;
+  exercice_id: string;
+  apprenant_id: string;
+  groupe_id: string;
+  contenu: string;
+  statut: StatutSoumission;
+  note: number | null;
+  note_sur: number;
+  commentaire: string | null;
+  corrige_par: string | null;
+  corrige_le: string | null;
+  consulte_le: string | null;
+  soumis_le: string;
+  created_at: string;
+  updated_at: string;
+};
+
 /** Tentative à enregistrer via la RPC enregistrer_tentatives. */
 export type NouvelleTentative = {
   cours: string;
@@ -109,6 +129,23 @@ export type Database = {
           { foreignKeyName: "devoirs_groupe_id_fkey"; columns: ["groupe_id"]; isOneToOne: false; referencedRelation: "groupes"; referencedColumns: ["id"] },
         ];
       };
+      exercices_a_rendre: {
+        Row: { id: string; note_sur: number };
+        Insert: never;
+        Update: never;
+        Relationships: [];
+      };
+      soumissions: {
+        Row: Soumission;
+        Insert: { exercice_id: string; groupe_id: string; contenu: string };
+        Update: { contenu?: string };
+        Relationships: [
+          { foreignKeyName: "soumissions_apprenant_id_fkey"; columns: ["apprenant_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "soumissions_corrige_par_fkey"; columns: ["corrige_par"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "soumissions_groupe_id_fkey"; columns: ["groupe_id"]; isOneToOne: false; referencedRelation: "groupes"; referencedColumns: ["id"] },
+          { foreignKeyName: "soumissions_exercice_id_fkey"; columns: ["exercice_id"]; isOneToOne: false; referencedRelation: "exercices_a_rendre"; referencedColumns: ["id"] },
+        ];
+      };
       reponses: {
         Row: Reponse;
         Insert: Omit<Reponse, "id" | "created_at"> & { id?: string; created_at?: string };
@@ -163,6 +200,8 @@ export type Database = {
         }[];
       };
       mes_devoirs: { Args: Record<string, never>; Returns: (Devoir & { groupe_nom: string; nb_questions: number; fait: boolean })[] };
+      corriger_soumission: { Args: { p_id: string; p_note: number | null; p_commentaire: string; p_statut: "corrige" | "a_refaire" }; Returns: Soumission };
+      marquer_copie_consultee: { Args: { p_id: string }; Returns: undefined };
       activite_membres: { Args: { p_groupe: string }; Returns: { apprenant_id: string; joined_at: string; derniere_activite: string | null }[] };
     };
     Enums: { [_ in never]: never };

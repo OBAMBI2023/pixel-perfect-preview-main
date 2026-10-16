@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { BookOpen, CheckCircle2, SkipForward, Target, Trophy, XCircle, Award, Flame } from "lucide-react";
 import { ExercicesPratiques } from "@/components/ExercicesPratiques";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
+import { ListeARendre } from "@/components/rendre/ListeARendre";
 import { useAuth } from "@/lib/auth";
 import { challenges } from "@/lib/content";
 import { CLE_QCM, enregistrerTentatives } from "@/lib/progression";
@@ -10,10 +11,11 @@ import { CATEGORIES, NIVEAUX, filtrerQuestions, questionsComprendreIA as questio
 import type { TypeTentative } from "@/lib/supabase";
 
 /** Filtres de départ passés dans l'URL (bouton « Commencer » d'un travail assigné). */
-type RechercheExercices = { type?: TypeTentative; categorie?: string; niveau?: Niveau };
+type RechercheExercices = { onglet?: "a-rendre"; type?: TypeTentative; categorie?: string; niveau?: Niveau };
 
 export const Route = createFileRoute("/exercices")({
   validateSearch: (s: Record<string, unknown>): RechercheExercices => ({
+    ...(s["onglet"] === "a-rendre" && { onglet: "a-rendre" as const }),
     ...((s["type"] === "qcm" || s["type"] === "exercice") && { type: s["type"] }),
     ...(CATEGORIES.some((c) => c.id === s["categorie"]) && { categorie: s["categorie"] as string }),
     ...(NIVEAUX.some((n) => n.id === s["niveau"]) && { niveau: s["niveau"] as Niveau }),
@@ -89,6 +91,24 @@ function Exercices() {
     <SiteLayout>
       <PageHero badge="Espace exercices" title="Apprendre en pratiquant" description="Testez vos connaissances, réalisez des défis pratiques et développez vos compétences en intelligence artificielle." />
       <div className="mx-auto max-w-7xl px-4 py-10 md:px-8">
+        <div role="tablist" aria-label="Type d'exercices" className="mb-8 flex w-fit gap-1 rounded-full bg-muted p-1">
+          {([[undefined, "S'entraîner"], ["a-rendre", "À rendre"]] as const).map(([id, label]) => {
+            const actif = recherche.onglet === id;
+            return (
+              <Link
+                key={label}
+                to="/exercices"
+                search={id ? { onglet: id } : {}}
+                role="tab"
+                aria-selected={actif}
+                className={`rounded-full px-5 py-2 text-sm font-semibold transition ${actif ? "bg-card text-navy shadow-card" : "text-muted-foreground hover:text-foreground"}`}
+              >
+                {label}
+              </Link>
+            );
+          })}
+        </div>
+        {recherche.onglet === "a-rendre" ? <ListeARendre /> : <>
         <BandeauProgression />
         <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
           {stats.map(({ icon: Icon, label, value }) => (
@@ -186,6 +206,7 @@ function Exercices() {
             </div>
           ))}
         </div>
+        </>}
       </div>
     </SiteLayout>
   );

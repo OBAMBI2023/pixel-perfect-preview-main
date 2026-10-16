@@ -4,12 +4,14 @@ import { CheckCircle2, ClipboardList, History, LogIn, Play, UserPlus, Users } fr
 import { useState, type FormEvent } from "react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { BadgesDevoir, Echeance, EtatDevoir } from "@/components/espace/Devoirs";
+import { CopiesCorrigees } from "@/components/rendre/CopiesCorrigees";
 import { TableHistorique } from "@/components/espace/TableHistorique";
 import { btnPrimary, btnSecondary, formatDate, inputClass } from "@/components/espace/styles";
 import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
 import { useAuth } from "@/lib/auth";
 import { SEUIL_DEVOIR_QCM } from "@/lib/formateur";
 import { erreurRejoindre } from "@/lib/invitation";
+import { useMesGroupes } from "@/lib/soumissions";
 import { labelNiveau, titreCategorie } from "@/lib/progression";
 import { NIVEAUX } from "@/lib/qcm-comprendre-ia";
 import { getSupabase } from "@/lib/supabase";
@@ -62,14 +64,7 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
   const sb = getSupabase()!;
   const qc = useQueryClient();
 
-  const groupes = useQuery({
-    queryKey: ["mes-groupes", userId],
-    queryFn: async () => {
-      const { data, error } = await sb.from("membres_groupe").select("joined_at, groupe:groupes(id, nom)").eq("apprenant_id", userId).order("joined_at");
-      if (error) throw error;
-      return data;
-    },
-  });
+  const groupes = useMesGroupes(userId);
   const progression = useQuery({
     queryKey: ["progression", userId],
     queryFn: async () => {
@@ -127,6 +122,7 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
       </div>
 
       <AFaire userId={userId} />
+      <CopiesCorrigees userId={userId} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <Carte titre={<span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Mes groupes</span>}>

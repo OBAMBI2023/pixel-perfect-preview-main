@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, CalendarClock, CheckCircle2, Pencil, Target, Trophy, UserRound } from "lucide-react";
+import { ArrowRight, CalendarClock, CheckCircle2, MessageSquare, Pencil, Target, Trophy, UserRound } from "lucide-react";
 import type { ReactNode } from "react";
 import { PageParticipant } from "@/components/espace/EspaceParticipant";
 import { btnPrimary, formatDate, formatJour } from "@/components/espace/styles";
@@ -10,12 +10,14 @@ import { exerciceARendre } from "@/data/exercices-a-rendre";
 import { etapesFaites, NB_ETAPES_ACCUEIL, useAccueil } from "@/lib/accueil";
 import { articlePertinence } from "@/data/articles-pertinence";
 import { useAnalysesPertinence } from "@/lib/pertinence";
+import { useMesRetours } from "@/lib/suivi";
+import { articlePertinence as titreArticle } from "@/data/articles-pertinence";
 import { labelNiveau } from "@/lib/progression";
 import { NIVEAUX } from "@/lib/qcm-comprendre-ia";
 import { useProgressionChapitres } from "@/lib/progression-chapitres";
 import { EXERCICES_RECHERCHE, labelNiveauEtudes, useProfilChercheur, useTravauxRecherche } from "@/lib/recherche";
 import { formatNote, LIBELLES_STATUT, useMesSoumissions } from "@/lib/soumissions";
-import { getSupabase } from "@/lib/supabase";
+import { getSupabase, type ExerciceRecherche } from "@/lib/supabase";
 
 export const Route = createFileRoute("/espace-recherche")({
   head: () => ({
@@ -39,6 +41,7 @@ function EspaceRecherche({ userId }: { userId: string }) {
   const copies = useMesSoumissions(userId);
   const accueil = useAccueil(userId);
   const analyses = useAnalysesPertinence(userId);
+  const retours = useMesRetours(userId);
   const lecons = useProgressionChapitres();
   const progression = useQuery({
     queryKey: ["progression", userId],
@@ -89,6 +92,16 @@ function EspaceRecherche({ userId }: { userId: string }) {
       cle: `copie-${c.id}`,
       texte: <>Copie à refaire : <strong>{exerciceARendre(c.exercice_id)?.titre ?? c.exercice_id}</strong></>,
       lien: <Link to="/exercices/a-rendre/$id" params={{ id: c.exercice_id }} className="text-sm font-semibold text-primary hover:underline">Reprendre</Link>,
+    });
+  }
+  // Travaux que le formateur demande de reprendre (et pas encore modifiés depuis).
+  for (const r of (retours.data ?? []).filter((x) => x.statut === "a_refaire")) {
+    const t = r.objet === "travail_recherche" ? travaux.data?.get(r.objet_id as ExerciceRecherche) : (analyses.data ?? []).find((a) => a.article_id === r.objet_id);
+    if (t && t.updated_at > r.updated_at) continue;
+    prochaines.push({
+      cle: `retour-${r.id}`,
+      texte: <>À reprendre (demande du formateur) : <strong>{titreRetour(r.objet, r.objet_id, analyses.data ?? [])}</strong></>,
+      lien: lienRetour(r.objet, r.objet_id, "Reprendre"),
     });
   }
   if (accueil.isSuccess && etapesFaites(accueil.data).length < NB_ETAPES_ACCUEIL) {
@@ -166,6 +179,27 @@ function EspaceRecherche({ userId }: { userId: string }) {
           )}
         </Carte>
       </div>
+
+      {(retours.data?.length ?? 0) > 0 && (
+        <Carte titre={<span className="flex items-center gap-2"><MessageSquare className="h-5 w-5 text-primary" /> Retours de mon formateur</span>}>
+          <ul className="divide-y text-sm">
+            {retours.data!.map((r) => (
+              <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 py-2.5">
+                <span className="min-w-0">
+                  <span className="font-medium">{titreRetour(r.objet, r.objet_id, analyses.data ?? [])}</span>
+                  {!r.consulte_le && <span className="ml-2 rounded-full bg-primary px-2 py-0.5 text-xs font-semibold text-primary-foreground">Nouveau</span>}
+                  <span className="block text-xs text-muted-foreground">
+                    {r.statut === "corrige" ? "Corrigé" : "À reprendre"}
+                    {r.note !== null && r.note_sur !== null && ` · ${formatNote(r.note)} / ${formatNote(r.note_sur)}`} · le {formatDate(r.updated_at)}
+                  </span>
+                </span>
+                {lienRetour(r.objet, r.objet_id, "Voir le retour")}
+              </li>
+            ))}
+          </ul>
+          <p className="mt-2 text-xs text-muted-foreground">Les corrections de tes exercices à rendre sont dans « Ma progression » et sur la page de chaque exercice.</p>
+        </Carte>
+      )}
 
       <section aria-labelledby="scores-titre" className="space-y-4">
         <h2 id="scores-titre" className="flex items-center gap-2 text-2xl font-bold text-navy"><Trophy className="h-6 w-6 text-primary" /> Mes scores</h2>
@@ -259,6 +293,19 @@ function EspaceRecherche({ userId }: { userId: string }) {
       </Carte>
     </>
   );
+}
+
+/** Titre lisible du travail visé par un retour du formateur. */
+function titreRetour(objet: string, id: string, analyses: { article_id: string; article: Record<string, unknown> | null }[]) {
+  if (objet === "travail_recherche") return EXERCICES_RECHERCHE.find((e) => e.id === id)?.titre ?? id;
+  const perso = analyses.find((a) => a.article_id === id)?.article?.["titre"];
+  return `Pertinence : « ${titreArticle(id)?.titre ?? (typeof perso === "string" ? perso : "article")} »`;
+}
+
+function lienRetour(objet: string, id: string, texte: string) {
+  const cls = "text-sm font-semibold text-primary hover:underline";
+  if (objet === "travail_recherche") return <Link to="/mes-exercices" search={{ exercice: id as ExerciceRecherche }} className={cls}>{texte}</Link>;
+  return <Link to="/mes-exercices/pertinence" search={titreArticle(id) ? { mode: "corrige", article: id } : { mode: "mon-sujet" }} className={cls}>{texte}</Link>;
 }
 
 function Ligne({ terme, children }: { terme: string; children: ReactNode }) {

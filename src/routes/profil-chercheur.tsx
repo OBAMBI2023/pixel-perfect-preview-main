@@ -130,7 +130,7 @@ function FormulaireProfil({ userId }: { userId: string }) {
       <div className="space-y-6">
         <Carte titre={<span className="flex items-center gap-2"><Lock className="h-5 w-5 text-primary" /> Confidentialité</span>}>
           <p className="text-sm text-muted-foreground">
-            Ton profil chercheur et tes exercices personnalisés ne sont visibles que par toi. Ni les autres participants ni le formateur n'y ont accès.
+            Toi seul peux modifier ton profil chercheur et tes exercices personnalisés. Ils sont visibles uniquement par toi et par le formateur des groupes que tu as rejoints, pour suivre ton travail et te faire des retours. Les autres participants n'y ont jamais accès.
           </p>
         </Carte>
         {profil.data && (

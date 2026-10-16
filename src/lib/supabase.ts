@@ -63,6 +63,8 @@ export type Soumission = {
   note: number | null;
   note_sur: number;
   commentaire: string | null;
+  points_acquis: string | null;
+  points_a_ameliorer: string | null;
   corrige_par: string | null;
   corrige_le: string | null;
   consulte_le: string | null;
@@ -110,7 +112,7 @@ export type AccueilParticipant = {
 };
 
 export type NiveauEtudes = "licence" | "master" | "doctorat" | "postdoc" | "enseignant" | "autre";
-/** Profil chercheur : privé, lu et modifié uniquement par son propriétaire (RLS). */
+/** Profil chercheur : modifié par son seul propriétaire, lu aussi par le formateur de ses groupes (RLS). */
 export type ProfilChercheur = {
   user_id: string;
   discipline: string;
@@ -147,6 +149,25 @@ export type AnalysePertinence = {
   premier_score: number | null;
   tentative_id: string | null;
   nb_analyses: number;
+  created_at: string;
+  updated_at: string;
+};
+
+/** Retour du formateur sur un exercice personnalisé ou une analyse d'article ; écrit via enregistrer_retour. */
+export type ObjetRetour = "travail_recherche" | "analyse_pertinence";
+export type RetourFormateur = {
+  id: string;
+  apprenant_id: string;
+  formateur_id: string;
+  objet: ObjetRetour;
+  objet_id: string;
+  statut: "corrige" | "a_refaire";
+  note: number | null;
+  note_sur: number | null;
+  appreciation: string | null;
+  points_acquis: string | null;
+  points_a_ameliorer: string | null;
+  consulte_le: string | null;
   created_at: string;
   updated_at: string;
 };
@@ -276,6 +297,15 @@ export type Database = {
           { foreignKeyName: "analyses_pertinence_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
+      retours_formateur: {
+        Row: RetourFormateur;
+        Insert: never;
+        Update: never;
+        Relationships: [
+          { foreignKeyName: "retours_formateur_apprenant_id_fkey"; columns: ["apprenant_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+          { foreignKeyName: "retours_formateur_formateur_id_fkey"; columns: ["formateur_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
       reponses: {
         Row: Reponse;
         Insert: Omit<Reponse, "id" | "created_at"> & { id?: string; created_at?: string };
@@ -340,6 +370,25 @@ export type Database = {
         Args: { p_article: string; p_mode: "corrige" | "mon-sujet"; p_sujet: string; p_article_info: Record<string, unknown> | null; p_analyse: Record<string, unknown>; p_score: number | null };
         Returns: AnalysePertinence;
       };
+      corriger_soumission_detaillee: {
+        Args: { p_id: string; p_note: number | null; p_commentaire: string; p_statut: "corrige" | "a_refaire"; p_points_acquis: string; p_points_a_ameliorer: string };
+        Returns: Soumission;
+      };
+      enregistrer_retour: {
+        Args: {
+          p_apprenant: string;
+          p_objet: ObjetRetour;
+          p_objet_id: string;
+          p_note: number | null;
+          p_note_sur: number | null;
+          p_appreciation: string;
+          p_points_acquis: string;
+          p_points_a_ameliorer: string;
+          p_statut: "corrige" | "a_refaire";
+        };
+        Returns: RetourFormateur;
+      };
+      marquer_retour_consulte: { Args: { p_id: string }; Returns: undefined };
       activite_membres: { Args: { p_groupe: string }; Returns: { apprenant_id: string; joined_at: string; derniere_activite: string | null }[] };
     };
     Enums: { [_ in never]: never };

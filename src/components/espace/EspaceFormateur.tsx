@@ -7,6 +7,7 @@ import { DevoirsGroupe } from "@/components/espace/Devoirs";
 import { EnteteGroupe } from "@/components/espace/GestionGroupe";
 import { TableHistorique } from "@/components/espace/TableHistorique";
 import { PresenterCours } from "@/components/espace/PresenterCours";
+import { SuiviApprenants } from "@/components/espace/SuiviApprenants";
 import { CopiesACorriger } from "@/components/rendre/CopiesACorriger";
 import { btnPrimary, btnSecondary, formatDate, formatPct, inputClass } from "@/components/espace/styles";
 import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
@@ -50,7 +51,7 @@ export function EspaceFormateur({ userId }: { userId: string }) {
   const [nom, setNom] = useState("");
   const [cree, setCree] = useState<string | null>(null);
   const [voirArchives, setVoirArchives] = useState(false);
-  const [rubrique, setRubrique] = useState<"suivi" | "copies" | "presenter">("suivi");
+  const [rubrique, setRubrique] = useState<"suivi" | "apprenants" | "copies" | "presenter">("suivi");
   const copies = useCopiesFormateur(userId);
   const aCorriger = (copies.data ?? []).filter((c) => c.statut === "soumis").length;
 
@@ -106,7 +107,7 @@ export function EspaceFormateur({ userId }: { userId: string }) {
   return (
     <div className="space-y-6">
       <div role="tablist" aria-label="Rubriques de l'espace formateur" className="flex w-fit flex-wrap gap-1 rounded-full bg-muted p-1">
-        {([["suivi", "Suivi des groupes"], ["copies", "Copies à corriger"], ["presenter", "Présenter le cours"]] as const).map(([id, label]) => (
+        {([["suivi", "Suivi des groupes"], ["apprenants", "Suivi des apprenants"], ["copies", "Copies à corriger"], ["presenter", "Présenter le cours"]] as const).map(([id, label]) => (
           <button
             key={id}
             role="tab"
@@ -121,7 +122,7 @@ export function EspaceFormateur({ userId }: { userId: string }) {
           </button>
         ))}
       </div>
-      {rubrique === "presenter" ? <PresenterCours userId={userId} groupes={groupes.data ?? []} /> : rubrique === "copies" ? <CopiesACorriger userId={userId} groupes={groupes.data ?? []} /> : <>
+      {rubrique === "apprenants" ? (groupes.isLoading ? <p className="text-muted-foreground">Chargement…</p> : <SuiviApprenants userId={userId} groupes={groupes.data ?? []} />) : rubrique === "presenter" ? <PresenterCours userId={userId} groupes={groupes.data ?? []} /> : rubrique === "copies" ? <CopiesACorriger userId={userId} groupes={groupes.data ?? []} /> : <>
       <Carte titre={<span className="flex items-center gap-2"><Users className="h-5 w-5 text-primary" /> Mes groupes</span>}>
         <div className="flex flex-wrap gap-2">
           {actifs.map((g) => (

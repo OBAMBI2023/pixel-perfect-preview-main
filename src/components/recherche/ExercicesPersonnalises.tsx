@@ -2,6 +2,8 @@ import { CheckCircle2, ExternalLink, Plus, RotateCcw, Save, Search, ShieldCheck,
 import { useState, type ReactNode } from "react";
 import { btnPrimary, btnSecondary, formatDateHeure, inputClass } from "@/components/espace/styles";
 import { Carte, Message } from "@/components/espace/ui";
+import { CarteRetour } from "@/components/espace/RetourFormateur";
+import { useMesRetours } from "@/lib/suivi";
 import {
   construireEquation,
   EXERCICES_RECHERCHE,
@@ -60,6 +62,7 @@ function Cadre({
 }) {
   const enregistrer = useEnregistrerTravail(props.userId);
   const travail = props.travaux.get(exercice);
+  const retour = useMesRetours(props.userId).data?.find((r) => r.objet === "travail_recherche" && r.objet_id === exercice);
   const [action, setAction] = useState<"enregistrer" | "terminer" | "rouvrir" | null>(null);
   const meta = EXERCICES_RECHERCHE.find((e) => e.id === exercice)!;
 
@@ -81,6 +84,7 @@ function Cadre({
           {travail && travail.sujet !== props.profil.sujet && <> · ce travail a été commencé sur un ancien sujet : « {travail.sujet} »</>}
         </p>
       </div>
+      {retour && travail && <div className="mt-4"><CarteRetour userId={props.userId} retour={retour} perime={travail.updated_at > retour.updated_at} /></div>}
       <div className="mt-4 text-sm">{consigne}</div>
       <div className="mt-5 space-y-5">{children}</div>
 

@@ -3,10 +3,12 @@ import { ArrowLeft, CheckCircle2, ClipboardCheck, Shuffle, UserRound } from "luc
 import { PageParticipant } from "@/components/espace/EspaceParticipant";
 import { btnSecondary, formatDate } from "@/components/espace/styles";
 import { Carte, Message } from "@/components/espace/ui";
+import { CarteRetour } from "@/components/espace/RetourFormateur";
 import { ParcoursCorrige, ParcoursMonSujet } from "@/components/recherche/ExercicePertinence";
 import { ARTICLES, articlePertinence, scenarioPertinence } from "@/data/articles-pertinence";
 import { DECISIONS, useAnalysesPertinence } from "@/lib/pertinence";
 import { useProfilChercheur } from "@/lib/recherche";
+import { useMesRetours } from "@/lib/suivi";
 
 type Mode = "corrige" | "mon-sujet";
 type Recherche = { mode?: Mode; article?: string };
@@ -40,6 +42,7 @@ function Pertinence({ userId }: { userId: string }) {
   const navigate = useNavigate({ from: "/mes-exercices/pertinence" });
   const profil = useProfilChercheur(userId);
   const analyses = useAnalysesPertinence(userId);
+  const retours = useMesRetours(userId);
   const parArticle = new Map((analyses.data ?? []).map((a) => [a.article_id, a]));
   const sujetProfil = profil.data?.sujet ?? null;
 
@@ -135,6 +138,10 @@ function Pertinence({ userId }: { userId: string }) {
                       <span className="text-muted-foreground">Non noté</span>
                     )}
                   </span>
+                  {(() => {
+                    const r = retours.data?.find((x) => x.objet === "analyse_pertinence" && x.objet_id === a.article_id);
+                    return r ? <div className="w-full"><CarteRetour userId={userId} retour={r} perime={a.updated_at > r.updated_at} /></div> : null;
+                  })()}
                 </li>
               );
             })}

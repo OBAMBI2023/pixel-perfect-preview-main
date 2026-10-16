@@ -6,6 +6,7 @@ import { SiteLayout } from "@/components/SiteLayout";
 import { Confirmer } from "@/components/espace/Confirmer";
 import { btnPrimary, btnSecondary, formatDate, formatDateHeure } from "@/components/espace/styles";
 import { Carte, Message } from "@/components/espace/ui";
+import { PointsRetour } from "@/components/espace/RetourFormateur";
 import { Bareme, BadgeCopie, BadgesExercice, LienChapitre } from "@/components/rendre/communs";
 import { exerciceARendre, type ExerciceARendre } from "@/data/exercices-a-rendre";
 import { useAuth } from "@/lib/auth";
@@ -201,6 +202,7 @@ function Resultat({ exo, copie }: { exo: ExerciceARendre; copie: Soumission }) {
           <p className="mt-2 whitespace-pre-wrap text-sm leading-relaxed">{copie.commentaire}</p>
         </div>
       )}
+      <PointsRetour acquis={copie.points_acquis} ameliorer={copie.points_a_ameliorer} />
       {!corrige && <p className="mt-4 text-sm font-medium">Modifie ta réponse ci-dessous en tenant compte du commentaire, puis renvoie-la.</p>}
       {corrige && (
         <>

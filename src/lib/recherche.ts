@@ -10,7 +10,7 @@ import {
 
 /**
  * Profil chercheur et exercices personnalisés (tables profils_chercheur et travaux_recherche).
- * Tout est privé : la RLS limite lecture et écriture au participant connecté.
+ * Écriture réservée au participant ; lecture par lui et par le formateur de ses groupes (RLS, est_formateur_de).
  */
 
 export const NIVEAUX_ETUDES: { id: NiveauEtudes; label: string }[] = [

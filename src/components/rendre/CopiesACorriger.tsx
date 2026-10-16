@@ -150,6 +150,11 @@ export function CopiesACorriger({ userId, groupes }: { userId: string; groupes: 
 
 /* ───────── Correction ───────── */
 
+/** Écran de correction d'une copie (aussi utilisé depuis la fiche de suivi d'un apprenant). */
+export function CorrectionCopie(props: Parameters<typeof Correction>[0]) {
+  return <Correction {...props} />;
+}
+
 function Correction({ userId, copie, exo, nomGroupe, position, onSuivante, onRetour }: {
   userId: string;
   copie: CopieFormateur;
@@ -163,6 +168,8 @@ function Correction({ userId, copie, exo, nomGroupe, position, onSuivante, onRet
   // Note par critère (texte saisi) ; seule la note totale est enregistrée.
   const [points, setPoints] = useState<string[]>(() => exo.bareme.map(() => ""));
   const [commentaire, setCommentaire] = useState(copie.commentaire ?? "");
+  const [acquis, setAcquis] = useState(copie.points_acquis ?? "");
+  const [ameliorer, setAmeliorer] = useState(copie.points_a_ameliorer ?? "");
   const [perso, setPerso] = useState(() => lireCommentairesPerso(userId));
   const [fait, setFait] = useState<StatutSoumission | null>(null);
 
@@ -174,10 +181,18 @@ function Correction({ userId, copie, exo, nomGroupe, position, onSuivante, onRet
 
   const corriger = useMutation({
     mutationFn: (statut: "corrige" | "a_refaire") =>
-      rpc("corriger_soumission", { p_id: copie.id, p_note: saisie ? total : null, p_commentaire: commentaire, p_statut: statut }),
+      rpc("corriger_soumission_detaillee", {
+        p_id: copie.id,
+        p_note: saisie ? total : null,
+        p_commentaire: commentaire,
+        p_statut: statut,
+        p_points_acquis: acquis,
+        p_points_a_ameliorer: ameliorer,
+      }),
     onSuccess: (_, statut) => {
       setFait(statut);
       void qc.invalidateQueries({ queryKey: ["copies-formateur"] });
+      void qc.invalidateQueries({ queryKey: ["suivi-apprenants"] });
     },
   });
 
@@ -268,6 +283,16 @@ function Correction({ userId, copie, exo, nomGroupe, position, onSuivante, onRet
             placeholder="Ce qui est réussi, ce qui manque, comment progresser…"
             className={`${inputClass} mt-2 leading-relaxed`}
           />
+          <div className="mt-4 grid gap-3 sm:grid-cols-2">
+            <label className="block text-sm font-semibold text-navy">
+              Points acquis
+              <textarea value={acquis} onChange={(e) => { setAcquis(e.target.value); setFait(null); }} rows={3} maxLength={2000} className={`${inputClass} mt-1 font-normal`} />
+            </label>
+            <label className="block text-sm font-semibold text-navy">
+              Points à améliorer
+              <textarea value={ameliorer} onChange={(e) => { setAmeliorer(e.target.value); setFait(null); }} rows={3} maxLength={2000} className={`${inputClass} mt-1 font-normal`} />
+            </label>
+          </div>
           <div className="mt-3">
             <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Commentaires rapides</p>
             <div className="mt-2 flex flex-wrap gap-2">
@@ -295,14 +320,14 @@ function Correction({ userId, copie, exo, nomGroupe, position, onSuivante, onRet
             <button onClick={() => corriger.mutate("corrige")} disabled={!complet || corriger.isPending} className={btnPrimary}>
               <CheckCircle2 className="h-4 w-4" /> Valider la correction
             </button>
-            <button onClick={() => corriger.mutate("a_refaire")} disabled={!commentaire.trim() || invalides.some(Boolean) || corriger.isPending} className={btnSecondary}>
+            <button onClick={() => corriger.mutate("a_refaire")} disabled={!(commentaire.trim() || ameliorer.trim()) || invalides.some(Boolean) || corriger.isPending} className={btnSecondary}>
               <RotateCcw className="h-4 w-4" /> Demander à refaire
             </button>
             <button onClick={onSuivante} disabled={!onSuivante} className="inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-primary hover:bg-muted disabled:opacity-50">
               Copie suivante <ArrowRight className="h-4 w-4" />
             </button>
           </div>
-          {!complet && !invalides.some(Boolean) && <p className="mt-2 text-xs text-muted-foreground">Note chaque critère pour valider. « Demander à refaire » demande un commentaire.</p>}
+          {!complet && !invalides.some(Boolean) && <p className="mt-2 text-xs text-muted-foreground">Note chaque critère pour valider. « Demander à refaire » demande un commentaire ou des points à améliorer.</p>}
           <div className="mt-3">
             {corriger.isError && <Message ton="erreur">{corriger.error.message}</Message>}
             {fait && <Message ton="succes">{fait === "corrige" ? "Correction enregistrée : l'apprenant voit sa note." : "Copie renvoyée à l'apprenant pour être refaite."}</Message>}

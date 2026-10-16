@@ -1,5 +1,5 @@
 {
-  "ordre": ["2-1", "2-2", "2-3", "2-4", "2-5", "3-1", "3-2", "3-5", "4-1", "4-2", "4-4", "5-1", "5-2", "5-4", "6-1", "6-2", "6-3", "6-4", "6-5"],
+  "ordre": ["2-1", "2-2", "2-3", "2-4", "2-5", "3-1", "3-2", "3-5", "4-1", "4-2", "4-4", "5-1", "5-2", "5-4", "6-1", "6-2", "6-3", "6-4", "6-5", "6-6", "7-1", "7-3", "8-1", "8-2", "8-4", "9-1", "9-3", "10"],
   "chapitres": [
     {
       "id": "2-1",
@@ -803,6 +803,413 @@
         "L'IA aide à préparer la recherche : mots-clés, traductions, pistes, explications, comparaisons.",
         "Un bon prompt interdit d'inventer des références et sépare suggestions et publications vérifiées.",
         "Toute publication suggérée est retrouvée et vérifiée dans les bases ou chez l'éditeur."
+      ]
+    },
+    {
+      "id": "6-6",
+      "numero": "6.6",
+      "titre": "Les outils d'IA dédiés à la recherche documentaire",
+      "categorie": "recherche-documentaire",
+      "dureeMin": 7,
+      "objectifs": [
+        "Connaître des outils d'IA spécialisés dans la recherche documentaire.",
+        "Associer à chaque outil la précaution à prendre."
+      ],
+      "enBref": "Au-delà des assistants généralistes, des outils spécialisés s'appuient sur des bases de publications pour assister l'exploration. Quel que soit l'outil, aucune référence n'est retenue sans vérification à la source.",
+      "infographie": {
+        "type": "matrix",
+        "titre": "Outils, usages et précautions",
+        "legende": "D'après le tableau 13 du manuel. Touche une ligne pour la mettre en évidence.",
+        "colonnes": ["Outil", "Usage principal", "Précaution"],
+        "lignes": [
+          { "id": "elicit", "label": "Elicit", "cellules": ["Rechercher des articles et en extraire des informations", "Contrôler chaque donnée dans l'article source"] },
+          { "id": "consensus", "label": "Consensus", "cellules": ["Obtenir des éléments de réponse à partir d'études publiées", "Lire les études citées, ne pas se limiter à la synthèse"] },
+          { "id": "scite", "label": "Scite", "cellules": ["Voir comment un article est cité (soutien ou contraste)", "Interpréter les citations dans leur contexte"] },
+          { "id": "cartographie", "label": "ResearchRabbit, Connected Papers", "cellules": ["Cartographier les publications liées par les citations", "Compléter par une recherche systématique"] },
+          { "id": "notebooklm", "label": "NotebookLM", "cellules": ["Interroger un ensemble de documents fournis par l'utilisateur", "Vérifier les extraits et respecter la confidentialité"] }
+        ]
+      },
+      "explications": [
+        { "titre": "Des outils appuyés sur des publications", "texte": "Au-delà des assistants généralistes, des outils spécialisés s'appuient sur des bases de publications pour assister l'exploration." },
+        { "titre": "Des outils qui évoluent", "texte": "Leur couverture, leurs fonctions et leurs conditions d'accès évoluent rapidement : elles se vérifient avant utilisation." },
+        { "titre": "La règle du chapitre 5", "texte": "Quel que soit l'outil, la même règle s'applique.", "attention": "Aucune référence n'est retenue tant qu'elle n'a pas été retrouvée et vérifiée à la source." }
+      ],
+      "exemples": [
+        { "titre": "Une synthèse à lire jusqu'au bout", "contexte": "Consensus", "texte": "L'outil donne des éléments de réponse à partir d'études publiées : on lit les études citées, sans se limiter à la synthèse." },
+        { "titre": "Des données extraites à contrôler", "contexte": "Elicit", "texte": "Chaque donnée extraite d'un article est contrôlée dans l'article source." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Quel outil permet de voir si un article est cité en soutien ou en contraste ?", "options": ["Scite", "Elicit", "NotebookLM"], "bonne": 0, "explication": "Tableau 13 : Scite montre comment un article est cité (soutien ou contraste)." },
+        { "id": "q2", "niveau": "moyen", "question": "Quelle précaution prendre avec Consensus ?", "options": ["Contrôler les métadonnées", "Lire les études citées, ne pas se limiter à la synthèse", "Ne l'utiliser qu'en anglais"], "bonne": 1, "explication": "Tableau 13 : lire les études citées, ne pas se limiter à la synthèse." },
+        { "id": "q3", "niveau": "moyen", "question": "Que permet NotebookLM ?", "options": ["Cartographier les citations", "Rechercher des articles dans toutes les bases", "Interroger un ensemble de documents fournis par l'utilisateur"], "bonne": 2, "explication": "NotebookLM interroge des documents fournis par l'utilisateur ; on vérifie les extraits et on respecte la confidentialité." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle règle s'applique à tous ces outils ?", "options": ["Aucune référence n'est retenue tant qu'elle n'a pas été retrouvée et vérifiée à la source", "Une référence trouvée par un outil spécialisé est fiable", "Il suffit d'un seul outil"], "bonne": 0, "explication": "C'est la règle du chapitre 5, rappelée au chapitre 6.6." }
+      ],
+      "aRetenir": [
+        "Des outils spécialisés s'appuient sur des bases de publications pour assister l'exploration.",
+        "Chaque outil a sa précaution : contrôler, lire les études, interpréter, compléter, vérifier.",
+        "Aucune référence n'est retenue sans vérification à la source."
+      ]
+    },
+    {
+      "id": "7-1",
+      "numero": "7.1 – 7.2",
+      "titre": "Sélectionner ses sources",
+      "categorie": "selection-evaluation",
+      "dureeMin": 8,
+      "objectifs": [
+        "Expliquer pourquoi sélectionner les publications.",
+        "Établir des critères d'inclusion et d'exclusion explicites.",
+        "Suivre l'entonnoir de sélection, de l'identification au corpus retenu."
+      ],
+      "enBref": "Une recherche peut produire des centaines, voire des milliers de résultats. Le chercheur sélectionne les publications selon leur pertinence, leur qualité et leur adéquation avec la problématique, à l'aide de critères explicites.",
+      "infographie": {
+        "type": "funnel",
+        "titre": "L'entonnoir de sélection des sources",
+        "legende": "D'après la figure 3 du manuel. Touche une étape pour la détailler.",
+        "items": [
+          { "id": "identification", "label": "Identification", "detail": "Les résultats bruts des bases : des centaines, voire des milliers de documents." },
+          { "id": "tri", "label": "Tri", "detail": "Tri sur le titre et le résumé, en appliquant les critères d'inclusion et d'exclusion." },
+          { "id": "lecture", "label": "Lecture", "detail": "Lecture complète et évaluation critique des documents restants." },
+          { "id": "corpus", "label": "Corpus retenu", "detail": "Les sources retenues, saisies dans la matrice de lecture." }
+        ]
+      },
+      "explications": [
+        { "titre": "Pourquoi sélectionner ?", "texte": "Une recherche peut produire des centaines, voire des milliers de résultats. Le chercheur sélectionne les publications selon leur pertinence, leur qualité et leur adéquation avec la problématique." },
+        { "titre": "Des critères explicites", "texte": "Avant de sélectionner, le chercheur établit des critères explicites, qui garantissent la transparence et la reproductibilité de sa démarche (Page et al., 2021). Inclusion : sujet lié à la problématique, publication identifiable, méthodologie décrite, période de l'étude, langue maîtrisée, résultats utiles. Exclusion : sujet sans lien, origine invérifiable, méthodologie absente ou inadaptée, hors période justifiée, document inexploitable, redondant ou sans apport." },
+        { "titre": "Les documents anciens", "texte": "Certains travaux fondateurs restent indispensables pour comprendre les théories et concepts d'un domaine.", "attention": "Un document ancien ne doit pas être exclu automatiquement." }
+      ],
+      "exemples": [
+        { "titre": "Juger la pertinence", "contexte": "Recherche sur l'IA dans les universités ivoiriennes", "texte": "Un article sur l'IA dans l'enseignement supérieur africain est pertinent ; un article sur l'IA dans les écoles primaires est utile pour une comparaison ; un article sur la reconnaissance faciale dans les aéroports est peu pertinent." },
+        { "titre": "Une source qui ne parle pas d'IA", "contexte": "Même sujet", "texte": "Un article sur les pratiques pédagogiques universitaires, sans traiter l'IA, est très pertinent : il éclaire une composante centrale du sujet." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Pourquoi le chercheur sélectionne-t-il ses sources ?", "options": ["Parce qu'une recherche peut produire des centaines, voire des milliers de résultats", "Pour réduire la bibliographie à cinq titres", "Parce que les bases ne contiennent que des sources fiables"], "bonne": 0, "explication": "Il sélectionne selon la pertinence, la qualité et l'adéquation avec la problématique (chapitre 7.1)." },
+        { "id": "q2", "niveau": "moyen", "question": "À quoi servent des critères d'inclusion et d'exclusion explicites ?", "options": ["À accélérer la lecture", "À garantir la transparence et la reproductibilité de la démarche", "À éliminer les documents anciens"], "bonne": 1, "explication": "Ils garantissent la transparence et la reproductibilité de la démarche (Page et al., 2021)." },
+        { "id": "q3", "niveau": "moyen", "question": "Que fait-on à l'étape « Tri » de l'entonnoir ?", "options": ["On lit les documents en entier", "On saisit les sources dans la matrice", "On trie sur le titre et le résumé avec les critères d'inclusion et d'exclusion"], "bonne": 2, "explication": "Figure 3 : le tri porte sur le titre et le résumé." },
+        { "id": "q4", "niveau": "difficile", "question": "Faut-il exclure automatiquement un document ancien ?", "options": ["Oui, toujours", "Non : certains travaux fondateurs restent indispensables", "Oui, s'il a plus de cinq ans"], "bonne": 1, "explication": "Remarque du chapitre 7.2 : un document ancien ne doit pas être exclu automatiquement." }
+      ],
+      "aRetenir": [
+        "On sélectionne selon la pertinence, la qualité et l'adéquation avec la problématique.",
+        "Des critères d'inclusion et d'exclusion explicites rendent la démarche transparente et reproductible.",
+        "Identification → tri → lecture → corpus retenu ; un document ancien n'est pas exclu d'office."
+      ]
+    },
+    {
+      "id": "7-3",
+      "numero": "7.3",
+      "titre": "Lire efficacement un article scientifique",
+      "categorie": "selection-evaluation",
+      "dureeMin": 7,
+      "objectifs": [
+        "Lire un article de façon progressive.",
+        "Savoir quelle information chercher dans chaque partie d'un article."
+      ],
+      "enBref": "Il n'est pas nécessaire de lire intégralement chaque document dès sa découverte. Une lecture progressive, qui suit la structure de l'article, permet de décider rapidement de sa pertinence (Keshav, 2007).",
+      "infographie": {
+        "type": "flow",
+        "titre": "La lecture progressive en huit étapes",
+        "legende": "D'après le tableau 16 du manuel. Touche une étape pour voir l'information qu'elle apporte.",
+        "items": [
+          { "id": "titre", "label": "Titre", "detail": "Le sujet général." },
+          { "id": "resume", "label": "Résumé", "detail": "L'objectif, la méthode et les principaux résultats." },
+          { "id": "mots-cles", "label": "Mots-clés", "detail": "Les concepts mobilisés." },
+          { "id": "introduction", "label": "Introduction", "detail": "Le contexte et la problématique." },
+          { "id": "methodologie", "label": "Méthodologie", "detail": "La démarche de recherche." },
+          { "id": "resultats", "label": "Résultats", "detail": "Les données et observations." },
+          { "id": "discussion", "label": "Discussion", "detail": "L'interprétation des résultats." },
+          { "id": "conclusion", "label": "Conclusion", "detail": "Les apports et les limites." }
+        ]
+      },
+      "explications": [
+        { "titre": "Pas besoin de tout lire tout de suite", "texte": "Le chercheur n'a pas besoin de lire intégralement chaque document dès sa découverte. Une lecture progressive, qui suit la structure usuelle d'un article, permet de décider rapidement de sa pertinence (Keshav, 2007)." },
+        { "titre": "Du titre à la conclusion", "texte": "Titre, résumé et mots-clés donnent le sujet, l'objectif, la méthode, les résultats et les concepts. L'introduction, la méthodologie, les résultats, la discussion et la conclusion apportent ensuite le contexte, la démarche, les données, l'interprétation, les apports et les limites." },
+        { "titre": "Suivre les références", "texte": "Après cette première lecture, l'examen des références bibliographiques de l'article peut conduire vers d'autres travaux importants." }
+      ],
+      "exemples": [
+        { "titre": "Décider en quelques minutes", "contexte": "Tri d'un corpus", "texte": "En lisant le titre, le résumé et les mots-clés, on connaît le sujet, l'objectif, la méthode, les principaux résultats et les concepts : de quoi décider si l'article mérite une lecture complète." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Quelle partie donne l'objectif, la méthode et les principaux résultats ?", "options": ["Le titre", "Le résumé", "La conclusion"], "bonne": 1, "explication": "Tableau 16 : le résumé donne l'objectif, la méthode et les principaux résultats." },
+        { "id": "q2", "niveau": "facile", "question": "Où trouve-t-on l'interprétation des résultats ?", "options": ["Dans la discussion", "Dans les mots-clés", "Dans l'introduction"], "bonne": 0, "explication": "La discussion apporte l'interprétation des résultats." },
+        { "id": "q3", "niveau": "moyen", "question": "Pourquoi lire de façon progressive ?", "options": ["Pour éviter de lire la méthodologie", "Parce que les articles sont trop longs pour être lus", "Pour décider rapidement de la pertinence d'un article"], "bonne": 2, "explication": "La lecture progressive permet de décider rapidement de la pertinence (Keshav, 2007)." },
+        { "id": "q4", "niveau": "difficile", "question": "Après une première lecture, que peut apporter l'examen des références de l'article ?", "options": ["Rien : elles sont déjà résumées", "La vérification automatique des DOI", "D'autres travaux importants"], "bonne": 2, "explication": "Les références bibliographiques de l'article peuvent conduire vers d'autres travaux importants." }
+      ],
+      "aRetenir": [
+        "Pas besoin de tout lire dès la découverte : on lit de façon progressive.",
+        "Titre, résumé, mots-clés, puis introduction, méthodologie, résultats, discussion, conclusion.",
+        "Les références d'un article mènent vers d'autres travaux importants."
+      ]
+    },
+    {
+      "id": "8-1",
+      "numero": "8.1",
+      "titre": "Évaluer la crédibilité d'une publication",
+      "categorie": "selection-evaluation",
+      "dureeMin": 7,
+      "objectifs": [
+        "Évaluer une publication à l'aide de six questions.",
+        "Savoir ce qu'il faut examiner pour chaque question."
+      ],
+      "enBref": "Trouver un article scientifique ne signifie pas qu'il soit fiable ou de bonne qualité. Six questions structurent l'évaluation : qui, où, quand, comment, résultats justifiés, pertinence.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Les six questions d'évaluation",
+        "legende": "D'après le tableau 17 du manuel. Touche une question pour voir les points à examiner.",
+        "items": [
+          { "id": "qui", "label": "1. Qui est l'auteur ?", "detail": "Qualifications, domaine de compétence et affiliation identifiables." },
+          { "id": "ou", "label": "2. Où est-il publié ?", "detail": "Politique éditoriale transparente de la revue ou de l'éditeur." },
+          { "id": "quand", "label": "3. Quand a-t-il été publié ?", "detail": "Actualité suffisante au regard du sujet étudié." },
+          { "id": "comment", "label": "4. Comment la recherche a-t-elle été menée ?", "detail": "Méthodologie clairement expliquée et adaptée." },
+          { "id": "resultats", "label": "5. Les résultats sont-ils justifiés ?", "detail": "Conclusions fondées sur les données présentées." },
+          { "id": "pertinence", "label": "6. Le document est-il pertinent ?", "detail": "Réponse effective à la problématique." }
+        ]
+      },
+      "explications": [
+        { "titre": "Trouvé ne veut pas dire fiable", "texte": "Trouver un article scientifique ne signifie pas qu'il soit fiable ou de bonne qualité." },
+        { "titre": "L'auteur, la revue, la date", "texte": "On examine les qualifications, le domaine de compétence et l'affiliation de l'auteur, la politique éditoriale de la revue ou de l'éditeur, et l'actualité du document au regard du sujet." },
+        { "titre": "La méthode, les résultats, la pertinence", "texte": "On vérifie que la méthodologie est clairement expliquée et adaptée, que les conclusions sont fondées sur les données présentées et que le document répond effectivement à la problématique." }
+      ],
+      "exemples": [
+        { "titre": "Une conclusion à vérifier", "contexte": "Question 5", "texte": "Si les conclusions d'un article vont au-delà des données présentées, les résultats ne sont pas justifiés." },
+        { "titre": "Un article bien publié mais hors sujet", "contexte": "Question 6", "texte": "Un article de qualité qui ne répond pas à la problématique n'est pas pertinent pour la recherche en cours." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Trouver un article scientifique signifie-t-il qu'il est fiable ?", "options": ["Oui, s'il est dans une base", "Non, il faut l'évaluer", "Oui, s'il est récent"], "bonne": 1, "explication": "« Trouver un article scientifique ne signifie pas qu'il soit fiable ou de bonne qualité » (chapitre 8.1)." },
+        { "id": "q2", "niveau": "facile", "question": "Pour la question « Qui est l'auteur ? », qu'examine-t-on ?", "options": ["Ses qualifications, son domaine de compétence et son affiliation", "Son nombre d'abonnés", "Sa nationalité"], "bonne": 0, "explication": "Tableau 17 : qualifications, domaine de compétence et affiliation identifiables." },
+        { "id": "q3", "niveau": "moyen", "question": "Que signifie « les résultats sont justifiés » ?", "options": ["Les résultats sont nombreux", "Les résultats confirment l'hypothèse", "Les conclusions sont fondées sur les données présentées"], "bonne": 2, "explication": "Tableau 17 : conclusions fondées sur les données présentées." },
+        { "id": "q4", "niveau": "difficile", "question": "Pour la question « Quand a-t-il été publié ? », quel est le critère ?", "options": ["Avoir moins d'un an", "Une actualité suffisante au regard du sujet étudié", "Avoir été publié avant 2010"], "bonne": 1, "explication": "Tableau 17 : actualité suffisante au regard du sujet étudié." }
+      ],
+      "aRetenir": [
+        "Trouvé ne veut pas dire fiable : chaque publication s'évalue.",
+        "Six questions : qui, où, quand, comment, résultats justifiés, pertinence.",
+        "Méthodologie expliquée et conclusions fondées sur les données."
+      ]
+    },
+    {
+      "id": "8-2",
+      "numero": "8.2 – 8.3",
+      "titre": "Évaluation par les pairs et sources douteuses",
+      "categorie": "selection-evaluation",
+      "dureeMin": 8,
+      "objectifs": [
+        "Comprendre ce qu'est l'évaluation par les pairs et ses limites.",
+        "Repérer les signaux d'alerte d'une revue douteuse."
+      ],
+      "enBref": "L'évaluation par les pairs améliore le contrôle scientifique sans garantir l'absence d'erreurs. Certaines revues dites « prédatrices » ont des pratiques trompeuses : plusieurs signaux d'alerte appellent la vigilance.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Sept signaux d'alerte",
+        "legende": "D'après le chapitre 8.3 du manuel. Touche un signal pour le détailler.",
+        "items": [
+          { "id": "garantie", "label": "Publication garantie en quelques jours", "detail": "Promesse d'une publication garantie en quelques jours." },
+          { "id": "evaluation", "label": "Évaluation non transparente", "detail": "Absence de processus d'évaluation transparent." },
+          { "id": "frais", "label": "Frais mal expliqués", "detail": "Frais de publication non clairement expliqués." },
+          { "id": "comite", "label": "Comité éditorial introuvable", "detail": "Comité éditorial difficile à identifier." },
+          { "id": "indexation", "label": "Indexation trompeuse", "detail": "Informations trompeuses sur l'indexation." },
+          { "id": "sollicitations", "label": "Sollicitations excessives", "detail": "Sollicitations commerciales excessives." },
+          { "id": "imitation", "label": "Site qui imite une revue", "detail": "Site Internet imitant une revue reconnue." }
+        ]
+      },
+      "explications": [
+        { "titre": "L'évaluation par les pairs", "texte": "L'évaluation par les pairs (peer review) est un processus par lequel un article est examiné par des spécialistes du domaine avant sa publication. Les évaluateurs examinent la pertinence du sujet, la méthodologie, la qualité des résultats, la cohérence des interprétations et la contribution du travail. Ses limites sont bien documentées (Tennant et Ross-Hellauer, 2020).", "attention": "Une publication évaluée par les pairs doit elle aussi faire l'objet d'une lecture critique." },
+        { "titre": "Les revues dites « prédatrices »", "texte": "Certains éditeurs ou revues adoptent des pratiques éditoriales trompeuses. Il n'existe pas de définition unique de ces revues (Grudniewicz et al., 2019) : les signaux d'alerte appellent donc une vigilance particulière." },
+        { "titre": "La bonne pratique", "texte": "Vérifier directement les informations auprès de la revue, de son éditeur et des bases d'indexation pertinentes.", "attention": "Aucun indicateur isolé ne suffit à garantir la qualité d'une publication." }
+      ],
+      "exemples": [
+        { "titre": "Une offre trop belle", "contexte": "Courriel d'une revue inconnue", "texte": "Une revue promet une publication garantie en quelques jours et reste vague sur ses frais : deux signaux d'alerte, qui se vérifient auprès de l'éditeur et des bases d'indexation." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Une publication évaluée par les pairs est-elle forcément sans erreur ?", "options": ["Oui, toujours", "Non : l'évaluation améliore le contrôle mais ne garantit pas l'absence d'erreurs", "Oui, si la revue est connue"], "bonne": 1, "explication": "Chapitre 8.2 : l'évaluation par les pairs ne garantit pas l'absence d'erreurs." },
+        { "id": "q2", "niveau": "facile", "question": "Lequel de ces éléments est un signal d'alerte ?", "options": ["Une promesse de publication garantie en quelques jours", "Un comité éditorial identifiable", "Une politique éditoriale transparente"], "bonne": 0, "explication": "La promesse d'une publication garantie en quelques jours est un signal d'alerte." },
+        { "id": "q3", "niveau": "moyen", "question": "Que font les évaluateurs lors de l'évaluation par les pairs ?", "options": ["Ils corrigent l'orthographe", "Ils fixent les frais de publication", "Ils examinent la pertinence, la méthodologie, les résultats, les interprétations et la contribution"], "bonne": 2, "explication": "C'est la description du chapitre 8.2." },
+        { "id": "q4", "niveau": "difficile", "question": "Un seul indicateur suffit-il à garantir la qualité d'une publication ?", "options": ["Oui, l'indexation suffit", "Non, aucun indicateur isolé ne suffit", "Oui, l'évaluation par les pairs suffit"], "bonne": 1, "explication": "« Aucun indicateur isolé ne suffit à garantir la qualité d'une publication » (chapitre 8.3)." }
+      ],
+      "aRetenir": [
+        "L'évaluation par les pairs aide, mais ne garantit pas l'absence d'erreurs.",
+        "Sept signaux d'alerte signalent une revue douteuse.",
+        "On vérifie auprès de la revue, de l'éditeur et des bases d'indexation ; aucun indicateur isolé ne suffit."
+      ]
+    },
+    {
+      "id": "8-4",
+      "numero": "8.4",
+      "titre": "Vérifier les références et les DOI",
+      "categorie": "selection-evaluation",
+      "dureeMin": 7,
+      "objectifs": [
+        "Savoir ce qu'est un DOI.",
+        "Vérifier une référence en sept étapes.",
+        "Connaître les outils de vérification."
+      ],
+      "enBref": "Le DOI est un identifiant pérenne attribué à des publications. Une référence se vérifie en sept étapes, du titre exact jusqu'aux éventuelles corrections ou rétractations.",
+      "infographie": {
+        "type": "flow",
+        "titre": "Vérifier une référence en sept étapes",
+        "legende": "D'après le chapitre 8.4 du manuel. Touche une étape pour la détailler.",
+        "items": [
+          { "id": "titre", "label": "Titre exact", "detail": "Rechercher le titre exact de l'article." },
+          { "id": "auteurs", "label": "Auteurs", "detail": "Vérifier le nom des auteurs." },
+          { "id": "annee", "label": "Année", "detail": "Contrôler l'année de publication." },
+          { "id": "revue", "label": "Revue", "detail": "Vérifier le nom de la revue." },
+          { "id": "doi", "label": "DOI", "detail": "Comparer le DOI avec les métadonnées disponibles.", "exemple": "Forme d'un DOI : https://doi.org/10.xxxx/xxxxx" },
+          { "id": "editeur", "label": "Page de l'éditeur", "detail": "Consulter la page officielle de l'éditeur." },
+          { "id": "retractation", "label": "Corrections et rétractations", "detail": "Vérifier si la publication a fait l'objet d'une correction ou d'une rétractation." }
+        ]
+      },
+      "explications": [
+        { "titre": "Qu'est-ce qu'un DOI ?", "texte": "Le DOI (Digital Object Identifier) est un identifiant pérenne attribué à des publications et à d'autres ressources numériques. Il prend la forme https://doi.org/10.xxxx/xxxxx (International DOI Foundation, 2014)." },
+        { "titre": "Sept vérifications", "texte": "Titre exact, auteurs, année, revue, concordance du DOI avec les métadonnées, page officielle de l'éditeur, puis corrections ou rétractations éventuelles." },
+        { "titre": "Les outils", "texte": "Les outils utiles à cette vérification sont notamment Crossref Search, Retraction Watch et Google Scholar.", "attention": "Une publication peut avoir été corrigée ou rétractée : c'est la dernière vérification." }
+      ],
+      "exemples": [
+        { "titre": "Une référence proposée par une IA", "contexte": "Avant de citer", "texte": "On recherche le titre exact, on contrôle auteurs, année et revue, on compare le DOI avec les métadonnées dans Crossref, puis on consulte la page de l'éditeur et Retraction Watch." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Qu'est-ce qu'un DOI ?", "options": ["Un identifiant pérenne attribué à des publications", "Le nom d'une base de données", "Un indicateur de qualité d'une revue"], "bonne": 0, "explication": "Le DOI est un identifiant pérenne (International DOI Foundation, 2014)." },
+        { "id": "q2", "niveau": "moyen", "question": "Quelle est la dernière étape de la vérification d'une référence ?", "options": ["Rechercher le titre exact", "Vérifier le nom des auteurs", "Vérifier si la publication a fait l'objet d'une correction ou d'une rétractation"], "bonne": 2, "explication": "La septième étape porte sur les corrections et les rétractations." },
+        { "id": "q3", "niveau": "moyen", "question": "Quel outil le manuel cite-t-il pour repérer les rétractations ?", "options": ["PubMed", "Retraction Watch", "Zotero"], "bonne": 1, "explication": "Crossref Search, Retraction Watch et Google Scholar sont cités au chapitre 8.4." },
+        { "id": "q4", "niveau": "difficile", "question": "Avec quoi compare-t-on le DOI d'une référence ?", "options": ["Avec les métadonnées disponibles", "Avec le nombre de citations", "Avec le titre du mémoire"], "bonne": 0, "explication": "Étape 5 : comparer le DOI avec les métadonnées disponibles." }
+      ],
+      "aRetenir": [
+        "Le DOI est un identifiant pérenne : https://doi.org/10.xxxx/xxxxx.",
+        "Sept étapes : titre, auteurs, année, revue, DOI, page de l'éditeur, corrections et rétractations.",
+        "Outils : Crossref Search, Retraction Watch, Google Scholar."
+      ]
+    },
+    {
+      "id": "9-1",
+      "numero": "9.1 – 9.2",
+      "titre": "Organiser sa documentation",
+      "categorie": "organisation",
+      "dureeMin": 6,
+      "objectifs": [
+        "Savoir quelles informations consigner pour chaque publication.",
+        "Utiliser un gestionnaire de références."
+      ],
+      "enBref": "Une recherche documentaire bien menée suppose une conservation rigoureuse des informations. Des logiciels comme Zotero ou Mendeley organisent les références et génèrent la bibliographie.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Neuf informations à consigner",
+        "legende": "D'après le chapitre 9.1 du manuel. Touche une information pour la détailler.",
+        "items": [
+          { "id": "titre", "label": "Titre", "detail": "Le titre de la publication." },
+          { "id": "auteurs", "label": "Auteurs", "detail": "Les auteurs de la publication." },
+          { "id": "annee", "label": "Année", "detail": "L'année de publication." },
+          { "id": "revue", "label": "Revue ou éditeur", "detail": "La revue ou l'éditeur." },
+          { "id": "doi", "label": "DOI ou lien", "detail": "Le DOI ou le lien d'accès." },
+          { "id": "resume", "label": "Résumé", "detail": "Le résumé de la publication." },
+          { "id": "resultats", "label": "Principaux résultats", "detail": "Les principaux résultats de l'étude." },
+          { "id": "limites", "label": "Limites", "detail": "Les limites de l'étude." },
+          { "id": "lien", "label": "Lien avec ma problématique", "detail": "Le lien avec sa propre problématique." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une conservation rigoureuse", "texte": "Pour chaque publication retenue, le chercheur consigne : le titre, les auteurs, l'année, la revue ou l'éditeur, le DOI ou le lien d'accès, le résumé, les principaux résultats, les limites de l'étude et le lien avec sa propre problématique." },
+        { "titre": "Les gestionnaires de références", "texte": "Des logiciels comme Zotero (zotero.org) ou Mendeley (mendeley.com) permettent d'organiser, de classer et de citer les références, et de générer automatiquement la bibliographie dans le style exigé (APA, Chicago, etc.)." },
+        { "titre": "Contrôler ce qui est enregistré", "texte": "Dans la démarche intégrée, l'IA n'a aucun rôle nécessaire à cette étape : le chercheur enregistre les références.", "attention": "Les métadonnées enregistrées se contrôlent." }
+      ],
+      "exemples": [
+        { "titre": "Une bibliographie au bon format", "contexte": "Rédaction du mémoire", "texte": "Zotero ou Mendeley génèrent automatiquement la bibliographie dans le style exigé, par exemple APA ou Chicago." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Lequel de ces logiciels est un gestionnaire de références ?", "options": ["Zotero", "Midjourney", "PubMed"], "bonne": 0, "explication": "Zotero et Mendeley sont cités au chapitre 9.2." },
+        { "id": "q2", "niveau": "moyen", "question": "Quelle information le chercheur consigne-t-il pour chaque publication retenue ?", "options": ["Le nombre de pages lues", "Le lien avec sa propre problématique", "L'outil qui l'a trouvée"], "bonne": 1, "explication": "Le lien avec sa propre problématique fait partie des informations à consigner (chapitre 9.1)." },
+        { "id": "q3", "niveau": "moyen", "question": "Que permet un gestionnaire de références ?", "options": ["Évaluer la qualité d'une revue", "Traduire un article", "Organiser, classer, citer les références et générer la bibliographie"], "bonne": 2, "explication": "Chapitre 9.2 : organiser, classer, citer et générer automatiquement la bibliographie." },
+        { "id": "q4", "niveau": "difficile", "question": "Pourquoi consigner aussi les limites de chaque étude ?", "options": ["Pour pouvoir les discuter ensuite dans la revue de littérature", "Pour exclure toutes les études limitées", "Parce que Zotero l'exige"], "bonne": 0, "explication": "Les limites font partie des informations consignées ; la matrice de lecture les compare ensuite (chapitre 9.3)." }
+      ],
+      "aRetenir": [
+        "Pour chaque publication : références, résumé, résultats, limites et lien avec sa problématique.",
+        "Zotero ou Mendeley organisent, citent et génèrent la bibliographie.",
+        "Les métadonnées enregistrées se contrôlent."
+      ]
+    },
+    {
+      "id": "9-3",
+      "numero": "9.3",
+      "titre": "La matrice de lecture",
+      "categorie": "organisation",
+      "dureeMin": 8,
+      "objectifs": [
+        "Construire une matrice de lecture.",
+        "Passer de la matrice à une revue de littérature organisée par thèmes."
+      ],
+      "enBref": "La matrice de lecture compare plusieurs publications selon des critères identiques. Elle fait apparaître convergences, divergences, limites et questions non résolues, et prépare la revue de littérature.",
+      "infographie": {
+        "type": "matrix",
+        "titre": "Exemple de matrice de lecture",
+        "legende": "D'après le tableau 18 du manuel. Touche une ligne pour la mettre en évidence.",
+        "colonnes": ["Auteur / année", "Objectif", "Méthodologie", "Résultats", "Limites"],
+        "lignes": [
+          { "id": "a", "label": "Auteur A, 2023", "cellules": ["Étudier l'adoption de l'IA", "Enquête quantitative", "Adoption en progression", "Échantillon limité"] },
+          { "id": "b", "label": "Auteur B, 2024", "cellules": ["Examiner les pratiques pédagogiques", "Entretiens", "Usages diversifiés", "Étude locale"] },
+          { "id": "c", "label": "Auteur C, 2025", "cellules": ["Analyser les effets de l'IA", "Méthode mixte", "Résultats contrastés", "Suivi court"] }
+        ],
+        "donneesFictives": true
+      },
+      "explications": [
+        { "titre": "Comparer selon les mêmes critères", "texte": "La matrice de lecture compare plusieurs publications selon des critères identiques. Elle évite la simple succession de résumés et fait apparaître convergences, divergences, limites méthodologiques et questions non résolues." },
+        { "titre": "De la matrice à la revue de littérature", "texte": "La matrice constitue la base de la revue de littérature. Celle-ci s'organise par thèmes ou par questions, non par auteur : elle met les travaux en relation, discute leurs apports et leurs limites, et fait émerger la lacune que la recherche projetée entend combler.", "attention": "Une revue de littérature s'organise par thèmes, pas auteur par auteur." },
+        { "titre": "Les revues systématiques", "texte": "Pour les revues systématiques, la démarche de sélection et de report des études est encadrée par la déclaration PRISMA 2020 (Page et al., 2021 ; voir aussi Booth et al., 2021)." }
+      ],
+      "exemples": [
+        { "titre": "Une matrice en cinq colonnes", "contexte": "Exemple du manuel (données fictives)", "texte": "Pour chaque publication : auteur et année, objectif, méthodologie, résultats et limites. Les lignes de l'exemple sont fictives et ne représentent pas de véritables publications." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Qu'est-ce qu'une matrice de lecture ?", "options": ["Un tableau qui compare plusieurs publications selon des critères identiques", "Une liste de résumés à la suite", "Un logiciel de traduction"], "bonne": 0, "explication": "Définition du chapitre 9.3." },
+        { "id": "q2", "niveau": "moyen", "question": "Comment s'organise une revue de littérature ?", "options": ["Auteur par auteur", "Par thèmes ou par questions", "Par date de publication uniquement"], "bonne": 1, "explication": "« Celle-ci s'organise par thèmes ou par questions, non par auteur » (chapitre 9.4)." },
+        { "id": "q3", "niveau": "moyen", "question": "Que fait apparaître une matrice de lecture ?", "options": ["Le nombre de citations de chaque article", "Les erreurs d'orthographe", "Convergences, divergences, limites méthodologiques et questions non résolues"], "bonne": 2, "explication": "La matrice évite la simple succession de résumés." },
+        { "id": "q4", "niveau": "difficile", "question": "Quel cadre encadre la sélection des études dans une revue systématique ?", "options": ["La déclaration PRISMA 2020", "La norme APA", "Le DOI"], "bonne": 0, "explication": "La déclaration PRISMA 2020 (Page et al., 2021)." }
+      ],
+      "aRetenir": [
+        "La matrice compare les publications selon des critères identiques.",
+        "Elle fait apparaître convergences, divergences, limites et questions non résolues.",
+        "La revue de littérature s'organise par thèmes, pas par auteur."
+      ]
+    },
+    {
+      "id": "10",
+      "numero": "10",
+      "titre": "Démarche intégrée : IA et recherche documentaire",
+      "categorie": "organisation",
+      "dureeMin": 10,
+      "objectifs": [
+        "Articuler les étapes de la recherche documentaire et le rôle de l'IA.",
+        "Identifier à chaque étape le contrôle humain nécessaire."
+      ],
+      "enBref": "Les deux blocs du cours se combinent dans une démarche unique : l'IA assiste certaines étapes sans jamais se substituer au contrôle du chercheur. Chaque affirmation et chaque référence retenue doit pouvoir être rattachée à une source vérifiée.",
+      "infographie": {
+        "type": "trio",
+        "titre": "Sept étapes, trois rôles",
+        "legende": "D'après le tableau 19 du manuel, pour le sujet « L'influence de l'IA sur les pratiques pédagogiques dans les universités ivoiriennes ». Touche une étape.",
+        "items": [
+          { "id": "cadrer", "label": "Cadrer", "chercheur": "Formuler le sujet et les questions", "ia": "Proposer des pistes de problématique", "controle": "Retenir, reformuler, justifier" },
+          { "id": "preparer", "label": "Préparer", "chercheur": "Définir concepts et mots-clés", "ia": "Suggérer synonymes et traductions", "controle": "Valider la pertinence des termes" },
+          { "id": "chercher", "label": "Chercher", "chercheur": "Exécuter les équations dans les bases", "ia": "Aider à rédiger les équations", "controle": "Interroger Google Scholar, Semantic Scholar, CORE" },
+          { "id": "selectionner", "label": "Sélectionner", "chercheur": "Appliquer les critères d'inclusion et d'exclusion", "ia": "Résumer un résumé d'article", "controle": "Décider de l'inclusion" },
+          { "id": "evaluer", "label": "Évaluer", "chercheur": "Examiner auteur, revue, méthode", "ia": "Expliquer un passage difficile", "controle": "Vérifier revue, DOI, rétractations" },
+          { "id": "organiser", "label": "Organiser", "chercheur": "Enregistrer dans Zotero ou Mendeley", "ia": "Aucun rôle nécessaire", "controle": "Contrôler les métadonnées" },
+          { "id": "synthetiser", "label": "Synthétiser", "chercheur": "Remplir la matrice de lecture, rédiger", "ia": "Proposer des regroupements thématiques", "controle": "Relire, citer, déclarer l'usage de l'IA" }
+        ]
+      },
+      "explications": [
+        { "titre": "Une démarche unique", "texte": "Les deux blocs du cours, fondements de l'IA et recherche documentaire, se combinent dans une démarche unique, dans laquelle l'IA assiste certaines étapes sans jamais se substituer au contrôle du chercheur." },
+        { "titre": "À chaque étape, un contrôle humain", "texte": "De Cadrer à Synthétiser, le chercheur agit, l'IA peut aider, et le chercheur garde le contrôle : retenir et justifier, valider les termes, interroger les bases, décider de l'inclusion, vérifier revue et DOI, contrôler les métadonnées, relire, citer et déclarer.", "attention": "À l'étape « Organiser », l'IA n'a aucun rôle nécessaire." },
+        { "titre": "Le principe central du cours", "texte": "L'IA accélère l'exploration, mais chaque affirmation et chaque référence retenue doit pouvoir être rattachée à une source vérifiée." }
+      ],
+      "exemples": [
+        { "titre": "L'étape « Évaluer »", "contexte": "Sujet de référence du manuel", "texte": "Le chercheur examine l'auteur, la revue et la méthode ; l'IA peut expliquer un passage difficile ; le contrôle humain consiste à vérifier la revue, le DOI et les éventuelles rétractations." },
+        { "titre": "L'étape « Synthétiser »", "contexte": "Rédaction de la revue de littérature", "texte": "Le chercheur remplit la matrice de lecture et rédige ; l'IA peut proposer des regroupements thématiques ; le chercheur relit, cite et déclare l'usage de l'IA." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Quel est le rôle de l'IA dans la démarche intégrée ?", "options": ["Assister certaines étapes sans se substituer au contrôle du chercheur", "Remplacer le chercheur à chaque étape", "Valider seule les références"], "bonne": 0, "explication": "L'IA assiste certaines étapes sans jamais se substituer au contrôle du chercheur (chapitre 10)." },
+        { "id": "q2", "niveau": "moyen", "question": "À l'étape « Sélectionner », qui décide de l'inclusion d'un document ?", "options": ["L'IA", "Le chercheur", "La base de données"], "bonne": 1, "explication": "Tableau 19 : le contrôle humain consiste à décider de l'inclusion." },
+        { "id": "q3", "niveau": "moyen", "question": "À quelle étape l'IA n'a-t-elle aucun rôle nécessaire ?", "options": ["Cadrer", "Synthétiser", "Organiser"], "bonne": 2, "explication": "Tableau 19 : à l'étape « Organiser », aucun rôle de l'IA n'est nécessaire." },
+        { "id": "q4", "niveau": "difficile", "question": "Quel contrôle humain s'applique à l'étape « Évaluer » ?", "options": ["Proposer des regroupements thématiques", "Vérifier revue, DOI et rétractations", "Suggérer des synonymes"], "bonne": 1, "explication": "Tableau 19 : vérifier la revue, le DOI et les rétractations." }
+      ],
+      "aRetenir": [
+        "Sept étapes : cadrer, préparer, chercher, sélectionner, évaluer, organiser, synthétiser.",
+        "À chaque étape, l'IA peut aider, mais le contrôle reste humain.",
+        "Chaque affirmation et chaque référence se rattache à une source vérifiée."
       ]
     }
   ]

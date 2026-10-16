@@ -84,6 +84,9 @@ const messagesErreur: [RegExp, string][] = [
   [/email not confirmed/i, "Confirme d'abord ton adresse e-mail grâce au lien reçu par courriel."],
   [/user already registered/i, "Un compte existe déjà avec cette adresse e-mail."],
   [/password should be at least/i, "Le mot de passe est trop court."],
+  [/weak|pwned|easy to guess/i, "Ce mot de passe est trop courant ou a déjà été divulgué : choisis-en un autre."],
+  [/signups? (are )?not allowed|signup.*disabled/i, "Les inscriptions sont fermées pour le moment. Contacte ton formateur."],
+  [/failed to fetch|network|load failed/i, "Connexion internet indisponible. Vérifie ta connexion, puis réessaie."],
   [/rate limit|too many requests/i, "Trop de tentatives. Réessaie dans quelques minutes."],
   [/unable to validate email|invalid email/i, "Adresse e-mail invalide."],
 ];

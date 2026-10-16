@@ -1,5 +1,5 @@
 {
-  "ordre": ["2-1", "2-2", "2-3", "2-4", "2-5", "3-1", "3-2", "3-5", "4-1", "4-2"],
+  "ordre": ["2-1", "2-2", "2-3", "2-4", "2-5", "3-1", "3-2", "3-5", "4-1", "4-2", "4-4", "5-1", "5-2", "5-4", "6-1", "6-2", "6-3", "6-4", "6-5"],
   "chapitres": [
     {
       "id": "2-1",
@@ -396,6 +396,413 @@
         "Six éléments : rôle, contexte, objectif, consignes, format, critères de qualité.",
         "Les critères de qualité demandent de distinguer faits et hypothèses et de n'inventer aucune référence.",
         "Un prompt imprécis s'améliore en précisant rôle, sujet, contexte, objectif et structure."
+      ]
+    },
+    {
+      "id": "4-4",
+      "numero": "4.4",
+      "titre": "Les bonnes pratiques du prompt",
+      "categorie": "prompts",
+      "dureeMin": 6,
+      "objectifs": [
+        "Appliquer les bonnes pratiques d'usage d'un prompt.",
+        "Améliorer une réponse par itérations.",
+        "Protéger les données et garder une trace des prompts."
+      ],
+      "enBref": "Un prompt efficace précise le rôle, le contexte, l'objectif, les consignes, le format et les critères de qualité. Il s'améliore par itérations et ne contient jamais de données confidentielles.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Cinq bonnes pratiques",
+        "legende": "D'après le chapitre 4.4 du manuel. Touche une pratique pour la détailler.",
+        "items": [
+          { "id": "pertinence", "label": "La pertinence avant la longueur", "detail": "Un bon prompt ne se mesure pas à sa longueur, mais à la pertinence des informations fournies." },
+          { "id": "iterations", "label": "Procéder par itérations", "detail": "Analyser la réponse, puis préciser, corriger ou reformuler la demande." },
+          { "id": "faits", "label": "Faits, hypothèses, suggestions", "detail": "Exiger la distinction entre faits, hypothèses et suggestions, et interdire explicitement l'invention de références.", "exemple": "« Signale les limites, distingue les faits des hypothèses et n'invente aucune référence. »" },
+          { "id": "confidentialite", "label": "Aucune donnée confidentielle", "detail": "Ne jamais transmettre de données personnelles ou confidentielles dans un prompt." },
+          { "id": "trace", "label": "Garder une trace", "detail": "Conserver une trace des prompts utilisés lorsque l'IA contribue à un travail académique, afin d'assurer la transparence." }
+        ]
+      },
+      "explications": [
+        { "titre": "Être pertinent, pas long", "texte": "Un bon prompt ne se mesure pas à sa longueur, mais à la pertinence des informations fournies : rôle, contexte, objectif, consignes, format et critères de qualité." },
+        { "titre": "Améliorer par itérations", "texte": "On analyse la réponse obtenue, puis on précise, corrige ou reformule la demande jusqu'à obtenir une réponse adaptée." },
+        { "titre": "Exiger de la rigueur", "texte": "Le prompt demande de distinguer les faits, les hypothèses et les suggestions, et interdit explicitement l'invention de références.", "attention": "Ne jamais transmettre de données personnelles ou confidentielles dans un prompt." },
+        { "titre": "Rester transparent", "texte": "Lorsque l'IA contribue à un travail académique, on conserve une trace des prompts utilisés afin d'assurer la transparence." }
+      ],
+      "exemples": [
+        { "titre": "Un critère de qualité dans le prompt", "contexte": "Rédaction d'un prompt", "texte": "« Signale les limites, distingue les faits des hypothèses et n'invente aucune référence. »" },
+        { "titre": "Une itération", "contexte": "Après une première réponse trop générale", "texte": "« Parle-moi de l'intelligence artificielle dans l'éducation » devient : « Agis comme un spécialiste en sciences de l'éducation. Analyse les effets de l'IA générative sur les pratiques pédagogiques dans l'enseignement supérieur en Afrique de l'Ouest… »" }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "À quoi se mesure un bon prompt ?", "options": ["À sa longueur", "À la pertinence des informations fournies", "Au nombre de questions posées"], "bonne": 1, "explication": "« Un bon prompt ne se mesure pas à sa longueur, mais à la pertinence des informations fournies » (chapitre 4.4)." },
+        { "id": "q2", "niveau": "facile", "question": "Peut-on transmettre des données personnelles dans un prompt ?", "options": ["Oui, si l'outil est connu", "Oui, si on le déclare", "Non, jamais"], "bonne": 2, "explication": "Bonne pratique du chapitre 4.4 : ne jamais transmettre de données personnelles ou confidentielles dans un prompt." },
+        { "id": "q3", "niveau": "moyen", "question": "Que signifie « procéder par itérations » ?", "options": ["Analyser la réponse, puis préciser, corriger ou reformuler la demande", "Poser la même question plusieurs fois à l'identique", "Changer d'outil à chaque question"], "bonne": 0, "explication": "On améliore la demande à partir de l'analyse de la réponse obtenue." },
+        { "id": "q4", "niveau": "difficile", "question": "Pourquoi conserver une trace des prompts utilisés ?", "options": ["Pour réutiliser les réponses sans les vérifier", "Pour assurer la transparence lorsque l'IA contribue à un travail académique", "Pour réduire la longueur des prompts"], "bonne": 1, "explication": "Garder une trace des prompts assure la transparence de l'usage de l'IA dans un travail académique." }
+      ],
+      "aRetenir": [
+        "Un bon prompt est pertinent, pas forcément long.",
+        "On l'améliore par itérations, à partir de la réponse obtenue.",
+        "On exige la distinction faits / hypothèses et on interdit l'invention de références.",
+        "Jamais de données confidentielles ; une trace des prompts pour la transparence."
+      ]
+    },
+    {
+      "id": "5-1",
+      "numero": "5.1",
+      "titre": "Les limites techniques de l'IA",
+      "categorie": "ethique",
+      "dureeMin": 8,
+      "objectifs": [
+        "Identifier les limites techniques de l'IA : hallucinations, connaissances limitées, biais.",
+        "Associer à chaque risque une mesure de précaution."
+      ],
+      "enBref": "Un modèle génératif peut inventer des références d'apparence crédible, ignorer des travaux récents et reproduire des biais. À chaque risque correspond une mesure de précaution.",
+      "infographie": {
+        "type": "pairs",
+        "titre": "Risques et mesures de précaution",
+        "legende": "D'après le tableau 9 du manuel. Touche un risque pour voir la mesure à appliquer.",
+        "items": [
+          { "id": "references", "label": "Références inventées", "detail": "Vérifier chaque référence dans Crossref, chez l'éditeur ou dans la base d'origine." },
+          { "id": "connaissances", "label": "Connaissances incomplètes", "detail": "Compléter par une recherche dans les bases scientifiques spécialisées." },
+          { "id": "biais", "label": "Biais", "detail": "Croiser plusieurs sources et examiner de façon critique les réponses." },
+          { "id": "dependance", "label": "Dépendance", "detail": "Réserver à l'humain l'analyse, l'interprétation et la décision." },
+          { "id": "confidentialite", "label": "Confidentialité", "detail": "Ne pas saisir de données personnelles ou confidentielles." },
+          { "id": "integrite", "label": "Atteinte à l'intégrité", "detail": "Déclarer l'usage de l'IA et citer les sources conformément aux règles en vigueur." }
+        ]
+      },
+      "explications": [
+        { "titre": "Erreurs et hallucinations", "texte": "Un modèle génératif peut produire des informations fausses ou inventer des références scientifiques d'apparence crédible (Ji et al., 2023). Des études ont relevé des références fabriquées ou erronées dans des bibliographies générées par un assistant conversationnel (Walters et Wilder, 2023).", "attention": "Toute référence suggérée doit être retrouvée et vérifiée dans une base documentaire ou chez l'éditeur." },
+        { "titre": "Des connaissances limitées", "texte": "Le modèle peut ignorer des travaux récents ou ne pas disposer de toutes les informations nécessaires, selon la période et la nature de ses données d'entraînement." },
+        { "titre": "Des biais", "texte": "Les réponses peuvent reproduire les préjugés présents dans les données d'entraînement. Bender et al. (2021) soulignent les risques liés à la taille et à la composition des corpus utilisés." }
+      ],
+      "exemples": [
+        { "titre": "Une bibliographie à vérifier", "contexte": "Étude citée par le manuel", "texte": "Walters et Wilder (2023) ont relevé des références fabriquées ou erronées dans des bibliographies générées par un assistant conversationnel." },
+        { "titre": "Retrouver une référence", "contexte": "Avant de citer", "texte": "Une référence proposée par l'IA est vérifiée dans Crossref, chez l'éditeur ou dans la base d'origine avant d'être retenue." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Qu'appelle-t-on une hallucination d'une IA générative ?", "options": ["Une panne du service", "Une information fausse ou une référence inventée d'apparence crédible", "Une réponse trop longue"], "bonne": 1, "explication": "Un modèle génératif peut produire des informations fausses ou inventer des références d'apparence crédible (Ji et al., 2023)." },
+        { "id": "q2", "niveau": "facile", "question": "Quelle mesure face au risque de références inventées ?", "options": ["Faire confiance aux références bien présentées", "Demander à l'IA de confirmer ses références", "Vérifier chaque référence dans Crossref, chez l'éditeur ou dans la base d'origine"], "bonne": 2, "explication": "Tableau 9 : vérifier chaque référence dans Crossref, chez l'éditeur ou dans la base d'origine." },
+        { "id": "q3", "niveau": "moyen", "question": "Pourquoi les réponses d'une IA peuvent-elles être biaisées ?", "options": ["Parce qu'elles reproduisent les préjugés présents dans les données d'entraînement", "Parce que l'utilisateur écrit en français", "Parce que le prompt est trop court"], "bonne": 0, "explication": "Les réponses peuvent reproduire les préjugés présents dans les données d'entraînement (Bender et al., 2021)." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle mesure face au risque de dépendance à l'IA ?", "options": ["Utiliser l'IA pour toutes les étapes", "Réserver à l'humain l'analyse, l'interprétation et la décision", "Changer régulièrement d'outil"], "bonne": 1, "explication": "Tableau 9 : réserver à l'humain l'analyse, l'interprétation et la décision." }
+      ],
+      "aRetenir": [
+        "L'IA peut inventer des références d'apparence crédible : on vérifie chacune à la source.",
+        "Ses connaissances peuvent être incomplètes ou datées : on complète dans les bases spécialisées.",
+        "Ses réponses peuvent être biaisées : on croise les sources et on garde un regard critique."
+      ]
+    },
+    {
+      "id": "5-2",
+      "numero": "5.2 – 5.3",
+      "titre": "Jugement, confidentialité et intégrité",
+      "categorie": "ethique",
+      "dureeMin": 7,
+      "objectifs": [
+        "Expliquer pourquoi une réponse fluide n'est pas forcément valide.",
+        "Repérer le risque de dépendance.",
+        "Protéger la confidentialité et assumer la responsabilité de son travail."
+      ],
+      "enBref": "La fluidité d'un texte ne garantit pas sa validité, et un recours systématique à l'IA réduit l'esprit critique. Le chercheur protège les données et reste seul responsable de son travail.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Quatre limites liées à l'humain",
+        "legende": "D'après les chapitres 5.2 et 5.3 du manuel. Touche une limite pour la détailler.",
+        "items": [
+          { "id": "jugement", "label": "Absence de jugement humain", "detail": "Une réponse convaincante n'est pas nécessairement pertinente sur le plan scientifique : la fluidité du texte ne garantit pas la validité de son contenu." },
+          { "id": "dependance", "label": "Dépendance", "detail": "Le recours systématique à l'IA peut réduire l'effort de réflexion personnelle, l'autonomie et l'esprit critique du chercheur." },
+          { "id": "confidentialite", "label": "Confidentialité", "detail": "Les informations saisies peuvent être traitées ou conservées selon les conditions du fournisseur : éviter de transmettre des données personnelles ou des documents de recherche confidentiels sans protection appropriée." },
+          { "id": "responsabilite", "label": "Éthique et responsabilité", "detail": "Le chercheur reste seul responsable de son travail : une IA ne peut pas assumer la responsabilité d'un contenu scientifique (COPE, 2023)." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une réponse fluide n'est pas une réponse valide", "texte": "Une réponse convaincante n'est pas nécessairement pertinente sur le plan scientifique : la fluidité du texte ne garantit pas la validité de son contenu." },
+        { "titre": "Le risque de dépendance", "texte": "Le recours systématique à l'IA peut réduire l'effort de réflexion personnelle, l'autonomie et l'esprit critique du chercheur." },
+        { "titre": "Protéger les données", "texte": "Les informations saisies peuvent être traitées ou conservées selon les conditions du fournisseur.", "attention": "Éviter de transmettre des données personnelles ou des documents de recherche confidentiels sans protection appropriée." },
+        { "titre": "Le chercheur reste responsable", "texte": "Une IA ne peut assumer la responsabilité d'un contenu scientifique. Les organismes d'éthique éditoriale recommandent de ne pas lui attribuer le statut d'auteur et d'indiquer de façon transparente son usage (COPE, 2023). Le chercheur respecte aussi les règles de citation, la propriété intellectuelle et les cadres éthiques de référence, comme la recommandation de l'UNESCO (2021)." }
+      ],
+      "exemples": [
+        { "titre": "Un document confidentiel", "contexte": "Données de recherche", "texte": "Des documents de recherche confidentiels ne sont pas transmis à un outil d'IA sans protection appropriée, car les informations saisies peuvent être conservées selon les conditions du fournisseur." },
+        { "titre": "Qui est l'auteur ?", "contexte": "Publication", "texte": "L'IA ne reçoit pas le statut d'auteur ; son usage est indiqué de façon transparente (COPE, 2023)." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Une réponse d'IA très bien rédigée est-elle forcément valide ?", "options": ["Oui, la fluidité garantit la validité", "Non, la fluidité du texte ne garantit pas la validité de son contenu", "Oui, si elle est longue"], "bonne": 1, "explication": "Une réponse convaincante n'est pas nécessairement pertinente sur le plan scientifique (chapitre 5.2)." },
+        { "id": "q2", "niveau": "moyen", "question": "Quel est le risque d'un recours systématique à l'IA ?", "options": ["Une réduction de la réflexion personnelle, de l'autonomie et de l'esprit critique", "Une augmentation automatique de la qualité", "Une meilleure protection des données"], "bonne": 0, "explication": "Le recours systématique à l'IA peut réduire l'effort de réflexion personnelle, l'autonomie et l'esprit critique." },
+        { "id": "q3", "niveau": "moyen", "question": "Que recommandent les organismes d'éthique éditoriale (COPE, 2023) ?", "options": ["Citer l'IA comme co-auteur", "Ne pas mentionner l'usage de l'IA", "Ne pas attribuer à l'IA le statut d'auteur et indiquer son usage de façon transparente"], "bonne": 2, "explication": "Une IA ne peut assumer la responsabilité d'un contenu scientifique." },
+        { "id": "q4", "niveau": "difficile", "question": "Pourquoi éviter de saisir des documents confidentiels dans un outil d'IA ?", "options": ["Parce que l'IA ne lit pas les documents longs", "Parce que les informations peuvent être traitées ou conservées selon les conditions du fournisseur", "Parce que c'est interdit par la loi dans tous les cas"], "bonne": 1, "explication": "Les informations saisies peuvent être traitées ou conservées selon les conditions du fournisseur (chapitre 5.3)." }
+      ],
+      "aRetenir": [
+        "La fluidité d'un texte ne garantit pas la validité de son contenu.",
+        "Un usage systématique de l'IA réduit la réflexion, l'autonomie et l'esprit critique.",
+        "Pas de données personnelles ni de documents confidentiels sans protection appropriée.",
+        "Le chercheur reste seul responsable ; l'IA n'est jamais auteur (COPE, 2023)."
+      ]
+    },
+    {
+      "id": "5-4",
+      "numero": "5.4",
+      "titre": "Déclarer et citer l'usage de l'IA",
+      "categorie": "ethique",
+      "dureeMin": 6,
+      "objectifs": [
+        "Rédiger une déclaration d'usage de l'IA.",
+        "Savoir comment citer un outil d'IA.",
+        "Comprendre pourquoi une réponse d'IA n'est pas une source scientifique."
+      ],
+      "enBref": "La transparence est la règle : une déclaration précise l'outil, sa version ou la date d'utilisation, la tâche concernée et le contrôle exercé.",
+      "infographie": {
+        "type": "flow",
+        "titre": "Les quatre éléments d'une déclaration",
+        "legende": "D'après le chapitre 5.4 du manuel. Touche un élément pour voir un exemple de formulation.",
+        "items": [
+          { "id": "outil", "label": "L'outil", "detail": "Nommer l'outil d'IA utilisé.", "exemple": "« Un assistant d'IA générative (nom de l'outil…) »" },
+          { "id": "version", "label": "La version ou la date", "detail": "Indiquer la version de l'outil ou la date d'utilisation.", "exemple": "« (nom de l'outil, version, date) »" },
+          { "id": "tache", "label": "La tâche", "detail": "Préciser la tâche pour laquelle l'IA a été utilisée.", "exemple": "« … a été utilisé pour proposer des mots-clés de recherche et reformuler certains paragraphes. »" },
+          { "id": "controle", "label": "Le contrôle exercé", "detail": "Décrire le contrôle exercé par l'auteur sur les contenus produits.", "exemple": "« L'auteur a vérifié l'ensemble des contenus et des références, et assume l'entière responsabilité du texte. »" }
+        ]
+      },
+      "explications": [
+        { "titre": "La transparence est la règle", "texte": "Lorsqu'un outil d'IA a contribué à un travail académique, son usage est mentionné, conformément aux consignes de l'établissement ou de la revue." },
+        { "titre": "Citer l'outil", "texte": "Les styles de citation proposent des règles spécifiques : le style APA, par exemple, recommande de citer l'outil comme un logiciel (développeur, version, adresse) et de décrire dans le texte le prompt utilisé." },
+        { "titre": "Une réponse d'IA n'est pas une source", "texte": "Une réponse d'IA ne se cite pas à la place des publications qu'elle évoque : ces publications doivent être consultées directement.", "attention": "Une réponse d'IA n'est jamais une source scientifique." }
+      ],
+      "exemples": [
+        { "titre": "Une déclaration complète", "contexte": "Exemple de formulation du manuel", "texte": "« Un assistant d'IA générative (nom de l'outil, version, date) a été utilisé pour proposer des mots-clés de recherche et reformuler certains paragraphes. L'auteur a vérifié l'ensemble des contenus et des références, et assume l'entière responsabilité du texte. »" },
+        { "titre": "Citer selon l'APA", "contexte": "Style de citation", "texte": "L'outil se cite comme un logiciel (développeur, version, adresse), et le prompt utilisé est décrit dans le texte." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Que doit préciser une déclaration d'usage de l'IA ?", "options": ["Le prix de l'abonnement", "L'outil, sa version ou la date, la tâche et le contrôle exercé", "Le nombre de prompts envoyés"], "bonne": 1, "explication": "Une déclaration précise l'outil, sa version ou la date d'utilisation, la tâche concernée et le contrôle exercé (chapitre 5.4)." },
+        { "id": "q2", "niveau": "moyen", "question": "Selon le style APA, comment cite-t-on un outil d'IA ?", "options": ["Comme un logiciel (développeur, version, adresse), en décrivant le prompt dans le texte", "Comme un article de revue", "On ne le cite jamais"], "bonne": 0, "explication": "Le style APA recommande de citer l'outil comme un logiciel et de décrire dans le texte le prompt utilisé." },
+        { "id": "q3", "niveau": "moyen", "question": "Une réponse d'IA peut-elle remplacer la citation des publications qu'elle évoque ?", "options": ["Oui, si elle est précise", "Oui, avec la date de la réponse", "Non : les publications doivent être consultées et citées directement"], "bonne": 2, "explication": "Une réponse d'IA n'est jamais une source scientifique." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelles consignes suivre pour déclarer l'usage de l'IA ?", "options": ["Celles de l'outil d'IA", "Celles de l'établissement ou de la revue", "Aucune, la déclaration est libre"], "bonne": 1, "explication": "L'usage est mentionné conformément aux consignes de l'établissement ou de la revue." }
+      ],
+      "aRetenir": [
+        "La transparence est la règle : on déclare l'usage de l'IA.",
+        "La déclaration précise l'outil, la version ou la date, la tâche et le contrôle exercé.",
+        "Une réponse d'IA n'est jamais une source scientifique : on consulte et on cite les publications."
+      ]
+    },
+    {
+      "id": "6-1",
+      "numero": "6.1",
+      "titre": "À quoi sert la recherche documentaire",
+      "categorie": "recherche-documentaire",
+      "dureeMin": 5,
+      "objectifs": [
+        "Définir la recherche documentaire scientifique.",
+        "Citer ses finalités pour un mémoire ou une thèse."
+      ],
+      "enBref": "La recherche documentaire scientifique consiste à rechercher, identifier et consulter des documents pour comprendre un sujet, situer sa recherche dans son domaine et construire un cadre théorique solide.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Cinq finalités de la recherche documentaire",
+        "legende": "D'après le chapitre 6.1 du manuel. Touche une finalité pour la détailler.",
+        "items": [
+          { "id": "etat", "label": "Comprendre l'état des connaissances", "detail": "Comprendre l'état actuel des connaissances sur le sujet." },
+          { "id": "travaux", "label": "Identifier travaux et auteurs", "detail": "Identifier les travaux déjà réalisés et les auteurs importants." },
+          { "id": "theories", "label": "Découvrir théories et concepts", "detail": "Découvrir les théories et concepts mobilisés dans le domaine." },
+          { "id": "lacunes", "label": "Repérer contradictions et lacunes", "detail": "Repérer les résultats contradictoires et les lacunes de la littérature." },
+          { "id": "problematique", "label": "Construire la problématique", "detail": "Construire une problématique de recherche pertinente." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une définition", "texte": "La recherche documentaire scientifique consiste à rechercher, identifier et consulter des documents permettant de comprendre un sujet, de situer une recherche dans son domaine et de construire un cadre théorique solide." },
+        { "titre": "Ce qu'elle permet", "texte": "Elle permet de comprendre l'état actuel des connaissances, d'identifier les travaux et les auteurs importants, de découvrir les théories et concepts mobilisés, de repérer les résultats contradictoires et les lacunes, et de construire une problématique pertinente." },
+        { "titre": "Au-delà de quelques pages Internet", "texte": "Il ne suffit pas de trouver quelques pages Internet traitant du sujet : il faut identifier des travaux scientifiques permettant de construire une réflexion documentée.", "attention": "Quelques pages web ne suffisent pas : on cherche des travaux scientifiques." }
+      ],
+      "exemples": [
+        { "titre": "Un sujet de mémoire", "contexte": "« L'influence de l'intelligence artificielle sur les pratiques pédagogiques dans les universités ivoiriennes »", "texte": "Les recherches porteront sur l'IA dans l'enseignement supérieur, les pratiques pédagogiques numériques, l'adoption des outils d'IA par les enseignants, leurs compétences numériques, ainsi que les avantages et limites de l'IA en éducation." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Que consiste à faire la recherche documentaire scientifique ?", "options": ["Rechercher, identifier et consulter des documents pour comprendre un sujet et construire un cadre théorique", "Recopier des pages Internet sur le sujet", "Demander une bibliographie à une IA"], "bonne": 0, "explication": "Définition du chapitre 6.1." },
+        { "id": "q2", "niveau": "facile", "question": "Laquelle de ces finalités fait partie de la recherche documentaire ?", "options": ["Rédiger la conclusion du mémoire", "Repérer les résultats contradictoires et les lacunes de la littérature", "Choisir le jury"], "bonne": 1, "explication": "Elle permet notamment de repérer les résultats contradictoires et les lacunes de la littérature." },
+        { "id": "q3", "niveau": "moyen", "question": "Pourquoi quelques pages Internet ne suffisent-elles pas ?", "options": ["Parce qu'elles sont toujours fausses", "Parce qu'elles sont payantes", "Parce qu'il faut identifier des travaux scientifiques pour construire une réflexion documentée"], "bonne": 2, "explication": "« Il faut identifier des travaux scientifiques permettant de construire une réflexion documentée » (chapitre 6.1)." },
+        { "id": "q4", "niveau": "difficile", "question": "À quelle étape la recherche documentaire contribue-t-elle directement ?", "options": ["À la construction d'une problématique de recherche pertinente", "Au choix de la police du mémoire", "À la mise en page des annexes"], "bonne": 0, "explication": "Elle permet de construire une problématique de recherche pertinente." }
+      ],
+      "aRetenir": [
+        "Rechercher, identifier et consulter des documents pour comprendre un sujet.",
+        "Situer sa recherche et construire un cadre théorique solide.",
+        "Des travaux scientifiques, pas seulement quelques pages Internet."
+      ]
+    },
+    {
+      "id": "6-2",
+      "numero": "6.2",
+      "titre": "Les types de sources scientifiques",
+      "categorie": "recherche-documentaire",
+      "dureeMin": 7,
+      "objectifs": [
+        "Distinguer les principaux types de sources scientifiques.",
+        "Différencier source primaire, source secondaire et source institutionnelle."
+      ],
+      "enBref": "Article, revue systématique, ouvrage, thèse, mémoire, actes de conférence, rapport institutionnel : chaque type de source a son usage. Une source primaire présente des résultats originaux ; une source secondaire les analyse.",
+      "infographie": {
+        "type": "matrix",
+        "titre": "Les principaux types de sources",
+        "legende": "D'après le tableau 10 du manuel. Touche une ligne pour la mettre en évidence.",
+        "colonnes": ["Type de document", "Description", "Utilisation"],
+        "lignes": [
+          { "id": "article", "label": "Article scientifique", "cellules": ["Publication présentant une étude ou une analyse", "Résultats et connaissances scientifiques"] },
+          { "id": "revue", "label": "Revue systématique", "cellules": ["Synthèse structurée de plusieurs études", "État des connaissances"] },
+          { "id": "ouvrage", "label": "Ouvrage académique", "cellules": ["Livre rédigé par des spécialistes", "Théories et concepts"] },
+          { "id": "these", "label": "Thèse de doctorat", "cellules": ["Travail de recherche approfondi", "Méthodologie et résultats"] },
+          { "id": "memoire", "label": "Mémoire universitaire", "cellules": ["Travail réalisé dans le cadre d'une formation", "Exploration d'un sujet"] },
+          { "id": "actes", "label": "Actes de conférence", "cellules": ["Communications présentées lors d'événements scientifiques", "Travaux et avancées récents"] },
+          { "id": "rapport", "label": "Rapport institutionnel", "cellules": ["Publication d'une organisation reconnue", "Statistiques et données institutionnelles"] }
+        ]
+      },
+      "explications": [
+        { "titre": "Sept types de sources", "texte": "Article scientifique, revue systématique, ouvrage académique, thèse de doctorat, mémoire universitaire, actes de conférence et rapport institutionnel : chacun a une description et une utilisation propres." },
+        { "titre": "Primaire ou secondaire ?", "texte": "Une source primaire présente des données ou des résultats originaux ; une source secondaire analyse, synthétise ou discute des travaux existants." },
+        { "titre": "Les sources institutionnelles", "texte": "Une source institutionnelle peut être très utile pour des données statistiques ou réglementaires.", "attention": "Une source institutionnelle n'est pas automatiquement un article évalué par les pairs." }
+      ],
+      "exemples": [
+        { "titre": "Faire le point sur un sujet", "contexte": "Début de recherche", "texte": "Une revue systématique, synthèse structurée de plusieurs études, donne l'état des connaissances." },
+        { "titre": "Trouver des statistiques", "contexte": "Contexte d'un mémoire", "texte": "Un rapport institutionnel, publié par une organisation reconnue, fournit des statistiques et des données institutionnelles." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Une source primaire est un document qui…", "options": ["Analyse et synthétise des travaux existants", "Présente des données ou des résultats originaux", "Est publié par une institution"], "bonne": 1, "explication": "Une source primaire présente des données ou des résultats originaux (chapitre 6.2)." },
+        { "id": "q2", "niveau": "facile", "question": "Quel type de source donne l'état des connaissances à partir de plusieurs études ?", "options": ["La revue systématique", "Le mémoire universitaire", "Les actes de conférence"], "bonne": 0, "explication": "Tableau 10 : la revue systématique est une synthèse structurée de plusieurs études." },
+        { "id": "q3", "niveau": "moyen", "question": "À quoi servent surtout les actes de conférence ?", "options": ["Aux théories et concepts", "Aux statistiques institutionnelles", "Aux travaux et avancées récents"], "bonne": 2, "explication": "Tableau 10 : les actes de conférence renseignent sur les travaux et avancées récents." },
+        { "id": "q4", "niveau": "difficile", "question": "Un rapport institutionnel est-il automatiquement évalué par les pairs ?", "options": ["Oui, toujours", "Non, il peut être très utile mais ne constitue pas automatiquement un article évalué par les pairs", "Oui, s'il contient des statistiques"], "bonne": 1, "explication": "Une source institutionnelle ne constitue pas automatiquement un article évalué par les pairs." }
+      ],
+      "aRetenir": [
+        "Chaque type de source a son usage : résultats, état des connaissances, théories, méthodes…",
+        "Source primaire : résultats originaux ; source secondaire : analyse de travaux existants.",
+        "Une source institutionnelle n'est pas automatiquement évaluée par les pairs."
+      ]
+    },
+    {
+      "id": "6-3",
+      "numero": "6.3",
+      "titre": "Moteurs de recherche et bases de données",
+      "categorie": "recherche-documentaire",
+      "dureeMin": 6,
+      "objectifs": [
+        "Choisir un outil de recherche documentaire adapté.",
+        "Connaître des plateformes francophones et africaines.",
+        "Savoir qu'un moteur académique ne garantit pas l'évaluation par les pairs."
+      ],
+      "enBref": "Google Scholar, Semantic Scholar, PubMed, CORE et Crossref ont chacun leur rôle. Un moteur généraliste ne remplace pas une recherche dans des outils spécialisés.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Cinq outils de recherche documentaire",
+        "legende": "D'après le tableau 11 du manuel. Touche un outil pour voir ses caractéristiques et son adresse.",
+        "items": [
+          { "id": "scholar", "label": "Google Scholar", "detail": "Articles, thèses, ouvrages et citations.", "exemple": "scholar.google.com" },
+          { "id": "semantic", "label": "Semantic Scholar", "detail": "Exploration des publications, des citations et des travaux associés.", "exemple": "semanticscholar.org" },
+          { "id": "pubmed", "label": "PubMed", "detail": "Médecine, biologie et sciences biomédicales.", "exemple": "pubmed.ncbi.nlm.nih.gov" },
+          { "id": "core", "label": "CORE", "detail": "Publications scientifiques en accès ouvert.", "exemple": "core.ac.uk" },
+          { "id": "crossref", "label": "Crossref", "detail": "Vérification des métadonnées et des DOI.", "exemple": "crossref.org" }
+        ]
+      },
+      "explications": [
+        { "titre": "Des outils spécialisés", "texte": "Google Scholar couvre articles, thèses, ouvrages et citations ; Semantic Scholar aide à explorer publications et citations ; PubMed est dédié à la médecine et à la biologie ; CORE rassemble des publications en accès ouvert ; Crossref sert à vérifier les métadonnées et les DOI." },
+        { "titre": "Dans un contexte francophone", "texte": "Ces outils peuvent être complétés par des plateformes et archives telles que HAL, Cairn.info, Persée, Érudit ou African Journals Online." },
+        { "titre": "Google ne suffit pas", "texte": "Un moteur généraliste comme Google peut repérer des informations d'ordre général, mais il ne remplace pas une recherche dans des outils spécialisés.", "attention": "La présence d'un document dans un moteur académique ne garantit pas qu'il ait été évalué par les pairs." }
+      ],
+      "exemples": [
+        { "titre": "Une recherche en santé", "contexte": "Médecine, biologie", "texte": "PubMed est l'outil dédié à la médecine, à la biologie et aux sciences biomédicales." },
+        { "titre": "Vérifier un DOI", "contexte": "Avant de citer", "texte": "Crossref permet de vérifier les métadonnées et le DOI d'une publication." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Quel outil sert à vérifier les métadonnées et les DOI ?", "options": ["PubMed", "Crossref", "CORE"], "bonne": 1, "explication": "Tableau 11 : Crossref sert à la vérification des métadonnées et des DOI." },
+        { "id": "q2", "niveau": "facile", "question": "Quel outil est dédié à la médecine et à la biologie ?", "options": ["PubMed", "Semantic Scholar", "Crossref"], "bonne": 0, "explication": "PubMed couvre la médecine, la biologie et les sciences biomédicales." },
+        { "id": "q3", "niveau": "moyen", "question": "Laquelle de ces plateformes le manuel cite-t-il pour le contexte francophone ?", "options": ["Wikipédia", "Un réseau social", "HAL"], "bonne": 2, "explication": "HAL, Cairn.info, Persée, Érudit ou African Journals Online complètent ces outils." },
+        { "id": "q4", "niveau": "difficile", "question": "Un document trouvé dans un moteur académique est-il forcément évalué par les pairs ?", "options": ["Oui, toujours", "Non, sa présence ne le garantit pas", "Oui, s'il a un DOI"], "bonne": 1, "explication": "« La présence d'un document dans un moteur académique ne garantit pas qu'il ait été évalué par les pairs » (chapitre 6.3)." }
+      ],
+      "aRetenir": [
+        "Chaque outil a son rôle : Scholar, Semantic Scholar, PubMed, CORE, Crossref.",
+        "En contexte francophone : HAL, Cairn.info, Persée, Érudit, African Journals Online.",
+        "Être indexé par un moteur académique ne garantit pas l'évaluation par les pairs."
+      ]
+    },
+    {
+      "id": "6-4",
+      "numero": "6.4",
+      "titre": "Construire une stratégie de recherche",
+      "categorie": "recherche-documentaire",
+      "dureeMin": 10,
+      "objectifs": [
+        "Suivre les quatre étapes d'une stratégie de recherche.",
+        "Utiliser les opérateurs booléens et les guillemets.",
+        "Construire une équation de recherche bilingue."
+      ],
+      "enBref": "Une recherche efficace suit quatre étapes : définir les concepts et leurs mots-clés, les combiner avec les opérateurs booléens, affiner avec les filtres, enregistrer les références.",
+      "infographie": {
+        "type": "flow",
+        "titre": "Les quatre étapes d'une stratégie de recherche",
+        "legende": "D'après le chapitre 6.4 du manuel. Touche une étape pour la détailler.",
+        "items": [
+          { "id": "concepts", "label": "Concepts et mots-clés", "detail": "Définir les concepts clés du sujet et leurs mots-clés, en français et en anglais.", "exemple": "Intelligence artificielle : IA ; artificial intelligence." },
+          { "id": "booleens", "label": "Opérateurs booléens", "detail": "AND associe deux concepts et réduit généralement les résultats ; OR regroupe des synonymes et élargit la recherche ; NOT exclut un terme (à utiliser avec prudence) ; les guillemets recherchent une expression exacte.", "exemple": "(\"Artificial Intelligence\" OR \"Generative AI\") AND (\"Teaching Practices\" OR Pedagogy)" },
+          { "id": "filtres", "label": "Filtres", "detail": "Affiner la recherche : année de publication, type de document, langue, domaine scientifique, auteur et type d'accès." },
+          { "id": "enregistrer", "label": "Enregistrer", "detail": "Enregistrer les références dès leur découverte, avec toutes les informations bibliographiques utiles." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une stratégie, pas une phrase au hasard", "texte": "Une recherche efficace ne consiste pas à saisir une phrase au hasard : elle suit une stratégie structurée en quatre étapes." },
+        { "titre": "Des mots-clés bilingues", "texte": "Pour chaque concept du sujet, on liste des mots-clés en français et en anglais, avec leurs synonymes." },
+        { "titre": "Les opérateurs booléens", "texte": "AND associe deux concepts et réduit généralement les résultats ; OR regroupe des synonymes et élargit la recherche ; les guillemets recherchent une expression exacte.", "attention": "NOT exclut un terme : à utiliser avec prudence." },
+        { "titre": "Filtrer et enregistrer", "texte": "On affine avec les filtres (année, type de document, langue, domaine, auteur, type d'accès), puis on enregistre chaque référence dès sa découverte, avec toutes les informations bibliographiques utiles." }
+      ],
+      "exemples": [
+        { "titre": "Concepts et mots-clés", "contexte": "« L'utilisation de l'IA dans l'enseignement supérieur en Côte d'Ivoire »", "texte": "Intelligence artificielle : IA ; artificial intelligence. Enseignement supérieur : université ; higher education ; university. Pratiques pédagogiques : pédagogie ; teaching practices ; pedagogy. Côte d'Ivoire : Côte d'Ivoire ; Ivory Coast." },
+        { "titre": "Trois équations de recherche", "contexte": "Exemples du manuel", "texte": "\"Artificial Intelligence\" AND \"Higher Education\" — (\"Artificial Intelligence\" OR \"Generative AI\") AND (\"Teaching Practices\" OR Pedagogy) — \"Artificial Intelligence\" AND \"Ivory Coast\"" }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Quel opérateur regroupe des synonymes et élargit la recherche ?", "options": ["AND", "OR", "NOT"], "bonne": 1, "explication": "OR regroupe des synonymes et élargit la recherche (chapitre 6.4)." },
+        { "id": "q2", "niveau": "facile", "question": "À quoi servent les guillemets dans une équation de recherche ?", "options": ["À rechercher une expression exacte", "À exclure un terme", "À traduire un mot"], "bonne": 0, "explication": "Les guillemets recherchent une expression exacte." },
+        { "id": "q3", "niveau": "moyen", "question": "Que fait l'opérateur AND ?", "options": ["Il exclut un terme", "Il regroupe des synonymes", "Il associe deux concepts et réduit généralement les résultats"], "bonne": 2, "explication": "AND associe deux concepts et réduit généralement les résultats." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle est la bonne équation pour l'IA (ou l'IA générative) dans les pratiques d'enseignement ?", "options": ["\"Artificial Intelligence\" OR \"Generative AI\" OR \"Teaching Practices\"", "(\"Artificial Intelligence\" OR \"Generative AI\") AND (\"Teaching Practices\" OR Pedagogy)", "\"Artificial Intelligence\" NOT Pedagogy"], "bonne": 1, "explication": "OR entre les synonymes d'un même concept, AND entre les concepts : c'est l'exemple du manuel." }
+      ],
+      "aRetenir": [
+        "Quatre étapes : concepts et mots-clés, opérateurs booléens, filtres, enregistrement.",
+        "OR entre synonymes, AND entre concepts, guillemets pour une expression exacte ; NOT avec prudence.",
+        "Mots-clés en français et en anglais ; références enregistrées dès leur découverte."
+      ]
+    },
+    {
+      "id": "6-5",
+      "numero": "6.5",
+      "titre": "Utiliser l'IA pour la recherche documentaire",
+      "categorie": "recherche-documentaire",
+      "dureeMin": 7,
+      "objectifs": [
+        "Identifier ce que l'IA peut apporter à la recherche documentaire.",
+        "Rédiger un prompt adapté.",
+        "Vérifier les publications suggérées."
+      ],
+      "enBref": "L'IA peut accompagner l'exploration documentaire : mots-clés, expressions en anglais, pistes de publications, explication de résumés, comparaisons. Mais les publications qu'elle suggère doivent être retrouvées et vérifiées.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Six façons dont l'IA peut aider",
+        "legende": "D'après le chapitre 6.5 du manuel. Touche un usage pour le détailler.",
+        "items": [
+          { "id": "mots-cles", "label": "Mots-clés et synonymes", "detail": "Identifier des mots-clés et des synonymes pour le sujet." },
+          { "id": "traduire", "label": "Traduire la problématique", "detail": "Traduire une problématique en expressions de recherche anglaises." },
+          { "id": "pistes", "label": "Proposer des pistes", "detail": "Proposer des pistes de publications, à retrouver et vérifier ensuite dans les bases." },
+          { "id": "expliquer", "label": "Expliquer un résumé", "detail": "Expliquer un résumé scientifique difficile." },
+          { "id": "comparer", "label": "Comparer des études", "detail": "Comparer les objectifs de plusieurs études." },
+          { "id": "themes", "label": "Dégager des thèmes", "detail": "Dégager des thèmes récurrents dans un ensemble de publications." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une aide à l'exploration", "texte": "L'IA peut identifier des mots-clés et des synonymes, traduire une problématique en expressions de recherche anglaises, proposer des pistes de publications, expliquer un résumé scientifique, comparer les objectifs de plusieurs études et dégager des thèmes récurrents." },
+        { "titre": "Un prompt adapté", "texte": "Le prompt donne un rôle (spécialiste de la recherche documentaire), le sujet, la liste de ce qu'on attend (concepts, mots-clés bilingues, synonymes, équations) et deux exigences : ne fabriquer aucune référence et distinguer les suggestions des publications vérifiées." },
+        { "titre": "Point de vigilance", "texte": "Une IA conversationnelle peut proposer des références inexistantes ou inexactes.", "attention": "Les publications suggérées doivent être retrouvées et vérifiées dans les bases documentaires ou chez les éditeurs." }
+      ],
+      "exemples": [
+        { "titre": "Le prompt du manuel", "contexte": "Sujet : l'influence de l'IA sur les pratiques pédagogiques dans les universités ivoiriennes", "texte": "« Agis comme un spécialiste de la recherche documentaire scientifique. […] Identifie : 1. Les principaux concepts scientifiques du sujet. 2. Les mots-clés en français et en anglais. 3. Les synonymes et expressions associées. 4. Des équations de recherche adaptées à Google Scholar et Semantic Scholar. Ne fabrique aucune référence bibliographique. Distingue les suggestions de recherche des publications réellement vérifiées. »" }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Laquelle de ces tâches l'IA peut-elle faciliter en recherche documentaire ?", "options": ["Identifier des mots-clés et des synonymes", "Garantir l'existence des références", "Remplacer la lecture des articles"], "bonne": 0, "explication": "L'IA peut identifier des mots-clés et des synonymes (chapitre 6.5)." },
+        { "id": "q2", "niveau": "moyen", "question": "Que faire des publications suggérées par une IA conversationnelle ?", "options": ["Les citer directement", "Les retrouver et les vérifier dans les bases documentaires ou chez les éditeurs", "Les ignorer systématiquement"], "bonne": 1, "explication": "Elles peuvent être inexistantes ou inexactes : on les retrouve et on les vérifie." },
+        { "id": "q3", "niveau": "moyen", "question": "Quelle exigence le prompt du manuel contient-il ?", "options": ["Fournir vingt références récentes", "Répondre en une seule phrase", "Ne fabriquer aucune référence bibliographique"], "bonne": 2, "explication": "Le prompt exige de ne fabriquer aucune référence et de distinguer suggestions et publications vérifiées." },
+        { "id": "q4", "niveau": "difficile", "question": "Pourquoi demander à l'IA de distinguer les suggestions des publications réellement vérifiées ?", "options": ["Pour obtenir plus de références", "Parce qu'une IA peut proposer des références inexistantes ou inexactes", "Pour accélérer la réponse"], "bonne": 1, "explication": "C'est le point de vigilance du chapitre 6.5." }
+      ],
+      "aRetenir": [
+        "L'IA aide à préparer la recherche : mots-clés, traductions, pistes, explications, comparaisons.",
+        "Un bon prompt interdit d'inventer des références et sépare suggestions et publications vérifiées.",
+        "Toute publication suggérée est retrouvée et vérifiée dans les bases ou chez l'éditeur."
       ]
     }
   ]

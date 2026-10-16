@@ -1,11 +1,16 @@
 import { Link } from "@tanstack/react-router";
 import {
+  ArrowDown,
   BookOpen,
   Brain,
+  Carrot,
+  ChefHat,
   Check,
   ChevronLeft,
   ChevronRight,
+  CircleCheckBig,
   Cog,
+  CookingPot,
   Database,
   ExternalLink,
   FileQuestion,
@@ -18,6 +23,7 @@ import {
   Presentation,
   Scale,
   ScanFace,
+  ScrollText,
   Search,
   Signpost,
   Sparkles,
@@ -28,7 +34,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { useEffect, useRef, useState, type KeyboardEvent, type ReactNode, type TouchEvent } from "react";
-import { PAGES_PDF, type Slide, type VisuelSlide } from "@/data/slides-comprendre-ia";
+import { PAGES_PDF, type CarteEtape, type Figure, type Slide, type VisuelSlide } from "@/data/slides-comprendre-ia";
 
 /**
  * Présentation en diapositives (16:9 à partir de la tablette) : flèches, touches ← →, glissement
@@ -94,7 +100,7 @@ export function SlidesPresentation({ titre, slides, pdfUrl }: { titre: string; s
   const btnTexte = "inline-flex items-center gap-1.5 rounded-full px-3.5 py-2 text-sm font-semibold transition";
 
   return (
-    <section aria-labelledby="slides-titre" className="mt-8 rounded-2xl bg-card p-5 shadow-card md:p-7">
+    <section id="diapositives" aria-labelledby="slides-titre" className="mt-8 scroll-mt-24 rounded-2xl bg-card p-5 shadow-card md:p-7">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 id="slides-titre" className="flex items-center gap-2 text-xl font-bold text-navy">
@@ -196,7 +202,14 @@ export function SlidesPresentation({ titre, slides, pdfUrl }: { titre: string; s
 
 /* ───────────────────────── Diapositive ───────────────────────── */
 
-function ContenuSlide({ slide, numero, pdfUrl }: { slide: Slide; numero: number; pdfUrl: string }) {
+/**
+ * Analogie (cartes qui se retournent) pilotée de l'extérieur, en séance en direct :
+ * `basculer` présent = le formateur la commande ; absent = l'apprenant suit l'état reçu.
+ * Sans `analogie`, la diapositive gère elle-même son bouton (consultation libre).
+ */
+export type PiloteAnalogie = { visible: boolean; basculer?: () => void };
+
+export function ContenuSlide({ slide, numero, pdfUrl, analogie }: { slide: Slide; numero: number; pdfUrl: string; analogie?: PiloteAnalogie | undefined }) {
   const entete = (
     <p className="text-xs font-semibold uppercase tracking-wide text-primary md:text-[1.3cqw]">
       {numero === 1 ? "Module 1 · L'essentiel" : `Chapitre ${slide.chapitre}`}
@@ -242,6 +255,28 @@ function ContenuSlide({ slide, numero, pdfUrl }: { slide: Slide; numero: number;
             <span className="sr-only"> (PDF, nouvel onglet)</span>
           </a>
         </div>
+      </div>
+    );
+  }
+
+  // Figure légendée et cartes des étapes côte à côte (empilées sur téléphone), puis « À retenir ».
+  if (slide.visuel.type === "cartes") {
+    const { figure } = slide.visuel;
+    return (
+      <div className="flex h-full flex-col justify-center p-5 md:p-[3cqw]">
+        {entete}
+        {titre}
+        {slide.sousTitre && <p className="mt-1 text-base text-muted-foreground md:mt-[0.4cqw] md:text-[1.8cqw]">{slide.sousTitre}</p>}
+        <div className={`mt-4 grid items-center gap-4 md:mt-[1.6cqw] md:gap-[2.4cqw] ${figure ? "md:grid-cols-[1fr_1fr]" : ""}`}>
+          {figure && <FigureLegendee figure={figure} />}
+          <CartesEtapes visuel={slide.visuel} analogie={analogie} />
+        </div>
+        {slide.aRetenir && (
+          <p className="mt-4 flex gap-2 rounded-xl bg-tint-green p-3 text-sm leading-snug text-tint-green-fg md:mt-[1.6cqw] md:gap-[1cqw] md:rounded-[1.2cqw] md:p-[1.1cqw] md:text-[1.45cqw]">
+            <Lightbulb className="mt-0.5 h-4 w-4 shrink-0 md:mt-[0.2cqw] md:h-[2cqw] md:w-[2cqw]" aria-hidden="true" />
+            <span><strong>À retenir : </strong>{slide.aRetenir}</span>
+          </p>
+        )}
       </div>
     );
   }
@@ -371,29 +406,6 @@ function Visuel({ visuel }: { visuel: VisuelSlide }) {
         </Svg>
       );
     }
-    case "chaine": {
-      const blocs = [
-        { icone: Database, label: "Données", fond: "fill-tint-blue", texte: "text-tint-blue-fg" },
-        { icone: Cog, label: "Algorithmes", fond: "fill-tint-purple", texte: "text-tint-purple-fg" },
-        { icone: Brain, label: "Modèle", fond: "fill-tint-green", texte: "text-tint-green-fg" },
-        { icone: Sparkles, label: "Résultat", fond: "fill-tint-amber", texte: "text-tint-amber-fg" },
-      ];
-      return (
-        <Svg alt={visuel.alt} viewBox="-2 0 486 200">
-          {blocs.map((b, i) => {
-            const x = i * 126;
-            return (
-              <g key={b.label}>
-                <rect x={x + 1} y={30} width={102} height={130} rx={16} className={`${b.fond} stroke-navy`} strokeWidth={2} />
-                <Icone icone={b.icone} x={x + 52} y={78} taille={40} className={b.texte} />
-                <Lignes x={x + 52} y={132} lignes={[b.label]} taille={14} gras />
-                {i < 3 && <Fleche x1={x + 106} y1={95} x2={x + 124} y2={95} />}
-              </g>
-            );
-          })}
-        </Svg>
-      );
-    }
     case "prompt": {
       const elements = [["Rôle"], ["Contexte"], ["Objectif"], ["Consignes"], ["Format"], ["Critères", "de qualité"]];
       return (
@@ -480,8 +492,110 @@ function Visuel({ visuel }: { visuel: VisuelSlide }) {
     case "equation":
       return <Equation alt={visuel.alt} />;
     case "retenir":
-      return null; // affichée par ContenuSlide
+    case "cartes":
+      return null; // affichées par ContenuSlide
   }
+}
+
+const ICONES_ETAPE: Record<CarteEtape["etape"], { ia: LucideIcon; cuisine: LucideIcon; teinte: string }> = {
+  donnees: { ia: Database, cuisine: Carrot, teinte: "bg-tint-blue text-tint-blue-fg" },
+  algorithme: { ia: Cog, cuisine: ScrollText, teinte: "bg-tint-purple text-tint-purple-fg" },
+  modele: { ia: Brain, cuisine: ChefHat, teinte: "bg-tint-green text-tint-green-fg" },
+  resultat: { ia: CircleCheckBig, cuisine: CookingPot, teinte: "bg-tint-amber text-tint-amber-fg" },
+};
+
+/** Image centrée, sans recadrage, avec sa légende et un lien pour l'ouvrir en grand (zoom sur téléphone). */
+function FigureLegendee({ figure }: { figure: Figure }) {
+  return (
+    <figure className="flex min-w-0 flex-col items-center">
+      <img
+        src={figure.src}
+        alt={figure.alt}
+        width={figure.largeur}
+        height={figure.hauteur}
+        loading="lazy"
+        decoding="async"
+        className="h-auto w-full rounded-lg bg-white object-contain shadow-card md:max-h-[27cqw] md:w-auto md:rounded-[1cqw]"
+      />
+      <figcaption className="mt-2 text-center text-xs leading-snug text-muted-foreground md:mt-[0.6cqw] md:text-[1.1cqw]">
+        {figure.legende}{" "}
+        <a href={figure.src} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-8 items-center gap-1 font-semibold text-primary hover:underline md:min-h-0">
+          Agrandir la figure <ExternalLink className="h-3 w-3 md:h-[1.1cqw] md:w-[1.1cqw]" aria-hidden="true" />
+          <span className="sr-only"> (nouvel onglet)</span>
+        </a>
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Cartes des étapes reliées par des flèches ; le bouton les retourne sur l'analogie de la cuisine. */
+function CartesEtapes({ visuel, analogie }: { visuel: Extract<VisuelSlide, { type: "cartes" }>; analogie: PiloteAnalogie | undefined }) {
+  const [local, setLocal] = useState(false);
+  const retournees = analogie ? analogie.visible : local;
+  const basculer = analogie ? analogie.basculer : () => setLocal(!local);
+  const face =
+    "flex items-center gap-3 rounded-xl border-2 bg-card px-3 py-2.5 text-left [backface-visibility:hidden] [grid-area:1/1] md:gap-[1.1cqw] md:rounded-[1cqw] md:px-[1.1cqw] md:py-[0.7cqw]";
+  const pastille = "grid h-10 w-10 shrink-0 place-items-center rounded-full md:h-[3.4cqw] md:w-[3.4cqw]";
+  const icone = "h-5 w-5 md:h-[1.9cqw] md:w-[1.9cqw]";
+
+  return (
+    <div className="min-w-0">
+      <ol aria-label={visuel.alt} className="flex flex-col">
+        {visuel.cartes.map((c, i) => {
+          const { ia: IconeIA, cuisine: IconeCuisine, teinte } = ICONES_ETAPE[c.etape];
+          return (
+            <li key={c.etape}>
+              {i > 0 && <ArrowDown className="mx-auto my-0.5 h-4 w-4 text-navy md:my-[0.15cqw] md:h-[1.3cqw] md:w-[1.3cqw]" aria-hidden="true" />}
+              {/* Les deux faces occupent la même case : la carte prend la hauteur de la plus grande. */}
+              <div className="[perspective:1000px]">
+                <div
+                  className={`grid transition-transform duration-500 [transform-style:preserve-3d] motion-reduce:transition-none ${retournees ? "[transform:rotateX(180deg)]" : ""}`}
+                  style={{ transitionDelay: `${i * 90}ms` }}
+                >
+                  <div className={`${face} border-border`} aria-hidden={retournees}>
+                    <span className={`${pastille} ${teinte}`}><IconeIA className={icone} aria-hidden="true" /></span>
+                    <span className="min-w-0">
+                      <span className="block leading-tight">
+                        <span className="font-display text-base font-bold text-navy md:text-[1.55cqw]">{i + 1}. {c.motCle}</span>
+                        <span className="text-sm text-muted-foreground md:text-[1.15cqw]"> — {c.role}</span>
+                      </span>
+                      <span className="mt-0.5 block text-sm leading-snug text-foreground md:mt-[0.2cqw] md:text-[1.2cqw]">{c.exemple}</span>
+                    </span>
+                  </div>
+                  <div className={`${face} border-tint-amber-fg/30 [transform:rotateX(180deg)]`} aria-hidden={!retournees}>
+                    <span className={`${pastille} bg-tint-amber text-tint-amber-fg`}><IconeCuisine className={icone} aria-hidden="true" /></span>
+                    <span className="min-w-0 leading-tight">
+                      <span className="block text-xs font-semibold uppercase tracking-wide text-muted-foreground md:text-[1cqw]">En cuisine</span>
+                      <span className="font-display text-base font-bold text-navy md:text-[1.55cqw]">{c.motCle}</span>
+                      <span className="text-base text-foreground md:text-[1.45cqw]"> = {c.cuisine}</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </li>
+          );
+        })}
+      </ol>
+      {basculer ? (
+        <button
+          onClick={basculer}
+          aria-pressed={retournees}
+          className="mt-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-secondary px-4 py-2 text-sm font-semibold text-secondary-foreground transition hover:opacity-90 md:mt-[1cqw] md:min-h-0 md:px-[1.6cqw] md:py-[0.7cqw] md:text-[1.35cqw]"
+        >
+          <span aria-hidden="true">🍳</span> {retournees ? "Revenir aux étapes de l'IA" : "Voir l'analogie de la cuisine"}
+        </button>
+      ) : (
+        retournees && (
+          <p className="mt-3 text-sm font-semibold text-tint-amber-fg md:mt-[1cqw] md:text-[1.35cqw]">
+            <span aria-hidden="true">🍳</span> Analogie de la cuisine affichée par le formateur
+          </p>
+        )
+      )}
+      <p className="sr-only" aria-live="polite">
+        {retournees ? `Analogie de la cuisine : ${visuel.cartes.map((c) => `${c.motCle} = ${c.cuisine}`).join(", ")}.` : ""}
+      </p>
+    </div>
+  );
 }
 
 /** Équation de recherche en police monospace, opérateurs mis en évidence. */

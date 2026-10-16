@@ -71,6 +71,32 @@ export type Soumission = {
   updated_at: string;
 };
 
+/** Séance en direct : le formateur fait défiler la présentation, les membres du groupe suivent. */
+export type SeanceDirect = {
+  id: string;
+  groupe_id: string;
+  formateur_id: string;
+  presentation: string;
+  diapo_courante: number; // index à partir de 0
+  diapo_depuis: string;
+  question_diapo: number | null;
+  question_texte: string | null;
+  analogie_visible: boolean; // analogie de la cuisine affichée (diapositive à cartes)
+  statut: "en_cours" | "terminee";
+  debut_le: string;
+  fin_le: string | null;
+};
+export type TypeReaction = "pas_compris" | "question" | "reponse";
+export type ReactionSeance = {
+  id: string;
+  seance_id: string;
+  apprenant_id: string;
+  diapo: number;
+  type: TypeReaction;
+  texte: string | null;
+  created_at: string;
+};
+
 /** Tentative à enregistrer via la RPC enregistrer_tentatives. */
 export type NouvelleTentative = {
   cours: string;
@@ -144,6 +170,24 @@ export type Database = {
           { foreignKeyName: "soumissions_corrige_par_fkey"; columns: ["corrige_par"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
           { foreignKeyName: "soumissions_groupe_id_fkey"; columns: ["groupe_id"]; isOneToOne: false; referencedRelation: "groupes"; referencedColumns: ["id"] },
           { foreignKeyName: "soumissions_exercice_id_fkey"; columns: ["exercice_id"]; isOneToOne: false; referencedRelation: "exercices_a_rendre"; referencedColumns: ["id"] },
+        ];
+      };
+      seances_direct: {
+        Row: SeanceDirect;
+        Insert: { groupe_id: string; presentation?: string };
+        Update: { diapo_courante?: number; question_diapo?: number | null; question_texte?: string | null; analogie_visible?: boolean; statut?: "terminee" };
+        Relationships: [
+          { foreignKeyName: "seances_direct_groupe_id_fkey"; columns: ["groupe_id"]; isOneToOne: false; referencedRelation: "groupes"; referencedColumns: ["id"] },
+          { foreignKeyName: "seances_direct_formateur_id_fkey"; columns: ["formateur_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
+      reactions_seance: {
+        Row: ReactionSeance;
+        Insert: { seance_id: string; diapo: number; type: TypeReaction; texte?: string | null };
+        Update: never;
+        Relationships: [
+          { foreignKeyName: "reactions_seance_seance_id_fkey"; columns: ["seance_id"]; isOneToOne: false; referencedRelation: "seances_direct"; referencedColumns: ["id"] },
+          { foreignKeyName: "reactions_seance_apprenant_id_fkey"; columns: ["apprenant_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
       reponses: {

@@ -1,19 +1,34 @@
 // Présentation « L'IA et la recherche — l'essentiel » du module 1 (/formations/comprendre-ia).
 // `chapitre` renvoie au support public/pdfs/comprendre-ia.pdf ; PAGES_PDF donne la page où il commence.
 
-/** Visuel d'une diapositive : figure du cours (public/slides) ou schéma dessiné en code. */
+/** Étape illustrée par une carte qui se retourne sur son équivalent en cuisine. */
+export type CarteEtape = {
+  etape: "donnees" | "algorithme" | "modele" | "resultat"; // choisit les icônes
+  motCle: string;
+  role: string;
+  exemple: string;
+  cuisine: string; // ex. « les ingrédients »
+};
+
+/** Image légendée affichée avec les cartes (agrandissable dans un nouvel onglet). */
+export type Figure = { src: string; alt: string; largeur: number; hauteur: number; legende: string };
+
+/** Visuel d'une diapositive : figure du cours (public/slides), schéma dessiné en code ou cartes. */
 export type VisuelSlide =
   | { type: "image"; src: string; alt: string; largeur: number; hauteur: number }
+  | { type: "cartes"; alt: string; cartes: CarteEtape[]; figure?: Figure }
   | {
-      type: "titre" | "principe" | "capacites" | "frise" | "chaine" | "prompt" | "alertes" | "declaration" | "equation" | "verifier" | "retenir";
+      type: "titre" | "principe" | "capacites" | "frise" | "prompt" | "alertes" | "declaration" | "equation" | "verifier" | "retenir";
       alt: string;
     };
 
 export type Slide = {
   id: string;
   titre: string;
+  sousTitre?: string;
   points: string[]; // 3 à 4 au maximum
   visuel: VisuelSlide;
+  aRetenir?: string; // encadré en bas de la diapositive
   explication: string;
   chapitre: string; // ex. « 2.1 », « 5.3–5.4 »
 };
@@ -68,9 +83,39 @@ export const slidesComprendreIA: Slide[] = [
   },
   {
     id: "s5",
-    titre: "Comment fonctionne un système d'IA",
-    points: ["Des données pour apprendre", "Un modèle entraîné qui produit un résultat : prédiction, classement, contenu"],
-    visuel: { type: "chaine", alt: "Quatre blocs reliés par des flèches : données, algorithmes, modèle, résultat." },
+    titre: "Comment fonctionne un système d'IA ?",
+    sousTitre: "Exemple : une IA qui apprend à reconnaître les chats",
+    // Les points résument les cartes (texte de la fiche imprimable) ; la diapositive affiche les cartes.
+    points: [
+      "Données : ce qu'on donne à l'IA",
+      "Algorithme : la méthode pour apprendre",
+      "Modèle : ce que l'IA a appris",
+      "Résultat : la réponse de l'IA",
+    ],
+    visuel: {
+      type: "cartes",
+      alt: "Quatre étapes reliées par des flèches : les données, l'algorithme, le modèle et le résultat d'une IA qui apprend à reconnaître les chats.",
+      cartes: [
+        { etape: "donnees", motCle: "Données", role: "Ce qu'on donne à l'IA", exemple: "1 000 photos de chats noirs, blancs et roux", cuisine: "les ingrédients" },
+        {
+          etape: "algorithme",
+          motCle: "Algorithme",
+          role: "La méthode pour apprendre",
+          exemple: "Analyser les caractéristiques des images, comme les oreilles, les yeux et la forme du museau",
+          cuisine: "la recette",
+        },
+        { etape: "modele", motCle: "Modèle", role: "Ce que l'IA a appris", exemple: "Les caractéristiques permettant de reconnaître un chat", cuisine: "le savoir-faire acquis" },
+        { etape: "resultat", motCle: "Résultat", role: "La réponse de l'IA", exemple: "« Cette image contient probablement un chat. »", cuisine: "le plat préparé" },
+      ],
+      figure: {
+        src: "/slides/fonctionnement-ia-4-etapes.webp",
+        largeur: 1536,
+        hauteur: 1024,
+        legende: "Figure — Les quatre étapes simplifiées du fonctionnement d'un système d'IA.",
+        alt: "Infographie « Comment fonctionne une IA ? » en 4 étapes. 1. Données : les exemples qu'on montre à l'IA, par exemple des photos de chats noirs, blancs et roux. 2. Algorithme : la méthode qui permet à l'IA d'apprendre, en cherchant les points communs entre les chats (oreilles, yeux, museau). 3. Modèle : ce que l'IA a appris après l'entraînement, les caractéristiques des chats. 4. Résultat : la réponse de l'IA devant une nouvelle photo, « C'est un chat ! ». En résumé : données = les exemples, algorithme = la méthode, modèle = ce qui est appris, résultat = la réponse. Une IA apprend à partir d'exemples : si les exemples sont bons, elle donne de meilleurs résultats.",
+      },
+    },
+    aRetenir: "L'IA utilise des données, suit une méthode d'apprentissage, construit un modèle et utilise ce modèle pour produire un résultat.",
     explication: "Exemple de l'IA qui apprend à distinguer chats et chiens.",
     chapitre: "2.3",
   },

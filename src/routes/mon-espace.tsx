@@ -4,6 +4,7 @@ import { CheckCircle2, ClipboardList, History, LogIn, Play, UserPlus, Users } fr
 import { useState, type FormEvent } from "react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { BadgesDevoir, Echeance, EtatDevoir } from "@/components/espace/Devoirs";
+import { BandeauSeanceDirect } from "@/components/espace/SeanceDirect";
 import { CopiesCorrigees } from "@/components/rendre/CopiesCorrigees";
 import { TableHistorique } from "@/components/espace/TableHistorique";
 import { btnPrimary, btnSecondary, formatDate, inputClass } from "@/components/espace/styles";
@@ -115,6 +116,7 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
 
   return (
     <Coquille titre={nom ? `Bonjour ${nom.split(" ")[0]}` : "Mon espace"}>
+      <BandeauSeanceDirect userId={userId} />
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
         <Stat label="Tentatives enregistrées" valeur={nbTentatives} />
         <Stat label="Réussite moyenne" valeur={tauxGlobal === null ? "—" : `${Math.round(tauxGlobal)} %`} aide="Moyenne pondérée par tentative" />

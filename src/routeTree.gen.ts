@@ -20,9 +20,12 @@ import { Route as InscriptionRouteImport } from './routes/inscription'
 import { Route as MonEspaceRouteImport } from './routes/mon-espace'
 import { Route as OutilsIaRouteImport } from './routes/outils-ia'
 import { Route as RessourcesRouteImport } from './routes/ressources'
+import { Route as FormateurNotesCoursRouteImport } from './routes/formateur_.notes-cours'
 import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
 import { Route as RejoindreCodeRouteImport } from './routes/rejoindre.$code'
+import { Route as SeanceIdRouteImport } from './routes/seance.$id'
 import { Route as ExercicesARendreIdRouteImport } from './routes/exercices_.a-rendre.$id'
+import { Route as FormateurSeanceDirectIdRouteImport } from './routes/formateur_.seance-direct.$id'
 import { Route as FormateurSeanceGroupeIdRouteImport } from './routes/formateur_.seance.$groupeId'
 
 const IndexRoute = IndexRouteImport.update({
@@ -80,6 +83,11 @@ const RessourcesRoute = RessourcesRouteImport.update({
   path: '/ressources',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormateurNotesCoursRoute = FormateurNotesCoursRouteImport.update({
+  id: '/formateur_/notes-cours',
+  path: '/formateur/notes-cours',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const FormationsSlugRoute = FormationsSlugRouteImport.update({
   id: '/formations_/$slug',
   path: '/formations/$slug',
@@ -90,9 +98,19 @@ const RejoindreCodeRoute = RejoindreCodeRouteImport.update({
   path: '/rejoindre/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SeanceIdRoute = SeanceIdRouteImport.update({
+  id: '/seance/$id',
+  path: '/seance/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ExercicesARendreIdRoute = ExercicesARendreIdRouteImport.update({
   id: '/exercices_/a-rendre/$id',
   path: '/exercices/a-rendre/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FormateurSeanceDirectIdRoute = FormateurSeanceDirectIdRouteImport.update({
+  id: '/formateur_/seance-direct/$id',
+  path: '/formateur/seance-direct/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FormateurSeanceGroupeIdRoute = FormateurSeanceGroupeIdRouteImport.update({
@@ -113,9 +131,12 @@ export interface FileRoutesByFullPath {
   '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
+  '/formateur/notes-cours': typeof FormateurNotesCoursRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/seance/$id': typeof SeanceIdRoute
   '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
+  '/formateur/seance-direct/$id': typeof FormateurSeanceDirectIdRoute
   '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRoutesByTo {
@@ -130,9 +151,12 @@ export interface FileRoutesByTo {
   '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
+  '/formateur/notes-cours': typeof FormateurNotesCoursRoute
   '/formations/$slug': typeof FormationsSlugRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/seance/$id': typeof SeanceIdRoute
   '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
+  '/formateur/seance-direct/$id': typeof FormateurSeanceDirectIdRoute
   '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRoutesById {
@@ -148,9 +172,12 @@ export interface FileRoutesById {
   '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
   '/ressources': typeof RessourcesRoute
+  '/formateur_/notes-cours': typeof FormateurNotesCoursRoute
   '/formations_/$slug': typeof FormationsSlugRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
+  '/seance/$id': typeof SeanceIdRoute
   '/exercices_/a-rendre/$id': typeof ExercicesARendreIdRoute
+  '/formateur_/seance-direct/$id': typeof FormateurSeanceDirectIdRoute
   '/formateur_/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
 }
 export interface FileRouteTypes {
@@ -167,9 +194,12 @@ export interface FileRouteTypes {
     | '/mon-espace'
     | '/outils-ia'
     | '/ressources'
+    | '/formateur/notes-cours'
     | '/formations/$slug'
     | '/rejoindre/$code'
+    | '/seance/$id'
     | '/exercices/a-rendre/$id'
+    | '/formateur/seance-direct/$id'
     | '/formateur/seance/$groupeId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -184,9 +214,12 @@ export interface FileRouteTypes {
     | '/mon-espace'
     | '/outils-ia'
     | '/ressources'
+    | '/formateur/notes-cours'
     | '/formations/$slug'
     | '/rejoindre/$code'
+    | '/seance/$id'
     | '/exercices/a-rendre/$id'
+    | '/formateur/seance-direct/$id'
     | '/formateur/seance/$groupeId'
   id:
     | '__root__'
@@ -201,9 +234,12 @@ export interface FileRouteTypes {
     | '/mon-espace'
     | '/outils-ia'
     | '/ressources'
+    | '/formateur_/notes-cours'
     | '/formations_/$slug'
     | '/rejoindre/$code'
+    | '/seance/$id'
     | '/exercices_/a-rendre/$id'
+    | '/formateur_/seance-direct/$id'
     | '/formateur_/seance/$groupeId'
   fileRoutesById: FileRoutesById
 }
@@ -219,9 +255,12 @@ export interface RootRouteChildren {
   MonEspaceRoute: typeof MonEspaceRoute
   OutilsIaRoute: typeof OutilsIaRoute
   RessourcesRoute: typeof RessourcesRoute
+  FormateurNotesCoursRoute: typeof FormateurNotesCoursRoute
   FormationsSlugRoute: typeof FormationsSlugRoute
   RejoindreCodeRoute: typeof RejoindreCodeRoute
+  SeanceIdRoute: typeof SeanceIdRoute
   ExercicesARendreIdRoute: typeof ExercicesARendreIdRoute
+  FormateurSeanceDirectIdRoute: typeof FormateurSeanceDirectIdRoute
   FormateurSeanceGroupeIdRoute: typeof FormateurSeanceGroupeIdRoute
 }
 
@@ -304,6 +343,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RessourcesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formateur_/notes-cours': {
+      id: '/formateur_/notes-cours'
+      path: '/formateur/notes-cours'
+      fullPath: '/formateur/notes-cours'
+      preLoaderRoute: typeof FormateurNotesCoursRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/formations_/$slug': {
       id: '/formations_/$slug'
       path: '/formations/$slug'
@@ -318,11 +364,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof RejoindreCodeRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/seance/$id': {
+      id: '/seance/$id'
+      path: '/seance/$id'
+      fullPath: '/seance/$id'
+      preLoaderRoute: typeof SeanceIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/exercices_/a-rendre/$id': {
       id: '/exercices_/a-rendre/$id'
       path: '/exercices/a-rendre/$id'
       fullPath: '/exercices/a-rendre/$id'
       preLoaderRoute: typeof ExercicesARendreIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/formateur_/seance-direct/$id': {
+      id: '/formateur_/seance-direct/$id'
+      path: '/formateur/seance-direct/$id'
+      fullPath: '/formateur/seance-direct/$id'
+      preLoaderRoute: typeof FormateurSeanceDirectIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/formateur_/seance/$groupeId': {
@@ -347,9 +407,12 @@ const rootRouteChildren: RootRouteChildren = {
   MonEspaceRoute: MonEspaceRoute,
   OutilsIaRoute: OutilsIaRoute,
   RessourcesRoute: RessourcesRoute,
+  FormateurNotesCoursRoute: FormateurNotesCoursRoute,
   FormationsSlugRoute: FormationsSlugRoute,
   RejoindreCodeRoute: RejoindreCodeRoute,
+  SeanceIdRoute: SeanceIdRoute,
   ExercicesARendreIdRoute: ExercicesARendreIdRoute,
+  FormateurSeanceDirectIdRoute: FormateurSeanceDirectIdRoute,
   FormateurSeanceGroupeIdRoute: FormateurSeanceGroupeIdRoute,
 }
 export const routeTree = rootRouteImport

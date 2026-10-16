@@ -20,6 +20,7 @@ const badgeType: Record<TypeOutil, string> = {
   moteur: "bg-tint-blue text-tint-blue-fg",
   base: "bg-tint-purple text-tint-purple-fg",
   ia: "bg-tint-rose text-tint-rose-fg",
+  assistant: "bg-secondary text-secondary-foreground",
 };
 const labelType = (t: TypeOutil) => TYPES_OUTIL.find((x) => x.id === t)?.badge ?? t;
 
@@ -158,6 +159,12 @@ function CarteOutil({ outil: o, ouvert, onBasculer }: { outil: OutilRecherche; o
         <span className={`rounded-full px-3 py-1 text-xs font-semibold ${badgeType[o.type]}`}>{labelType(o.type)}</span>
       </div>
       <p className="mt-3 text-sm">{o.usage}</p>
+      {o.pourLaRecherche && (
+        <div className="mt-3 text-sm">
+          <p className="font-semibold text-navy">Pour la recherche, il sert à :</p>
+          <ul className="mt-1 list-disc space-y-0.5 pl-4">{o.pourLaRecherche.map((p) => <li key={p}>{p}</li>)}</ul>
+        </div>
+      )}
 
       {/* Sur mobile, le détail est replié ; toujours visible à partir de md. */}
       <button onClick={onBasculer} aria-expanded={ouvert} aria-controls={detailId} className="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-primary md:hidden">
@@ -178,6 +185,19 @@ function CarteOutil({ outil: o, ouvert, onBasculer }: { outil: OutilRecherche; o
         {o.bonUsage && (
           <p className="mt-3 rounded-xl border-2 border-primary/30 bg-secondary/40 p-4 text-sm"><strong className="text-navy">Bon usage : </strong>{o.bonUsage}</p>
         )}
+        {o.precautions && (
+          <div className="mt-3 rounded-xl border-2 border-primary/30 bg-secondary/40 p-4 text-sm">
+            <h4 className="font-bold text-navy">Précautions</h4>
+            <ul className="mt-2 list-disc space-y-1 pl-4">{o.precautions.map((p) => <li key={p}>{p}</li>)}</ul>
+          </div>
+        )}
+        {o.exemplePrompt && (
+          <div className="mt-3 rounded-xl bg-muted p-4 text-sm">
+            <h4 className="font-bold text-navy">Exemple de prompt</h4>
+            <p className="mt-2 italic">« {o.exemplePrompt} »</p>
+          </div>
+        )}
+        {o.acces && <p className="mt-3 text-xs text-muted-foreground"><strong>Accès : </strong>{o.acces}</p>}
       </div>
 
       <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">

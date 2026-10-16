@@ -1,8 +1,9 @@
 // Outils de recherche documentaire présentés sur /outils-ia.
 // Fiches complètes : Google Scholar, PubMed, NotebookLM. Fiches courtes : usage + 2 avantages + 2 limites.
+// Assistants généralistes (ChatGPT, Claude) : usages en recherche, précautions, exemple de prompt et accès en plus.
 // Les fonctions et conditions d'accès évoluent : vérifiées en octobre 2026.
 
-export type TypeOutil = "moteur" | "base" | "ia";
+export type TypeOutil = "moteur" | "base" | "ia" | "assistant";
 
 export type OutilRecherche = {
   id: string;
@@ -15,12 +16,18 @@ export type OutilRecherche = {
   limites: string[];
   bonUsage: string;
   chapitre: string; // chapitre du support « L'intelligence artificielle et la recherche »
+  // Fiches des assistants généralistes :
+  pourLaRecherche?: string[];
+  precautions?: string[];
+  exemplePrompt?: string;
+  acces?: string;
 };
 
 export const TYPES_OUTIL: { id: TypeOutil; label: string; badge: string }[] = [
   { id: "moteur", label: "Moteurs académiques", badge: "Moteur académique" },
   { id: "base", label: "Bases spécialisées", badge: "Base spécialisée" },
   { id: "ia", label: "Outils d'IA", badge: "Outil d'IA" },
+  { id: "assistant", label: "Assistants généralistes", badge: "Assistant généraliste" },
 ];
 
 export const outilsRecherche: OutilRecherche[] = [
@@ -163,6 +170,76 @@ export const outilsRecherche: OutilRecherche[] = [
     bonUsage: "Découvrir des travaux liés à un article clé, puis compléter par une recherche par mots-clés dans les bases.",
     chapitre: "6.6",
   },
+  // ───── Assistants généralistes ─────
+  {
+    id: "chatgpt",
+    nom: "ChatGPT",
+    type: "assistant",
+    editeur: "OpenAI",
+    url: "https://chatgpt.com",
+    usage: "Assistant conversationnel généraliste pour rédiger, expliquer, reformuler, traduire, structurer et analyser des textes.",
+    pourLaRecherche: [
+      "Proposer des mots-clés et des synonymes",
+      "Traduire une problématique en équations de recherche en anglais",
+      "Expliquer un passage difficile",
+      "Reformuler un texte",
+      "Structurer un plan",
+      "Simuler une relecture critique",
+    ],
+    avantages: ["Très polyvalent", "Réponses rapides", "Bon pour reformuler et vulgariser", "Itérations faciles", "Interface en français"],
+    limites: [
+      "Peut inventer des références, des citations et des DOI d'apparence crédible",
+      "La fluidité ne garantit pas l'exactitude",
+      "Connaissances parfois incomplètes ou datées",
+      "Biais possibles",
+      "Ne remplace pas une base scientifique",
+    ],
+    precautions: [
+      "Retrouver chaque référence dans Crossref, Google Scholar ou chez l'éditeur",
+      "Ne pas saisir de données personnelles ou confidentielles",
+      "Déclarer l'usage : outil, version ou date, tâche, contrôle exercé",
+      "Garder la trace des prompts",
+    ],
+    exemplePrompt:
+      "Agis comme un spécialiste de la recherche documentaire. Mon sujet est : [sujet]. Identifie les concepts, les mots-clés en français et en anglais, les synonymes et des équations de recherche adaptées à Google Scholar. Ne fabrique aucune référence. Distingue les suggestions de recherche des publications réellement vérifiées.",
+    acces: "Offre gratuite et offres payantes ; fonctions et limites évolutives, à vérifier sur le site officiel.",
+    bonUsage: "Préparer et reformuler sa recherche (mots-clés, équations, plan), puis retrouver chaque référence à la source avant de la citer.",
+    chapitre: "3.3",
+  },
+  {
+    id: "claude",
+    nom: "Claude",
+    type: "assistant",
+    editeur: "Anthropic",
+    url: "https://claude.ai",
+    usage: "Assistant conversationnel généraliste, souvent utilisé pour lire et analyser de longs textes, rédiger de façon structurée et expliquer des raisonnements.",
+    pourLaRecherche: [
+      "Résumer ou comparer des documents fournis par l'utilisateur",
+      "Extraire les objectifs, méthodes et limites d'un article",
+      "Reformuler et structurer un texte",
+      "Proposer des mots-clés et des équations de recherche",
+      "Relire un plan de manière critique",
+    ],
+    avantages: ["À l'aise avec les longs documents que l'on fournit", "Réponses structurées et nuancées", "Bon pour reformuler et argumenter", "Interface en français"],
+    limites: [
+      "Peut aussi inventer ou déformer des références",
+      "Peut se tromper en résumant",
+      "Ne dispose pas toujours des travaux récents",
+      "La qualité dépend du prompt et du document fourni",
+      "Ne remplace pas une base scientifique",
+    ],
+    precautions: [
+      "Comparer chaque résumé avec l'article source",
+      "Retrouver et vérifier chaque référence",
+      "Ne pas téléverser de documents confidentiels ou de données personnelles sans protection appropriée",
+      "Déclarer l'usage et garder la trace des prompts",
+    ],
+    exemplePrompt:
+      "Voici le résumé et la méthodologie d'un article. Extrais l'objectif, la méthode, les principaux résultats et les limites, en distinguant ce qui est écrit dans le texte de ce que tu déduis. N'ajoute aucune information absente du texte.",
+    acces: "Offre gratuite et offres payantes ; fonctions et limites évolutives, à vérifier sur le site officiel.",
+    bonUsage: "Analyser des articles déjà sélectionnés et vérifiés, en comparant chaque résumé avec le texte source.",
+    chapitre: "4.4",
+  },
 ];
 
 /** Colonnes du tableau comparatif non couvertes par les fiches. */
@@ -176,6 +253,8 @@ export const comparatif: Record<string, { acces: string; discipline: string }> =
   consensus: { acces: "Gratuit (limité) + offre payante", discipline: "Toutes disciplines" },
   scite: { acces: "En grande partie payant", discipline: "Toutes disciplines" },
   researchrabbit: { acces: "Gratuit (limité) + offre payante", discipline: "Toutes disciplines" },
+  chatgpt: { acces: "Gratuit + offres payantes (à vérifier sur le site officiel)", discipline: "Généraliste" },
+  claude: { acces: "Gratuit + offres payantes (à vérifier sur le site officiel)", discipline: "Généraliste" },
 };
 
 /** Outils déjà présents sur la page, hors des trois types ci-dessus : conservés tels quels. */

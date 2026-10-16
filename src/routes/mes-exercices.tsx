@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { CheckCircle2, ClipboardCheck, FileText, ListChecks, PenLine, UserRound } from "lucide-react";
+import { ArrowRight, CheckCircle2, ClipboardCheck, FileSearch, FileText, ListChecks, PenLine, UserRound } from "lucide-react";
 import { useEffect, useRef } from "react";
 import { PageParticipant } from "@/components/espace/EspaceParticipant";
 import { btnPrimary } from "@/components/espace/styles";
@@ -101,6 +101,21 @@ function MesExercices({ userId }: { userId: string }) {
             </div>
           </>
         )}
+      </section>
+
+      <section aria-labelledby="pertinence-titre" className="pt-4">
+        <Link to="/mes-exercices/pertinence" className="flex flex-col gap-4 rounded-2xl border-2 border-primary/40 bg-card p-5 shadow-card transition hover:border-primary sm:flex-row sm:items-center sm:justify-between">
+          <span className="flex items-start gap-3">
+            <FileSearch className="mt-1 h-7 w-7 shrink-0 text-primary" />
+            <span>
+              <span id="pertinence-titre" className="block text-xl font-bold text-navy">Évaluer la pertinence d'un article</span>
+              <span className="mt-1 block text-sm text-muted-foreground">
+                Juge un article critère par critère, reçois une correction détaillée et un score sur 100, puis compare ton analyse à celle d'une IA. Un mode te permet aussi de travailler sur ton propre sujet.
+              </span>
+            </span>
+          </span>
+          <span className={`${btnPrimary} shrink-0`}>Commencer <ArrowRight className="h-4 w-4" /></span>
+        </Link>
       </section>
 
       <section aria-labelledby="formation-titre" className="space-y-4 pt-4">

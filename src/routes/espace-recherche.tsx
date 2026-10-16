@@ -8,6 +8,8 @@ import { Carte, Message, Stat } from "@/components/espace/ui";
 import { COURS_CHAPITRES, resumesChapitres } from "@/data/chapitres";
 import { exerciceARendre } from "@/data/exercices-a-rendre";
 import { etapesFaites, NB_ETAPES_ACCUEIL, useAccueil } from "@/lib/accueil";
+import { articlePertinence } from "@/data/articles-pertinence";
+import { useAnalysesPertinence } from "@/lib/pertinence";
 import { labelNiveau } from "@/lib/progression";
 import { NIVEAUX } from "@/lib/qcm-comprendre-ia";
 import { useProgressionChapitres } from "@/lib/progression-chapitres";
@@ -36,6 +38,7 @@ function EspaceRecherche({ userId }: { userId: string }) {
   const travaux = useTravauxRecherche(userId);
   const copies = useMesSoumissions(userId);
   const accueil = useAccueil(userId);
+  const analyses = useAnalysesPertinence(userId);
   const lecons = useProgressionChapitres();
   const progression = useQuery({
     queryKey: ["progression", userId],
@@ -102,6 +105,13 @@ function EspaceRecherche({ userId }: { userId: string }) {
         lien: <Link to="/mes-exercices" search={{ exercice: suivant.id }} className="text-sm font-semibold text-primary hover:underline">Commencer</Link>,
       });
     }
+  }
+  if (analyses.isSuccess && !analyses.data.some((a) => a.mode === "corrige")) {
+    prochaines.push({
+      cle: "pertinence",
+      texte: <>Exercice : <strong>Évaluer la pertinence d'un article</strong></>,
+      lien: <Link to="/mes-exercices/pertinence" className="text-sm font-semibold text-primary hover:underline">Commencer</Link>,
+    });
   }
   const leconSuivante = resumesChapitres.find((r) => !lecons[r.id]?.termine);
   if (leconSuivante) {
@@ -196,7 +206,24 @@ function EspaceRecherche({ userId }: { userId: string }) {
       </section>
 
       <Carte titre={<span className="flex items-center gap-2"><CheckCircle2 className="h-5 w-5 text-primary" /> Exercices terminés</span>}>
-        <div className="grid gap-6 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-3">
+          <div>
+            <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">Pertinence d'articles</h3>
+            {(analyses.data ?? []).length === 0 ? (
+              <p className="mt-2 text-sm text-muted-foreground">Aucune analyse pour l'instant.</p>
+            ) : (
+              <ul className="mt-2 space-y-1.5 text-sm">
+                {(analyses.data ?? []).map((a) => (
+                  <li key={a.article_id} className="flex justify-between gap-3">
+                    <Link to="/mes-exercices/pertinence" search={a.mode === "corrige" ? { mode: "corrige", article: a.article_id } : { mode: "mon-sujet" }} className="min-w-0 truncate font-medium hover:text-primary">
+                      {a.mode === "corrige" ? articlePertinence(a.article_id)?.titre ?? a.article_id : String(a.article?.["titre"] ?? "Article")}
+                    </Link>
+                    <span className="shrink-0 tabular-nums text-muted-foreground">{a.mode === "corrige" ? `${a.premier_score}/100` : "non noté"}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
           <div>
             <h3 className="text-sm font-bold uppercase tracking-wide text-muted-foreground">Exercices personnalisés</h3>
             {persoTermines.length === 0 ? (

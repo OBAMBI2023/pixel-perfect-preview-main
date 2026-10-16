@@ -135,6 +135,22 @@ export type TravailRecherche = {
   updated_at: string;
 };
 
+/** Analyse d'un article (exercice de pertinence) ; écrite uniquement via enregistrer_analyse_pertinence. */
+export type AnalysePertinence = {
+  user_id: string;
+  article_id: string;
+  mode: "corrige" | "mon-sujet";
+  sujet: string;
+  article: Record<string, unknown> | null;
+  contenu: Record<string, unknown>;
+  score: number | null;
+  premier_score: number | null;
+  tentative_id: string | null;
+  nb_analyses: number;
+  created_at: string;
+  updated_at: string;
+};
+
 /** Tentative à enregistrer via la RPC enregistrer_tentatives. */
 export type NouvelleTentative = {
   cours: string;
@@ -252,6 +268,14 @@ export type Database = {
           { foreignKeyName: "travaux_recherche_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
+      analyses_pertinence: {
+        Row: AnalysePertinence;
+        Insert: never;
+        Update: never;
+        Relationships: [
+          { foreignKeyName: "analyses_pertinence_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
       reponses: {
         Row: Reponse;
         Insert: Omit<Reponse, "id" | "created_at"> & { id?: string; created_at?: string };
@@ -311,6 +335,10 @@ export type Database = {
       enregistrer_accueil: {
         Args: { p_etape?: string; p_fait?: boolean; p_mode?: ModeParticipation; p_vu?: boolean };
         Returns: AccueilParticipant;
+      };
+      enregistrer_analyse_pertinence: {
+        Args: { p_article: string; p_mode: "corrige" | "mon-sujet"; p_sujet: string; p_article_info: Record<string, unknown> | null; p_analyse: Record<string, unknown>; p_score: number | null };
+        Returns: AnalysePertinence;
       };
       activite_membres: { Args: { p_groupe: string }; Returns: { apprenant_id: string; joined_at: string; derniere_activite: string | null }[] };
     };

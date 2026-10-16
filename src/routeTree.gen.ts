@@ -26,6 +26,7 @@ import { Route as ProfilChercheurRouteImport } from './routes/profil-chercheur'
 import { Route as RessourcesRouteImport } from './routes/ressources'
 import { Route as FormateurNotesCoursRouteImport } from './routes/formateur_.notes-cours'
 import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
+import { Route as MesExercicesPertinenceRouteImport } from './routes/mes-exercices_.pertinence'
 import { Route as RejoindreCodeRouteImport } from './routes/rejoindre.$code'
 import { Route as SeanceIdRouteImport } from './routes/seance.$id'
 import { Route as ExercicesARendreIdRouteImport } from './routes/exercices_.a-rendre.$id'
@@ -118,6 +119,11 @@ const FormationsSlugRoute = FormationsSlugRouteImport.update({
   path: '/formations/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MesExercicesPertinenceRoute = MesExercicesPertinenceRouteImport.update({
+  id: '/mes-exercices_/pertinence',
+  path: '/mes-exercices/pertinence',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const RejoindreCodeRoute = RejoindreCodeRouteImport.update({
   id: '/rejoindre/$code',
   path: '/rejoindre/$code',
@@ -168,6 +174,7 @@ export interface FileRoutesByFullPath {
   '/ressources': typeof RessourcesRoute
   '/formateur/notes-cours': typeof FormateurNotesCoursRoute
   '/formations/$slug': typeof FormationsSlugRoute
+  '/mes-exercices/pertinence': typeof MesExercicesPertinenceRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
   '/seance/$id': typeof SeanceIdRoute
   '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
@@ -193,6 +200,7 @@ export interface FileRoutesByTo {
   '/ressources': typeof RessourcesRoute
   '/formateur/notes-cours': typeof FormateurNotesCoursRoute
   '/formations/$slug': typeof FormationsSlugRoute
+  '/mes-exercices/pertinence': typeof MesExercicesPertinenceRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
   '/seance/$id': typeof SeanceIdRoute
   '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
@@ -219,6 +227,7 @@ export interface FileRoutesById {
   '/ressources': typeof RessourcesRoute
   '/formateur_/notes-cours': typeof FormateurNotesCoursRoute
   '/formations_/$slug': typeof FormationsSlugRoute
+  '/mes-exercices_/pertinence': typeof MesExercicesPertinenceRoute
   '/rejoindre/$code': typeof RejoindreCodeRoute
   '/seance/$id': typeof SeanceIdRoute
   '/exercices_/a-rendre/$id': typeof ExercicesARendreIdRoute
@@ -246,6 +255,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/formateur/notes-cours'
     | '/formations/$slug'
+    | '/mes-exercices/pertinence'
     | '/rejoindre/$code'
     | '/seance/$id'
     | '/exercices/a-rendre/$id'
@@ -271,6 +281,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/formateur/notes-cours'
     | '/formations/$slug'
+    | '/mes-exercices/pertinence'
     | '/rejoindre/$code'
     | '/seance/$id'
     | '/exercices/a-rendre/$id'
@@ -296,6 +307,7 @@ export interface FileRouteTypes {
     | '/ressources'
     | '/formateur_/notes-cours'
     | '/formations_/$slug'
+    | '/mes-exercices_/pertinence'
     | '/rejoindre/$code'
     | '/seance/$id'
     | '/exercices_/a-rendre/$id'
@@ -322,6 +334,7 @@ export interface RootRouteChildren {
   RessourcesRoute: typeof RessourcesRoute
   FormateurNotesCoursRoute: typeof FormateurNotesCoursRoute
   FormationsSlugRoute: typeof FormationsSlugRoute
+  MesExercicesPertinenceRoute: typeof MesExercicesPertinenceRoute
   RejoindreCodeRoute: typeof RejoindreCodeRoute
   SeanceIdRoute: typeof SeanceIdRoute
   ExercicesARendreIdRoute: typeof ExercicesARendreIdRoute
@@ -451,6 +464,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormationsSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mes-exercices_/pertinence': {
+      id: '/mes-exercices_/pertinence'
+      path: '/mes-exercices/pertinence'
+      fullPath: '/mes-exercices/pertinence'
+      preLoaderRoute: typeof MesExercicesPertinenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/rejoindre/$code': {
       id: '/rejoindre/$code'
       path: '/rejoindre/$code'
@@ -514,6 +534,7 @@ const rootRouteChildren: RootRouteChildren = {
   RessourcesRoute: RessourcesRoute,
   FormateurNotesCoursRoute: FormateurNotesCoursRoute,
   FormationsSlugRoute: FormationsSlugRoute,
+  MesExercicesPertinenceRoute: MesExercicesPertinenceRoute,
   RejoindreCodeRoute: RejoindreCodeRoute,
   SeanceIdRoute: SeanceIdRoute,
   ExercicesARendreIdRoute: ExercicesARendreIdRoute,

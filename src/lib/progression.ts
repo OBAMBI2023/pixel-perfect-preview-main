@@ -1,6 +1,7 @@
 import { CATEGORIES, NIVEAUX, questionsComprendreIA } from "@/lib/qcm-comprendre-ia";
 import { ELEMENTS_PROMPT, exercicesComprendreIA, TYPES_EXERCICE, type Exercice } from "@/lib/exercices-comprendre-ia";
 import { COURS_CHAPITRES, idQuestion, NIVEAU_DB, toutesLesLecons } from "@/data/chapitres";
+import { ARTICLES, PERTINENCES } from "@/data/articles-pertinence";
 import { getSupabase, type NouvelleTentative } from "@/lib/supabase";
 
 /** Clés localStorage utilisées par /exercices (progression sans compte). */
@@ -130,6 +131,18 @@ for (const c of toutesLesLecons) {
       bonneReponse: q.options[q.bonne] ?? "—",
     });
   }
+}
+
+// Exercice « Évaluer la pertinence d'un article », enregistré sous « pertinence:<article> » (note sur 10).
+for (const a of ARTICLES) {
+  const id = `pertinence:${a.id}`;
+  index.set(id, {
+    id, type: "exercice", genre: "Pertinence d'un article", enonce: `Évaluer la pertinence : « ${a.titre} » (exemple fictif)`,
+    categorie: "selection-evaluation", niveau: "intermediaire", chapitre: "7", cours: "comprendre-ia",
+    // Réponse enregistrée : « 72/100 · tres » → « 72/100 · Très pertinent ».
+    lireReponse: (r) => (r ? r.replace(/· (\w+)$/, (_, p: string) => `· ${PERTINENCES.find((x) => x.id === p)?.label ?? p}`) : "—"),
+    bonneReponse: PERTINENCES.find((p) => p.id === a.pertinence)?.label ?? "—",
+  });
 }
 
 export const infoQuestion = (id: string) => index.get(id);

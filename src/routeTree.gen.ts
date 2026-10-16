@@ -12,13 +12,17 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AProposRouteImport } from './routes/a-propos'
 import { Route as ActualitesRouteImport } from './routes/actualites'
+import { Route as BienvenueRouteImport } from './routes/bienvenue'
 import { Route as ConnexionRouteImport } from './routes/connexion'
+import { Route as EspaceRechercheRouteImport } from './routes/espace-recherche'
 import { Route as ExercicesRouteImport } from './routes/exercices'
 import { Route as FormateurRouteImport } from './routes/formateur'
 import { Route as FormationsRouteImport } from './routes/formations'
 import { Route as InscriptionRouteImport } from './routes/inscription'
+import { Route as MesExercicesRouteImport } from './routes/mes-exercices'
 import { Route as MonEspaceRouteImport } from './routes/mon-espace'
 import { Route as OutilsIaRouteImport } from './routes/outils-ia'
+import { Route as ProfilChercheurRouteImport } from './routes/profil-chercheur'
 import { Route as RessourcesRouteImport } from './routes/ressources'
 import { Route as FormateurNotesCoursRouteImport } from './routes/formateur_.notes-cours'
 import { Route as FormationsSlugRouteImport } from './routes/formations_.$slug'
@@ -44,9 +48,19 @@ const ActualitesRoute = ActualitesRouteImport.update({
   path: '/actualites',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BienvenueRoute = BienvenueRouteImport.update({
+  id: '/bienvenue',
+  path: '/bienvenue',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ConnexionRoute = ConnexionRouteImport.update({
   id: '/connexion',
   path: '/connexion',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspaceRechercheRoute = EspaceRechercheRouteImport.update({
+  id: '/espace-recherche',
+  path: '/espace-recherche',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ExercicesRoute = ExercicesRouteImport.update({
@@ -69,6 +83,11 @@ const InscriptionRoute = InscriptionRouteImport.update({
   path: '/inscription',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MesExercicesRoute = MesExercicesRouteImport.update({
+  id: '/mes-exercices',
+  path: '/mes-exercices',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MonEspaceRoute = MonEspaceRouteImport.update({
   id: '/mon-espace',
   path: '/mon-espace',
@@ -77,6 +96,11 @@ const MonEspaceRoute = MonEspaceRouteImport.update({
 const OutilsIaRoute = OutilsIaRouteImport.update({
   id: '/outils-ia',
   path: '/outils-ia',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfilChercheurRoute = ProfilChercheurRouteImport.update({
+  id: '/profil-chercheur',
+  path: '/profil-chercheur',
   getParentRoute: () => rootRouteImport,
 } as any)
 const RessourcesRoute = RessourcesRouteImport.update({
@@ -130,13 +154,17 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/actualites': typeof ActualitesRoute
+  '/bienvenue': typeof BienvenueRoute
   '/connexion': typeof ConnexionRoute
+  '/espace-recherche': typeof EspaceRechercheRoute
   '/exercices': typeof ExercicesRoute
   '/formateur': typeof FormateurRoute
   '/formations': typeof FormationsRoute
   '/inscription': typeof InscriptionRoute
+  '/mes-exercices': typeof MesExercicesRoute
   '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
+  '/profil-chercheur': typeof ProfilChercheurRoute
   '/ressources': typeof RessourcesRoute
   '/formateur/notes-cours': typeof FormateurNotesCoursRoute
   '/formations/$slug': typeof FormationsSlugRoute
@@ -151,13 +179,17 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/actualites': typeof ActualitesRoute
+  '/bienvenue': typeof BienvenueRoute
   '/connexion': typeof ConnexionRoute
+  '/espace-recherche': typeof EspaceRechercheRoute
   '/exercices': typeof ExercicesRoute
   '/formateur': typeof FormateurRoute
   '/formations': typeof FormationsRoute
   '/inscription': typeof InscriptionRoute
+  '/mes-exercices': typeof MesExercicesRoute
   '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
+  '/profil-chercheur': typeof ProfilChercheurRoute
   '/ressources': typeof RessourcesRoute
   '/formateur/notes-cours': typeof FormateurNotesCoursRoute
   '/formations/$slug': typeof FormationsSlugRoute
@@ -173,13 +205,17 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/a-propos': typeof AProposRoute
   '/actualites': typeof ActualitesRoute
+  '/bienvenue': typeof BienvenueRoute
   '/connexion': typeof ConnexionRoute
+  '/espace-recherche': typeof EspaceRechercheRoute
   '/exercices': typeof ExercicesRoute
   '/formateur': typeof FormateurRoute
   '/formations': typeof FormationsRoute
   '/inscription': typeof InscriptionRoute
+  '/mes-exercices': typeof MesExercicesRoute
   '/mon-espace': typeof MonEspaceRoute
   '/outils-ia': typeof OutilsIaRoute
+  '/profil-chercheur': typeof ProfilChercheurRoute
   '/ressources': typeof RessourcesRoute
   '/formateur_/notes-cours': typeof FormateurNotesCoursRoute
   '/formations_/$slug': typeof FormationsSlugRoute
@@ -196,13 +232,17 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/actualites'
+    | '/bienvenue'
     | '/connexion'
+    | '/espace-recherche'
     | '/exercices'
     | '/formateur'
     | '/formations'
     | '/inscription'
+    | '/mes-exercices'
     | '/mon-espace'
     | '/outils-ia'
+    | '/profil-chercheur'
     | '/ressources'
     | '/formateur/notes-cours'
     | '/formations/$slug'
@@ -217,13 +257,17 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/actualites'
+    | '/bienvenue'
     | '/connexion'
+    | '/espace-recherche'
     | '/exercices'
     | '/formateur'
     | '/formations'
     | '/inscription'
+    | '/mes-exercices'
     | '/mon-espace'
     | '/outils-ia'
+    | '/profil-chercheur'
     | '/ressources'
     | '/formateur/notes-cours'
     | '/formations/$slug'
@@ -238,13 +282,17 @@ export interface FileRouteTypes {
     | '/'
     | '/a-propos'
     | '/actualites'
+    | '/bienvenue'
     | '/connexion'
+    | '/espace-recherche'
     | '/exercices'
     | '/formateur'
     | '/formations'
     | '/inscription'
+    | '/mes-exercices'
     | '/mon-espace'
     | '/outils-ia'
+    | '/profil-chercheur'
     | '/ressources'
     | '/formateur_/notes-cours'
     | '/formations_/$slug'
@@ -260,13 +308,17 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AProposRoute: typeof AProposRoute
   ActualitesRoute: typeof ActualitesRoute
+  BienvenueRoute: typeof BienvenueRoute
   ConnexionRoute: typeof ConnexionRoute
+  EspaceRechercheRoute: typeof EspaceRechercheRoute
   ExercicesRoute: typeof ExercicesRoute
   FormateurRoute: typeof FormateurRoute
   FormationsRoute: typeof FormationsRoute
   InscriptionRoute: typeof InscriptionRoute
+  MesExercicesRoute: typeof MesExercicesRoute
   MonEspaceRoute: typeof MonEspaceRoute
   OutilsIaRoute: typeof OutilsIaRoute
+  ProfilChercheurRoute: typeof ProfilChercheurRoute
   RessourcesRoute: typeof RessourcesRoute
   FormateurNotesCoursRoute: typeof FormateurNotesCoursRoute
   FormationsSlugRoute: typeof FormationsSlugRoute
@@ -301,11 +353,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ActualitesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/bienvenue': {
+      id: '/bienvenue'
+      path: '/bienvenue'
+      fullPath: '/bienvenue'
+      preLoaderRoute: typeof BienvenueRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/connexion': {
       id: '/connexion'
       path: '/connexion'
       fullPath: '/connexion'
       preLoaderRoute: typeof ConnexionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/espace-recherche': {
+      id: '/espace-recherche'
+      path: '/espace-recherche'
+      fullPath: '/espace-recherche'
+      preLoaderRoute: typeof EspaceRechercheRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/exercices': {
@@ -336,6 +402,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof InscriptionRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/mes-exercices': {
+      id: '/mes-exercices'
+      path: '/mes-exercices'
+      fullPath: '/mes-exercices'
+      preLoaderRoute: typeof MesExercicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/mon-espace': {
       id: '/mon-espace'
       path: '/mon-espace'
@@ -348,6 +421,13 @@ declare module '@tanstack/react-router' {
       path: '/outils-ia'
       fullPath: '/outils-ia'
       preLoaderRoute: typeof OutilsIaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profil-chercheur': {
+      id: '/profil-chercheur'
+      path: '/profil-chercheur'
+      fullPath: '/profil-chercheur'
+      preLoaderRoute: typeof ProfilChercheurRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/ressources': {
@@ -420,13 +500,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AProposRoute: AProposRoute,
   ActualitesRoute: ActualitesRoute,
+  BienvenueRoute: BienvenueRoute,
   ConnexionRoute: ConnexionRoute,
+  EspaceRechercheRoute: EspaceRechercheRoute,
   ExercicesRoute: ExercicesRoute,
   FormateurRoute: FormateurRoute,
   FormationsRoute: FormationsRoute,
   InscriptionRoute: InscriptionRoute,
+  MesExercicesRoute: MesExercicesRoute,
   MonEspaceRoute: MonEspaceRoute,
   OutilsIaRoute: OutilsIaRoute,
+  ProfilChercheurRoute: ProfilChercheurRoute,
   RessourcesRoute: RessourcesRoute,
   FormateurNotesCoursRoute: FormateurNotesCoursRoute,
   FormationsSlugRoute: FormationsSlugRoute,

@@ -97,6 +97,44 @@ export type ReactionSeance = {
   created_at: string;
 };
 
+export type ModeParticipation = "presentiel" | "distance";
+/** Parcours d'accueil d'un participant ; écrit uniquement via la RPC enregistrer_accueil. */
+export type AccueilParticipant = {
+  user_id: string;
+  etapes: string[];
+  mode_participation: ModeParticipation | null;
+  accueil_vu_le: string | null;
+  termine_le: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NiveauEtudes = "licence" | "master" | "doctorat" | "postdoc" | "enseignant" | "autre";
+/** Profil chercheur : privé, lu et modifié uniquement par son propriétaire (RLS). */
+export type ProfilChercheur = {
+  user_id: string;
+  discipline: string;
+  niveau_etudes: NiveauEtudes;
+  etablissement: string | null;
+  sujet: string;
+  problematique: string | null;
+  objectif: string;
+  created_at: string;
+  updated_at: string;
+};
+export type ExerciceRecherche = "prompt" | "mots-cles" | "equation" | "references";
+/** Travail d'un exercice personnalisé ; contenu propre à chaque exercice (voir src/lib/recherche.ts). */
+export type TravailRecherche = {
+  user_id: string;
+  exercice: ExerciceRecherche;
+  sujet: string;
+  contenu: Record<string, unknown>;
+  termine: boolean;
+  termine_le: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 /** Tentative à enregistrer via la RPC enregistrer_tentatives. */
 export type NouvelleTentative = {
   cours: string;
@@ -190,6 +228,30 @@ export type Database = {
           { foreignKeyName: "reactions_seance_apprenant_id_fkey"; columns: ["apprenant_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
         ];
       };
+      accueil_participant: {
+        Row: AccueilParticipant;
+        Insert: never;
+        Update: never;
+        Relationships: [
+          { foreignKeyName: "accueil_participant_user_id_fkey"; columns: ["user_id"]; isOneToOne: true; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
+      profils_chercheur: {
+        Row: ProfilChercheur;
+        Insert: Pick<ProfilChercheur, "discipline" | "niveau_etudes" | "etablissement" | "sujet" | "problematique" | "objectif">;
+        Update: Partial<Pick<ProfilChercheur, "discipline" | "niveau_etudes" | "etablissement" | "sujet" | "problematique" | "objectif">>;
+        Relationships: [
+          { foreignKeyName: "profils_chercheur_user_id_fkey"; columns: ["user_id"]; isOneToOne: true; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
+      travaux_recherche: {
+        Row: TravailRecherche;
+        Insert: Pick<TravailRecherche, "exercice" | "sujet" | "contenu" | "termine">;
+        Update: Partial<Pick<TravailRecherche, "exercice" | "sujet" | "contenu" | "termine">>;
+        Relationships: [
+          { foreignKeyName: "travaux_recherche_user_id_fkey"; columns: ["user_id"]; isOneToOne: false; referencedRelation: "profiles"; referencedColumns: ["id"] },
+        ];
+      };
       reponses: {
         Row: Reponse;
         Insert: Omit<Reponse, "id" | "created_at"> & { id?: string; created_at?: string };
@@ -246,6 +308,10 @@ export type Database = {
       mes_devoirs: { Args: Record<string, never>; Returns: (Devoir & { groupe_nom: string; nb_questions: number; fait: boolean })[] };
       corriger_soumission: { Args: { p_id: string; p_note: number | null; p_commentaire: string; p_statut: "corrige" | "a_refaire" }; Returns: Soumission };
       marquer_copie_consultee: { Args: { p_id: string }; Returns: undefined };
+      enregistrer_accueil: {
+        Args: { p_etape?: string; p_fait?: boolean; p_mode?: ModeParticipation; p_vu?: boolean };
+        Returns: AccueilParticipant;
+      };
       activite_membres: { Args: { p_groupe: string }; Returns: { apprenant_id: string; joined_at: string; derniere_activite: string | null }[] };
     };
     Enums: { [_ in never]: never };

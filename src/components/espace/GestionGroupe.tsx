@@ -5,6 +5,7 @@ import { Confirmer } from "@/components/espace/Confirmer";
 import { Invitation } from "@/components/espace/Invitation";
 import { btnPrimary, formatDate, inputClass } from "@/components/espace/styles";
 import { Carte, Message } from "@/components/espace/ui";
+import { MODES_PARTICIPATION, NB_ETAPES_ACCUEIL, useAccueilMembres } from "@/lib/accueil";
 import { invaliderGroupe, useMembres } from "@/lib/formateur";
 import { getSupabase, type Groupe } from "@/lib/supabase";
 
@@ -57,6 +58,8 @@ export function EnteteGroupe({ groupe }: { groupe: Groupe }) {
   };
   const erreur = renommer.error ?? archiver.error ?? retirer.error;
   const nbMembres = membres.data?.length;
+  const accueils = useAccueilMembres(groupe.id, ouvert ? (membres.data ?? []).map((m) => m.apprenant_id) : []);
+  const nbDemarres = membres.data?.filter((m) => accueils.data?.get(m.apprenant_id)?.termine_le).length ?? 0;
 
   return (
     <Carte>
@@ -97,6 +100,10 @@ export function EnteteGroupe({ groupe }: { groupe: Groupe }) {
           <button onClick={() => setOuvert(!ouvert)} className="mt-4 text-sm font-semibold text-primary hover:underline" aria-expanded={ouvert}>
             {ouvert ? "Masquer les membres" : `Voir les membres (${nbMembres})`}
           </button>
+          {ouvert && accueils.isSuccess && (
+            <p className="mt-2 text-xs text-muted-foreground">Démarrage terminé : {nbDemarres} / {nbMembres} · parcours d'accueil, sans lien avec les résultats.</p>
+          )}
+          {ouvert && accueils.isError && <div className="mt-2"><Message ton="erreur">Impossible de charger l'état du démarrage des membres.</Message></div>}
           {ouvert && (
             <ul className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {membres.data?.map((m) => {
@@ -106,6 +113,7 @@ export function EnteteGroupe({ groupe }: { groupe: Groupe }) {
                     <span className="min-w-0">
                       <span className="block truncate font-medium">{nomMembre}</span>
                       <span className="block text-xs text-muted-foreground">depuis le {formatDate(m.joined_at)}</span>
+                      {accueils.isSuccess && <EtatDemarrage accueil={accueils.data.get(m.apprenant_id)} />}
                     </span>
                     <Confirmer
                       declencheur={
@@ -126,5 +134,18 @@ export function EnteteGroupe({ groupe }: { groupe: Groupe }) {
         </>
       )}
     </Carte>
+  );
+}
+
+function EtatDemarrage({ accueil }: { accueil: { etapes: string[]; mode_participation: string | null; termine_le: string | null } | undefined }) {
+  const mode = MODES_PARTICIPATION.find((x) => x.id === accueil?.mode_participation);
+  const nb = accueil?.etapes.length ?? 0;
+  return (
+    <span className="block text-xs">
+      <span className={accueil?.termine_le ? "font-semibold text-success" : "text-muted-foreground"}>
+        {accueil?.termine_le ? "Démarrage terminé" : nb ? `Démarrage : ${nb}/${NB_ETAPES_ACCUEIL}` : "Démarrage non commencé"}
+      </span>
+      {mode && <span className="text-muted-foreground"> · {mode.id === "distance" ? "À distance" : "Présentiel"}</span>}
+    </span>
   );
 }

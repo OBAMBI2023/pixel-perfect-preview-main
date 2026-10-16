@@ -1,6 +1,8 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Brain, Search, User, Menu, X, Home, GraduationCap, PenLine, BookOpen, Wrench, LogOut, Users } from "lucide-react";
+import { Brain, Search, User, Menu, X, Home, GraduationCap, PenLine, BookOpen, Wrench, LogOut, Users, ChevronDown, Compass } from "lucide-react";
 import { useState, type ReactNode } from "react";
+import { PAGES_PARTICIPANT } from "@/components/espace/EspaceParticipant";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { seDeconnecter, useAuth } from "@/lib/auth";
 
 const nav = [
@@ -53,9 +55,13 @@ export function Header() {
           </Link>
           {user ? (
             <>
-              <Link to={formateur ? "/formateur" : "/mon-espace"} className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 sm:flex">
-                {formateur ? <Users className="h-4 w-4" /> : <User className="h-4 w-4" />} {formateur ? "Espace formateur" : "Mon espace"}
-              </Link>
+              {formateur ? (
+                <Link to="/formateur" className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 sm:flex">
+                  <Users className="h-4 w-4" /> Espace formateur
+                </Link>
+              ) : (
+                <MenuParticipant />
+              )}
               <button onClick={deconnexion} className="hidden items-center gap-2 rounded-full px-3 py-2.5 text-sm font-semibold text-muted-foreground transition hover:bg-muted sm:flex">
                 <LogOut className="h-4 w-4" /> Se déconnecter
               </button>
@@ -74,14 +80,26 @@ export function Header() {
         <nav className="border-t bg-card px-4 py-3 lg:hidden">
           {[
             ...nav,
-            ...(user
-              ? [{ to: "/mon-espace", label: "Mon espace" } as const, ...(formateur ? [{ to: "/formateur", label: "Espace formateur" } as const] : [])]
-              : [{ to: "/connexion", label: "Se connecter" } as const]),
+            ...(!user
+              ? [{ to: "/connexion", label: "Se connecter" } as const]
+              : formateur
+                ? [{ to: "/mon-espace", label: "Mon espace" } as const, { to: "/formateur", label: "Espace formateur" } as const]
+                : []),
           ].map((n) => (
             <Link key={n.to} to={n.to} onClick={() => setOpen(false)} className="block rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted data-[status=active]:text-primary">
               {n.label}
             </Link>
           ))}
+          {user && !formateur && (
+            <div className="mt-2 border-t pt-2">
+              <p className="px-3 py-1 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Mon espace</p>
+              {PAGES_PARTICIPANT.map(({ to, label, icone: Icone }) => (
+                <Link key={to} to={to} onClick={() => setOpen(false)} className="flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium hover:bg-muted data-[status=active]:text-primary">
+                  <Icone className="h-4 w-4" /> {label}
+                </Link>
+              ))}
+            </div>
+          )}
           {user && (
             <button onClick={deconnexion} className="flex w-full items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-muted-foreground hover:bg-muted">
               <LogOut className="h-4 w-4" /> Se déconnecter
@@ -90,6 +108,28 @@ export function Header() {
         </nav>
       )}
     </header>
+  );
+}
+
+/** Menu du compte participant : ses pages personnelles et le parcours de démarrage. */
+function MenuParticipant() {
+  return (
+    <DropdownMenu modal={false}>
+      <DropdownMenuTrigger className="hidden items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-semibold text-primary-foreground shadow-card transition hover:opacity-90 sm:flex">
+        <User className="h-4 w-4" /> Mon espace <ChevronDown className="h-4 w-4" />
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="end" className="w-64">
+        {PAGES_PARTICIPANT.map(({ to, label, icone: Icone }) => (
+          <DropdownMenuItem key={to} asChild>
+            <Link to={to} className="flex cursor-pointer items-center gap-2"><Icone className="h-4 w-4 text-primary" /> {label}</Link>
+          </DropdownMenuItem>
+        ))}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem asChild>
+          <Link to="/bienvenue" className="flex cursor-pointer items-center gap-2"><Compass className="h-4 w-4 text-primary" /> Démarrage et consignes</Link>
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   );
 }
 

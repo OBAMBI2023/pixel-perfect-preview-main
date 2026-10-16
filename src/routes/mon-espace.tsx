@@ -1,26 +1,30 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { CheckCircle2, ClipboardList, History, LogIn, Play, UserPlus, Users } from "lucide-react";
-import { useState, type FormEvent } from "react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { CheckCircle2, ClipboardList, Compass, History, LogIn, Play, UserPlus, Users } from "lucide-react";
+import { useEffect, useState, type FormEvent } from "react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
+import { OngletsParticipant } from "@/components/espace/EspaceParticipant";
 import { BadgesDevoir, Echeance, EtatDevoir } from "@/components/espace/Devoirs";
 import { BandeauSeanceDirect } from "@/components/espace/SeanceDirect";
 import { CopiesCorrigees } from "@/components/rendre/CopiesCorrigees";
 import { TableHistorique } from "@/components/espace/TableHistorique";
 import { btnPrimary, btnSecondary, formatDate, inputClass } from "@/components/espace/styles";
 import { Barres, Carte, Message, Stat } from "@/components/espace/ui";
+import { accueilDejaPropose, etapesFaites, MODES_PARTICIPATION, NB_ETAPES_ACCUEIL, noterAccueilPropose, useAccueil } from "@/lib/accueil";
 import { useAuth } from "@/lib/auth";
 import { SEUIL_DEVOIR_QCM } from "@/lib/formateur";
 import { erreurRejoindre } from "@/lib/invitation";
 import { useMesGroupes } from "@/lib/soumissions";
 import { labelNiveau, titreCategorie } from "@/lib/progression";
+import { useProgressionChapitres } from "@/lib/progression-chapitres";
+import { resumesChapitres } from "@/data/chapitres";
 import { NIVEAUX } from "@/lib/qcm-comprendre-ia";
 import { getSupabase } from "@/lib/supabase";
 
 export const Route = createFileRoute("/mon-espace")({
   head: () => ({
     meta: [
-      { title: "Mon espace — IA et la Recherche" },
+      { title: "Ma progression — IA et la Recherche" },
       { name: "description", content: "Votre progression, vos groupes et l'historique de vos exercices." },
       { name: "robots", content: "noindex" },
     ],
@@ -30,8 +34,19 @@ export const Route = createFileRoute("/mon-espace")({
 
 function MonEspace() {
   const { status, configured, user, profile } = useAuth();
+  const navigate = useNavigate();
+  // Apprenant qui n'a pas encore vu la page de bienvenue : on la lui propose une fois par session.
+  const apprenant = status === "ready" && !!user && profile?.role !== "formateur";
+  const accueil = useAccueil(apprenant ? user.id : undefined);
+  const [dejaPropose] = useState(accueilDejaPropose);
+  const proposer = apprenant && !dejaPropose && accueil.isSuccess && !accueil.data?.accueil_vu_le;
+  useEffect(() => {
+    if (!proposer) return;
+    noterAccueilPropose();
+    void navigate({ to: "/bienvenue", replace: true });
+  }, [proposer, navigate]);
 
-  if (status === "loading") return <Coquille><p className="text-muted-foreground">Chargement…</p></Coquille>;
+  if (status === "loading" || proposer || (apprenant && !dejaPropose && accueil.isPending)) return <Coquille><p className="text-muted-foreground">Chargement…</p></Coquille>;
   if (!configured || !user) {
     return (
       <Coquille>
@@ -52,10 +67,11 @@ function MonEspace() {
   return <Espace userId={user.id} nom={profile?.nom_complet || user.email || ""} />;
 }
 
-function Coquille({ children, titre = "Mon espace" }: { children: React.ReactNode; titre?: string }) {
+function Coquille({ children, titre = "Ma progression", onglets = false }: { children: React.ReactNode; titre?: string; onglets?: boolean }) {
   return (
     <SiteLayout>
-      <PageHero badge="Espace apprenant" title={titre} description="Ta progression, tes groupes et l'historique de tes exercices." />
+      <PageHero badge="Ma progression" title={titre} description="Tes scores, tes groupes et l'historique de tes exercices." />
+      {onglets && <OngletsParticipant />}
       <div className="mx-auto max-w-7xl space-y-6 px-4 py-10 md:px-8">{children}</div>
     </SiteLayout>
   );
@@ -110,17 +126,21 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
   const parNiveau = (progression.data ?? []).filter((p) => p.dimension === "niveau")
     .sort((a, b) => NIVEAUX.findIndex((n) => n.id === a.cle) - NIVEAUX.findIndex((n) => n.id === b.cle));
   const nbTentatives = historique.data?.total ?? 0;
+  const lecons = useProgressionChapitres();
+  const nbLecons = resumesChapitres.filter((r) => lecons[r.id]?.termine).length;
   const tauxGlobal = parNiveau.length
     ? parNiveau.reduce((s, p) => s + p.taux_reussite * p.nb_tentatives, 0) / parNiveau.reduce((s, p) => s + p.nb_tentatives, 0)
     : null;
 
   return (
-    <Coquille titre={nom ? `Bonjour ${nom.split(" ")[0]}` : "Mon espace"}>
+    <Coquille titre={nom ? `Bonjour ${nom.split(" ")[0]}` : "Ma progression"} onglets>
       <BandeauSeanceDirect userId={userId} />
-      <div className="grid grid-cols-2 gap-4 lg:grid-cols-3">
+      <Demarrage userId={userId} />
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-4">
         <Stat label="Tentatives enregistrées" valeur={nbTentatives} />
         <Stat label="Réussite moyenne" valeur={tauxGlobal === null ? "—" : `${Math.round(tauxGlobal)} %`} aide="Moyenne pondérée par tentative" />
         <Stat label="Groupes rejoints" valeur={groupes.data?.length ?? 0} />
+        <Stat label="Leçons interactives terminées" valeur={`${nbLecons} / ${resumesChapitres.length}`} aide="Enregistrées sur cet appareil" />
       </div>
 
       <AFaire userId={userId} />
@@ -174,6 +194,36 @@ function Espace({ userId, nom }: { userId: string; nom: string }) {
         {!!historique.data?.lignes.length && <TableHistorique lignes={historique.data.lignes} />}
       </Carte>
     </Coquille>
+  );
+}
+
+/** Parcours d'accueil : avancement tant qu'il n'est pas fini, puis un simple accès aux consignes. */
+function Demarrage({ userId }: { userId: string }) {
+  const accueil = useAccueil(userId);
+  if (accueil.isPending || accueil.isError) return null;
+  const nbFaites = etapesFaites(accueil.data).length;
+  const mode = MODES_PARTICIPATION.find((m) => m.id === accueil.data?.mode_participation);
+
+  if (nbFaites === NB_ETAPES_ACCUEIL) {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl bg-card px-5 py-4 shadow-card">
+        <p className="flex items-center gap-2 text-sm">
+          <CheckCircle2 className="h-5 w-5 text-success" /> Démarrage terminé{mode && <span className="text-muted-foreground">· {mode.label}</span>}
+        </p>
+        <Link to="/bienvenue" className="text-sm font-semibold text-primary hover:underline">Revoir les consignes</Link>
+      </div>
+    );
+  }
+  return (
+    <Carte titre={<span className="flex items-center gap-2"><Compass className="h-5 w-5 text-primary" /> Démarrer la formation</span>} action={<span className="text-sm font-semibold text-navy">{nbFaites} étape{nbFaites > 1 ? "s" : ""} sur {NB_ETAPES_ACCUEIL} terminée{nbFaites > 1 ? "s" : ""}</span>}>
+      <div className="h-2.5 overflow-hidden rounded-full bg-muted" role="progressbar" aria-label="Progression du démarrage" aria-valuemin={0} aria-valuemax={NB_ETAPES_ACCUEIL} aria-valuenow={nbFaites}>
+        <div className="h-full rounded-full bg-primary" style={{ width: `${(nbFaites / NB_ETAPES_ACCUEIL) * 100}%` }} />
+      </div>
+      <p className="mt-3 text-sm text-muted-foreground">
+        Découvre le site, le programme et les exercices, puis choisis ton mode de participation{mode ? ` (actuellement : ${mode.label})` : ""}. Ce parcours ne compte pas dans tes résultats.
+      </p>
+      <Link to="/bienvenue" hash="demarrage" className={`${btnPrimary} mt-4`}>{nbFaites ? "Continuer mon démarrage" : "Commencer mon démarrage"}</Link>
+    </Carte>
   );
 }
 

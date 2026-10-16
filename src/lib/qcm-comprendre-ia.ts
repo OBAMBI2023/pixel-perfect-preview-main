@@ -186,6 +186,54 @@ export const questionsComprendreIA: QuestionQCM[] = [
     "chapitre": "2.4"
   },
   {
+    "id": "f10",
+    "cours": "comprendre-ia",
+    "categorie": "fondements",
+    "niveau": "debutant",
+    "question": "Qu'est-ce que l'apprentissage automatique (machine learning) ?",
+    "options": [
+      "Un programme qui suit des règles écrites à la main pour chaque situation",
+      "Une branche de l'IA dans laquelle la machine apprend à partir de données et d'exemples",
+      "Un robot capable de se déplacer seul",
+      "Une base de données d'articles scientifiques"
+    ],
+    "reponse": 1,
+    "explication": "En apprentissage automatique, la machine apprend à partir de données et d'exemples, sans être programmée explicitement pour chaque situation.",
+    "chapitre": "2.4"
+  },
+  {
+    "id": "f11",
+    "cours": "comprendre-ia",
+    "categorie": "fondements",
+    "niveau": "debutant",
+    "question": "Lequel de ces outils relève de l'IA générative ?",
+    "options": [
+      "Un tableur qui calcule une moyenne",
+      "Un moteur de recherche qui trouve les mots-clés exacts",
+      "Midjourney, qui crée une image à partir d'une description",
+      "Un correcteur qui compare les mots à un dictionnaire"
+    ],
+    "reponse": 2,
+    "explication": "L'IA générative produit de nouveaux contenus (textes, images, sons, vidéos, code) à partir d'instructions : c'est le cas de Midjourney, DALL·E, ChatGPT, Gemini ou Claude.",
+    "chapitre": "2.4"
+  },
+  {
+    "id": "f12",
+    "cours": "comprendre-ia",
+    "categorie": "fondements",
+    "niveau": "intermediaire",
+    "question": "Laquelle de ces affirmations est exacte ?",
+    "options": [
+      "Tout système d'IA utilise l'apprentissage profond",
+      "L'IA générative englobe l'apprentissage automatique",
+      "L'apprentissage profond est un sous-domaine de l'apprentissage automatique",
+      "L'apprentissage automatique ne fait pas partie de l'IA"
+    ],
+    "reponse": 2,
+    "explication": "Chaque niveau est inclus dans celui qui l'englobe : l'apprentissage profond fait partie de l'apprentissage automatique, qui fait partie de l'IA. Mais toute IA n'est pas de l'apprentissage profond.",
+    "chapitre": "2.4"
+  },
+  {
     "id": "g1",
     "cours": "comprendre-ia",
     "categorie": "ia-generative",

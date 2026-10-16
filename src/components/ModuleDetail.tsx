@@ -3,6 +3,8 @@ import { ArrowLeft, BookOpen, Download, ExternalLink, FileText } from "lucide-re
 import { useEffect, useState } from "react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
 import { SlidesPresentation } from "@/components/SlidesPresentation";
+import { ListeLecons } from "@/components/chapitres/ListeLecons";
+import { COURS_CHAPITRES } from "@/data/chapitres";
 import { slidesComprendreIA } from "@/data/slides-comprendre-ia";
 import type { FormationModule } from "@/lib/content";
 
@@ -118,6 +120,8 @@ export function ModuleDetail({ module }: { module: FormationModule }) {
         </div>
 
         {module.manuelTitle &&<ManuelSection module={module} pdfStatus={status} />}
+
+        {module.slug === COURS_CHAPITRES && <ListeLecons />}
 
         {presentation && <SlidesPresentation titre={presentation.titre} slides={presentation.slides} pdfUrl={module.pdfUrl} />}
 

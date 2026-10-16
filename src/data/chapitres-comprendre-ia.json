@@ -1,0 +1,402 @@
+{
+  "ordre": ["2-1", "2-2", "2-3", "2-4", "2-5", "3-1", "3-2", "3-5", "4-1", "4-2"],
+  "chapitres": [
+    {
+      "id": "2-1",
+      "numero": "2.1",
+      "titre": "Définir l'intelligence artificielle",
+      "categorie": "fondements",
+      "dureeMin": 6,
+      "objectifs": [
+        "Définir l'intelligence artificielle.",
+        "Citer les capacités humaines que l'IA cherche à reproduire.",
+        "Distinguer certains systèmes d'IA d'un programme classique."
+      ],
+      "enBref": "L'intelligence artificielle est un domaine de l'informatique qui conçoit des systèmes capables de réaliser des tâches exigeant habituellement certaines capacités humaines (Russell et Norvig, 2021).",
+      "infographie": {
+        "type": "grid",
+        "titre": "Six capacités humaines visées par l'IA",
+        "legende": "Capacités citées dans la définition de l'IA (Russell et Norvig, 2021). Touche une capacité pour voir un exemple tiré du manuel.",
+        "items": [
+          { "id": "apprendre", "label": "Apprendre", "detail": "Certains systèmes d'IA apprennent à partir d'exemples et améliorent leurs performances au fil de leur entraînement.", "exemple": "Une IA entraînée sur des images de chats et de chiens apprend à identifier les caractéristiques de ces animaux." },
+          { "id": "raisonner", "label": "Raisonner", "detail": "L'IA traite des informations et identifie des régularités pour produire des résultats à partir des données qu'elle reçoit." },
+          { "id": "images", "label": "Reconnaître des images", "detail": "Reconnaître le contenu d'une image fait partie des tâches que l'IA sait réaliser.", "exemple": "La reconnaissance faciale pour déverrouiller un téléphone." },
+          { "id": "langage", "label": "Comprendre le langage", "detail": "L'IA peut traiter des demandes formulées en langage naturel.", "exemple": "Les assistants conversationnels qui répondent à des demandes formulées en langage naturel." },
+          { "id": "problemes", "label": "Résoudre des problèmes", "detail": "L'IA produit des résultats à partir des données qu'elle reçoit : prédiction, classification, recommandation ou contenu.", "exemple": "Les systèmes de navigation qui proposent des itinéraires selon la circulation." },
+          { "id": "decider", "label": "Prendre des décisions", "detail": "L'IA analyse, reconnaît, prédit et classe pour produire des décisions.", "exemple": "La détection automatique d'une transaction bancaire suspecte à partir des habitudes de paiement." }
+        ]
+      },
+      "explications": [
+        { "titre": "La définition à connaître", "texte": "L'intelligence artificielle consiste à concevoir des systèmes capables d'apprendre, de raisonner, de reconnaître des images, de comprendre le langage, de résoudre des problèmes et de prendre des décisions (Russell et Norvig, 2021). Elle permet aux machines de traiter des informations, d'identifier des régularités et de produire des résultats à partir des données qu'elles reçoivent." },
+        { "titre": "IA ou programme classique ?", "texte": "Un programme classique exécute uniquement des instructions prédéfinies. Certains systèmes d'IA, eux, apprennent à partir d'exemples et améliorent leurs performances au fil de leur entraînement.", "attention": "Le manuel parle de « certains » systèmes d'IA : ils n'apprennent pas tous à partir d'exemples." },
+        { "titre": "Un outil sous contrôle humain", "texte": "L'IA est un outil puissant pour l'éducation, les entreprises et la recherche, mais son usage nécessite toujours un contrôle humain." }
+      ],
+      "exemples": [
+        { "titre": "Déverrouiller son téléphone", "contexte": "Vie quotidienne", "texte": "La reconnaissance faciale qui déverrouille un téléphone est un usage de l'IA, souvent utilisé sans que l'utilisateur en ait conscience." },
+        { "titre": "Repérer une transaction suspecte", "contexte": "Banque", "texte": "Un système d'IA détecte automatiquement une transaction bancaire suspecte à partir des habitudes de paiement : il analyse et classe les opérations." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Selon le manuel, l'intelligence artificielle est…", "options": ["Un domaine de l'informatique qui conçoit des systèmes capables de tâches exigeant habituellement des capacités humaines", "Un programme qui exécute uniquement des instructions prédéfinies", "Un réseau informatique réservé aux chercheurs"], "bonne": 0, "explication": "C'est la définition de Russell et Norvig (2021) reprise dans le manuel (chapitre 2.1)." },
+        { "id": "q2", "niveau": "facile", "question": "Laquelle de ces capacités fait partie de la définition de l'IA ?", "options": ["Consommer moins d'énergie", "Comprendre le langage", "Remplacer le chercheur"], "bonne": 1, "explication": "Apprendre, raisonner, reconnaître des images, comprendre le langage, résoudre des problèmes et prendre des décisions sont les capacités citées." },
+        { "id": "q3", "niveau": "moyen", "question": "Qu'est-ce qui distingue certains systèmes d'IA d'un programme classique ?", "options": ["Ils exécutent seulement des instructions écrites à l'avance", "Ils n'ont besoin d'aucune donnée", "Ils apprennent à partir d'exemples et s'améliorent au fil de l'entraînement"], "bonne": 2, "explication": "Un programme classique exécute uniquement des instructions prédéfinies ; certains systèmes d'IA apprennent à partir d'exemples." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle affirmation est conforme au manuel ?", "options": ["Une fois entraînée, l'IA n'a plus besoin de contrôle humain", "L'IA est un outil puissant, mais son usage nécessite toujours un contrôle humain", "L'IA ne concerne que les entreprises"], "bonne": 1, "explication": "Le « À retenir » du chapitre 2 insiste : l'usage de l'IA nécessite toujours un contrôle humain." }
+      ],
+      "aRetenir": [
+        "L'IA conçoit des systèmes capables de tâches qui exigent habituellement des capacités humaines.",
+        "Certains systèmes d'IA apprennent à partir d'exemples, contrairement à un programme classique.",
+        "L'IA est un outil puissant, mais son usage nécessite toujours un contrôle humain."
+      ]
+    },
+    {
+      "id": "2-2",
+      "numero": "2.2",
+      "titre": "Repères historiques",
+      "categorie": "fondements",
+      "dureeMin": 6,
+      "objectifs": [
+        "Situer les grandes étapes de l'histoire de l'IA.",
+        "Expliquer ce que furent les « hivers de l'IA ».",
+        "Relier l'essor récent de l'IA à l'apprentissage profond et à l'architecture Transformer."
+      ],
+      "enBref": "De la question de Turing (1950) aux assistants grand public (depuis 2022), l'IA a progressé par phases d'enthousiasme et de désillusion, avant l'essor de l'apprentissage profond et de l'architecture Transformer.",
+      "infographie": {
+        "type": "timeline",
+        "titre": "Six repères chronologiques",
+        "legende": "D'après le tableau 2 du manuel. Touche une date pour lire ce qui s'est passé.",
+        "items": [
+          { "id": "1950", "label": "1950", "detail": "Publication de l'article de Turing sur les machines et l'intelligence : il formule la question de la possibilité de machines « pensantes » (Turing, 1950)." },
+          { "id": "1956", "label": "1955–1956", "detail": "Proposition et atelier de Dartmouth : le terme « intelligence artificielle » apparaît dans la proposition rédigée par McCarthy et ses collègues (McCarthy et al., 1955)." },
+          { "id": "hivers", "label": "1970–1990", "detail": "Périodes de ralentissement des financements et des attentes : ce sont les « hivers de l'IA »." },
+          { "id": "2010", "label": "Années 2010", "detail": "Essor de l'apprentissage profond grâce aux données massives et à la puissance de calcul (LeCun et al., 2015)." },
+          { "id": "2017", "label": "2017", "detail": "Introduction de l'architecture Transformer, qui sous-tend les modèles de langage actuels (Vaswani et al., 2017)." },
+          { "id": "2022", "label": "Depuis 2022", "detail": "Diffusion grand public des assistants conversationnels d'IA générative." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une question posée dès 1950", "texte": "Le questionnement sur la possibilité de machines « pensantes » est formulé par Turing (1950)." },
+        { "titre": "La naissance d'un nom", "texte": "Le terme « intelligence artificielle » apparaît dans la proposition rédigée par McCarthy et ses collègues en vue de l'atelier de Dartmouth, tenu à l'été 1956 (McCarthy et al., 1955)." },
+        { "titre": "Des hauts et des bas", "texte": "Le développement du domaine s'est déroulé par phases d'enthousiasme et de désillusion. Entre les années 1970 et 1990, les financements et les attentes ont ralenti : on parle des « hivers de l'IA »." },
+        { "titre": "L'essor récent", "texte": "Les années 2010 voient l'essor de l'apprentissage profond (LeCun et al., 2015), puis 2017 l'architecture dite Transformer (Vaswani et al., 2017), qui sous-tend les modèles de langage actuels.", "attention": "La proposition de Dartmouth date de 1955 (McCarthy et al., 1955) ; l'atelier lui-même s'est tenu à l'été 1956." }
+      ],
+      "exemples": [
+        { "titre": "Pourquoi l'essor des années 2010 ?", "contexte": "Années 2010", "texte": "L'apprentissage profond progresse grâce à deux leviers : les données massives et la puissance de calcul." },
+        { "titre": "Les assistants d'aujourd'hui", "contexte": "Depuis 2022", "texte": "Les assistants conversationnels d'IA générative se diffusent auprès du grand public ; les modèles de langage qui les animent reposent sur l'architecture Transformer, introduite en 2017." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Qui formule, en 1950, la question des machines « pensantes » ?", "options": ["Turing", "McCarthy", "LeCun"], "bonne": 0, "explication": "Turing (1950) publie un article sur les machines et l'intelligence." },
+        { "id": "q2", "niveau": "facile", "question": "Où apparaît le terme « intelligence artificielle » ?", "options": ["Dans un article sur l'apprentissage profond", "Dans la proposition de l'atelier de Dartmouth", "Dans la présentation de l'architecture Transformer"], "bonne": 1, "explication": "Le terme apparaît dans la proposition rédigée par McCarthy et ses collègues en vue de l'atelier de Dartmouth (McCarthy et al., 1955)." },
+        { "id": "q3", "niveau": "moyen", "question": "Que désigne l'expression « hivers de l'IA » ?", "options": ["Des périodes de ralentissement des financements et des attentes", "Les premiers ordinateurs installés dans des pays froids", "Une technique d'apprentissage profond"], "bonne": 0, "explication": "Entre les années 1970 et 1990, les financements et les attentes ont ralenti." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle innovation de 2017 sous-tend les modèles de langage actuels ?", "options": ["L'atelier de Dartmouth", "Les données massives", "L'architecture Transformer"], "bonne": 2, "explication": "L'architecture Transformer (Vaswani et al., 2017) sous-tend les modèles de langage actuels." }
+      ],
+      "aRetenir": [
+        "1950 : Turing pose la question des machines « pensantes ».",
+        "1955–1956 : le terme « intelligence artificielle » naît avec l'atelier de Dartmouth.",
+        "L'IA a connu des phases d'enthousiasme et de désillusion (les « hivers de l'IA »).",
+        "Apprentissage profond (années 2010) et Transformer (2017) expliquent l'essor récent."
+      ]
+    },
+    {
+      "id": "2-3",
+      "numero": "2.3",
+      "titre": "Comment fonctionne un système d'IA",
+      "categorie": "fondements",
+      "dureeMin": 6,
+      "objectifs": [
+        "Décrire les quatre composantes d'un système d'IA.",
+        "Suivre ces composantes sur un exemple concret."
+      ],
+      "enBref": "Quatre éléments permettent de comprendre le fonctionnement d'un système d'IA : les données, les algorithmes, le modèle et le résultat.",
+      "infographie": {
+        "type": "flow",
+        "titre": "Les quatre composantes d'un système d'IA",
+        "legende": "D'après le tableau 3 du manuel. Touche une étape pour voir sa description et l'exemple des chats et des chiens.",
+        "items": [
+          { "id": "donnees", "label": "Les données", "detail": "Informations utilisées pour entraîner ou alimenter le système.", "exemple": "Des images de chats et de chiens." },
+          { "id": "algorithmes", "label": "Les algorithmes", "detail": "Méthodes permettant de traiter les données et d'identifier des relations.", "exemple": "Identifier les caractéristiques de ces animaux." },
+          { "id": "modele", "label": "Le modèle", "detail": "Système entraîné qui exploite ce qu'il a appris pour accomplir une tâche.", "exemple": "Le système entraîné à reconnaître un chat ou un chien." },
+          { "id": "resultat", "label": "Le résultat", "detail": "Prédiction, classification, recommandation ou contenu généré.", "exemple": "Devant une nouvelle image : « c'est un chat » ou « c'est un chien »." }
+        ]
+      },
+      "explications": [
+        { "titre": "Des données pour apprendre", "texte": "Les données sont les informations utilisées pour entraîner ou alimenter le système." },
+        { "titre": "Des algorithmes pour traiter", "texte": "Les algorithmes sont les méthodes qui traitent les données et identifient des relations entre elles." },
+        { "titre": "Un modèle qui exploite ce qu'il a appris", "texte": "Le modèle est le système entraîné : il exploite ce qu'il a appris pour accomplir une tâche." },
+        { "titre": "Plusieurs sortes de résultats", "texte": "Le résultat peut être une prédiction, une classification, une recommandation ou un contenu généré.", "attention": "Le résultat n'est pas toujours un contenu : ce peut être une prédiction, une classification ou une recommandation." }
+      ],
+      "exemples": [
+        { "titre": "Reconnaître un chat ou un chien", "contexte": "Exemple du manuel", "texte": "Une IA entraînée à reconnaître des images de chats et de chiens apprend à identifier les caractéristiques de ces animaux. Lorsqu'une nouvelle image lui est présentée, elle peut prédire s'il s'agit d'un chat ou d'un chien." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Combien de composantes le manuel retient-il pour décrire un système d'IA ?", "options": ["Deux", "Quatre", "Six"], "bonne": 1, "explication": "Les données, les algorithmes, le modèle et le résultat (tableau 3)." },
+        { "id": "q2", "niveau": "facile", "question": "Que désignent « les données » ?", "options": ["Les informations utilisées pour entraîner ou alimenter le système", "La réponse finale de l'IA", "Les règles écrites par le programmeur"], "bonne": 0, "explication": "Les données sont les informations utilisées pour entraîner ou alimenter le système." },
+        { "id": "q3", "niveau": "moyen", "question": "Quelle composante est « le système entraîné qui exploite ce qu'il a appris » ?", "options": ["L'algorithme", "Le résultat", "Le modèle"], "bonne": 2, "explication": "Le modèle exploite ce qu'il a appris pour accomplir une tâche." },
+        { "id": "q4", "niveau": "difficile", "question": "Dans l'exemple des chats et des chiens, que représente « prédire s'il s'agit d'un chat ou d'un chien » ?", "options": ["Les données", "Le résultat", "L'algorithme"], "bonne": 1, "explication": "Le résultat peut être une prédiction, une classification, une recommandation ou un contenu généré." }
+      ],
+      "aRetenir": [
+        "Un système d'IA repose sur quatre composantes : données, algorithmes, modèle, résultat.",
+        "Le modèle est le système entraîné qui exploite ce qu'il a appris.",
+        "Le résultat peut être une prédiction, une classification, une recommandation ou un contenu généré."
+      ]
+    },
+    {
+      "id": "2-5",
+      "numero": "2.5 – 2.6",
+      "titre": "L'IA au quotidien et dans la recherche",
+      "categorie": "fondements",
+      "dureeMin": 7,
+      "objectifs": [
+        "Reconnaître des usages quotidiens de l'IA.",
+        "Identifier les usages de l'IA dans la démarche scientifique."
+      ],
+      "enBref": "L'IA est déjà présente dans la vie quotidienne, souvent sans que l'utilisateur en ait conscience. En recherche, elle intervient de la recherche documentaire à la traduction, sous le contrôle du chercheur.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Six usages de l'IA dans la démarche scientifique",
+        "legende": "D'après le tableau 5 du manuel. Touche un domaine pour voir l'usage de l'IA.",
+        "items": [
+          { "id": "documentaire", "label": "Recherche documentaire", "detail": "Identifier des publications pertinentes." },
+          { "id": "litterature", "label": "Revue de littérature", "detail": "Synthétiser des articles scientifiques." },
+          { "id": "donnees", "label": "Analyse de données", "detail": "Explorer des ensembles de données." },
+          { "id": "redaction", "label": "Rédaction scientifique", "detail": "Améliorer la clarté des textes." },
+          { "id": "statistiques", "label": "Statistiques", "detail": "Aider à interpréter des résultats." },
+          { "id": "traduction", "label": "Traduction", "detail": "Faciliter l'accès aux publications internationales." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une IA souvent invisible", "texte": "L'IA est déjà présente dans la vie quotidienne, souvent sans que l'utilisateur en ait conscience : reconnaissance faciale, navigation, recommandations personnalisées, assistants conversationnels." },
+        { "titre": "Une aide à chaque étape de la recherche", "texte": "De la recherche documentaire à la traduction, l'IA peut aider le chercheur à identifier des publications, synthétiser des articles, explorer des données, améliorer la clarté d'un texte ou interpréter des résultats." },
+        { "titre": "Toujours sous contrôle humain", "texte": "L'IA est un outil puissant pour l'éducation, les entreprises et la recherche, mais son usage nécessite toujours un contrôle humain.", "attention": "Une synthèse ou une interprétation proposée par l'IA se vérifie toujours à la source." }
+      ],
+      "exemples": [
+        { "titre": "Quatre usages du quotidien", "contexte": "Vie quotidienne", "texte": "La reconnaissance faciale pour déverrouiller un téléphone, les systèmes de navigation qui proposent des itinéraires selon la circulation, les recommandations personnalisées de contenus et les assistants conversationnels qui répondent à des demandes formulées en langage naturel." },
+        { "titre": "Lire une publication en langue étrangère", "contexte": "Recherche", "texte": "La traduction assistée par l'IA facilite l'accès aux publications internationales." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Lequel de ces usages quotidiens relève de l'IA ?", "options": ["Un interrupteur qui allume une lampe", "La navigation qui propose un itinéraire selon la circulation", "Une calculatrice qui additionne deux nombres"], "bonne": 1, "explication": "Le manuel cite les systèmes de navigation qui proposent des itinéraires selon la circulation (chapitre 2.5)." },
+        { "id": "q2", "niveau": "facile", "question": "En revue de littérature, l'IA peut aider à…", "options": ["Synthétiser des articles scientifiques", "Remplacer la lecture des sources", "Inventer des références manquantes"], "bonne": 0, "explication": "Tableau 5 : en revue de littérature, l'IA aide à synthétiser des articles scientifiques." },
+        { "id": "q3", "niveau": "moyen", "question": "À quel domaine correspond l'usage « faciliter l'accès aux publications internationales » ?", "options": ["Statistiques", "Analyse de données", "Traduction"], "bonne": 2, "explication": "La traduction facilite l'accès aux publications internationales (tableau 5)." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle condition le manuel pose-t-il à l'usage de l'IA en recherche ?", "options": ["Un contrôle humain permanent", "L'usage d'un seul outil", "L'absence de données"], "bonne": 0, "explication": "« Son usage nécessite toujours un contrôle humain » (À retenir du chapitre 2)." }
+      ],
+      "aRetenir": [
+        "L'IA est souvent présente au quotidien sans que l'on s'en rende compte.",
+        "En recherche, elle aide de la recherche documentaire à la traduction.",
+        "Son usage nécessite toujours un contrôle humain."
+      ]
+    },
+    {
+      "id": "3-1",
+      "numero": "3.1 – 3.3",
+      "titre": "L'IA générative et ses outils",
+      "categorie": "ia-generative",
+      "dureeMin": 7,
+      "objectifs": [
+        "Définir l'IA générative.",
+        "Distinguer ce qu'elle produit de ce que fait une IA « classique ».",
+        "Citer des outils d'IA générative et leur usage principal."
+      ],
+      "enBref": "L'IA générative est une branche de l'IA qui crée de nouveaux contenus à partir des instructions d'un utilisateur et des régularités apprises sur de grandes quantités de données.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Quatre exemples d'outils d'IA générative",
+        "legende": "D'après le tableau 6 du manuel. Touche un outil pour voir son usage principal.",
+        "items": [
+          { "id": "chatgpt", "label": "ChatGPT", "detail": "Génération de textes, explications, analyses et assistance à la rédaction." },
+          { "id": "gemini", "label": "Google Gemini", "detail": "Assistant pour comprendre, analyser et générer différents contenus." },
+          { "id": "midjourney", "label": "Midjourney", "detail": "Création d'images à partir de descriptions textuelles." },
+          { "id": "copilot", "label": "GitHub Copilot", "detail": "Génération de code et assistance à la programmation." }
+        ]
+      },
+      "explications": [
+        { "titre": "Une IA qui crée", "texte": "L'IA générative crée de nouveaux contenus à partir des instructions d'un utilisateur et des régularités apprises sur de grandes quantités de données." },
+        { "titre": "Classer ou produire ?", "texte": "Là où une IA « classique » classe, reconnaît ou analyse, l'IA générative produit des textes, des images, des vidéos, des sons et du code informatique." },
+        { "titre": "Des outils pour chaque type de contenu", "texte": "Texte et analyse (ChatGPT, Google Gemini), images (Midjourney), code (GitHub Copilot) : chaque outil a son usage principal.", "attention": "Les pistes proposées par une IA générative doivent ensuite être analysées, documentées et vérifiées par l'étudiant." }
+      ],
+      "exemples": [
+        { "titre": "Trouver des pistes de problématique", "contexte": "Préparation d'un mémoire", "texte": "« Propose-moi cinq problématiques de recherche sur l'impact de l'intelligence artificielle dans l'enseignement supérieur en Afrique de l'Ouest. Pour chacune, précise les objectifs et les questions de recherche possibles. » L'IA fournit des pistes que l'étudiant devra ensuite analyser, documenter et vérifier." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Que fait l'IA générative ?", "options": ["Elle crée de nouveaux contenus", "Elle se limite à classer des données", "Elle stocke des documents"], "bonne": 0, "explication": "L'IA générative crée de nouveaux contenus à partir des instructions d'un utilisateur (chapitre 3.1)." },
+        { "id": "q2", "niveau": "facile", "question": "Quel outil le manuel associe-t-il à la création d'images à partir de descriptions textuelles ?", "options": ["GitHub Copilot", "Midjourney", "ChatGPT"], "bonne": 1, "explication": "Tableau 6 : Midjourney crée des images à partir de descriptions textuelles." },
+        { "id": "q3", "niveau": "moyen", "question": "Sur quoi l'IA générative s'appuie-t-elle pour créer ?", "options": ["Sur des contenus copiés tels quels", "Sur les seules instructions de l'utilisateur", "Sur les instructions de l'utilisateur et les régularités apprises sur de grandes quantités de données"], "bonne": 2, "explication": "Elle combine les instructions de l'utilisateur et les régularités apprises sur de grandes quantités de données." },
+        { "id": "q4", "niveau": "difficile", "question": "Dans l'exemple du mémoire, que doit faire l'étudiant des pistes proposées par l'IA ?", "options": ["Les recopier dans son mémoire", "Les analyser, les documenter et les vérifier", "Les déclarer comme ses propres résultats"], "bonne": 1, "explication": "« L'IA fournit des pistes que l'étudiant devra ensuite analyser, documenter et vérifier » (chapitre 3.4)." }
+      ],
+      "aRetenir": [
+        "L'IA générative crée de nouveaux contenus : textes, images, vidéos, sons, code.",
+        "Une IA « classique » classe, reconnaît ou analyse ; l'IA générative produit.",
+        "Chaque outil a son usage principal ; ses propositions restent à vérifier."
+      ]
+    },
+    {
+      "id": "3-2",
+      "numero": "3.2",
+      "titre": "Comment fonctionne l'IA générative",
+      "categorie": "ia-generative",
+      "dureeMin": 6,
+      "objectifs": [
+        "Décrire les quatre étapes de fonctionnement de l'IA générative.",
+        "Expliquer pourquoi un texte plausible n'est pas forcément vrai."
+      ],
+      "enBref": "L'IA générative fonctionne en quatre étapes : apprentissage, entraînement, instruction (le prompt) et génération. Un modèle de langage estime les suites de mots les plus probables : ses textes sont fluides, mais leur exactitude n'est pas garantie.",
+      "infographie": {
+        "type": "flow",
+        "titre": "Les quatre étapes de l'IA générative",
+        "legende": "D'après la figure 2 du manuel. Touche une étape pour lire sa description.",
+        "items": [
+          { "id": "apprentissage", "label": "Apprentissage", "detail": "Le modèle est exposé à de nombreuses données : textes, images, sons." },
+          { "id": "entrainement", "label": "Entraînement", "detail": "Il identifie des régularités et des relations dans ces données." },
+          { "id": "instruction", "label": "Instruction", "detail": "L'utilisateur formule une demande, appelée prompt." },
+          { "id": "generation", "label": "Génération", "detail": "Le modèle produit un contenu correspondant à la demande." }
+        ]
+      },
+      "explications": [
+        { "titre": "Quatre étapes", "texte": "Le modèle apprend sur de nombreuses données, s'entraîne en y identifiant des régularités, reçoit une instruction de l'utilisateur (le prompt), puis génère un contenu correspondant à la demande." },
+        { "titre": "Un mécanisme statistique", "texte": "Dans le cas des grands modèles de langage, la génération repose sur un mécanisme statistique : le modèle estime, à partir du contexte, les suites de mots les plus probables." },
+        { "titre": "Plausible n'est pas vrai", "texte": "Il en résulte des textes fluides, mais dont l'exactitude n'est pas garantie.", "attention": "Un énoncé plausible n'est pas nécessairement vrai : vérifiez toujours les informations produites." }
+      ],
+      "exemples": [
+        { "titre": "Le prompt, au cœur de l'étape 3", "contexte": "Préparation d'un mémoire", "texte": "« Propose-moi cinq problématiques de recherche sur l'impact de l'intelligence artificielle dans l'enseignement supérieur en Afrique de l'Ouest. » Cette demande est l'instruction ; la liste de problématiques produite est la génération." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Comment s'appelle la demande formulée par l'utilisateur ?", "options": ["Un prompt", "Un modèle", "Un corpus"], "bonne": 0, "explication": "À l'étape « Instruction », l'utilisateur formule une demande appelée prompt." },
+        { "id": "q2", "niveau": "facile", "question": "Quelle est la dernière étape du fonctionnement de l'IA générative ?", "options": ["L'entraînement", "L'apprentissage", "La génération"], "bonne": 2, "explication": "Apprentissage, entraînement, instruction, puis génération." },
+        { "id": "q3", "niveau": "moyen", "question": "Que fait le modèle pendant l'entraînement ?", "options": ["Il produit le contenu demandé", "Il identifie des régularités et des relations dans les données", "Il vérifie les sources"], "bonne": 1, "explication": "L'entraînement consiste à identifier des régularités et des relations dans les données." },
+        { "id": "q4", "niveau": "difficile", "question": "Pourquoi un texte généré peut-il être faux tout en paraissant juste ?", "options": ["Parce que le modèle estime les suites de mots les plus probables, sans garantir leur exactitude", "Parce que le modèle copie toujours une source erronée", "Parce que le prompt était trop long"], "bonne": 0, "explication": "La génération repose sur un mécanisme statistique : un énoncé plausible n'est pas nécessairement vrai." }
+      ],
+      "aRetenir": [
+        "Apprentissage → entraînement → instruction (prompt) → génération.",
+        "Un modèle de langage estime les suites de mots les plus probables.",
+        "Un énoncé plausible n'est pas nécessairement vrai."
+      ]
+    },
+    {
+      "id": "3-5",
+      "numero": "3.5",
+      "titre": "IA ou IA générative ?",
+      "categorie": "ia-generative",
+      "dureeMin": 5,
+      "objectifs": [
+        "Distinguer l'IA en général et l'IA générative.",
+        "Comparer leur portée, leur fonction, leurs productions et un exemple."
+      ],
+      "enBref": "L'IA est un domaine technologique très vaste ; l'IA générative en est une catégorie particulière, spécialisée dans la création de contenus.",
+      "infographie": {
+        "type": "matrix",
+        "titre": "Comparer IA et IA générative",
+        "legende": "D'après le tableau 7 du manuel. Touche une ligne pour la mettre en évidence.",
+        "colonnes": ["Critère", "Intelligence artificielle", "IA générative"],
+        "lignes": [
+          { "id": "portee", "label": "Portée", "cellules": ["Domaine global", "Catégorie particulière de l'IA"] },
+          { "id": "fonction", "label": "Fonction principale", "cellules": ["Analyser, reconnaître, prédire, classer", "Créer de nouveaux contenus"] },
+          { "id": "productions", "label": "Productions", "cellules": ["Décisions, prédictions, classifications", "Texte, image, vidéo, son, code"] },
+          { "id": "exemple", "label": "Exemple", "cellules": ["Détection automatique d'une transaction bancaire suspecte à partir des habitudes de paiement", "Rédaction de propositions de problématique à partir d'un prompt"] }
+        ]
+      },
+      "explications": [
+        { "titre": "Un domaine et une catégorie", "texte": "L'IA est un domaine technologique très vaste ; l'IA générative en est une catégorie particulière, spécialisée dans la création de contenus." },
+        { "titre": "Des fonctions différentes", "texte": "L'IA analyse, reconnaît, prédit et classe ; elle produit des décisions, des prédictions et des classifications. L'IA générative crée de nouveaux contenus : texte, image, vidéo, son, code." },
+        { "titre": "Un outil d'assistance", "texte": "L'IA générative est un outil d'assistance et de création. En recherche, elle peut faciliter le travail du chercheur.", "attention": "Elle ne remplace ni l'esprit critique du chercheur, ni sa méthodologie, ni sa responsabilité scientifique." }
+      ],
+      "exemples": [
+        { "titre": "Une IA qui classe", "contexte": "Banque", "texte": "Détection automatique d'une transaction bancaire suspecte à partir des habitudes de paiement." },
+        { "titre": "Une IA qui crée", "contexte": "Recherche", "texte": "Rédaction de propositions de problématique à partir d'un prompt." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Quelle est la relation entre l'IA et l'IA générative ?", "options": ["Ce sont deux domaines sans lien", "L'IA générative est une catégorie particulière de l'IA", "L'IA est une catégorie de l'IA générative"], "bonne": 1, "explication": "L'IA est un domaine très vaste ; l'IA générative en est une catégorie particulière." },
+        { "id": "q2", "niveau": "facile", "question": "Quelle est la fonction principale de l'IA générative ?", "options": ["Créer de nouveaux contenus", "Classer des transactions", "Prédire des pannes"], "bonne": 0, "explication": "Tableau 7 : la fonction principale de l'IA générative est de créer de nouveaux contenus." },
+        { "id": "q3", "niveau": "moyen", "question": "La détection d'une transaction bancaire suspecte est un exemple…", "options": ["D'IA générative", "D'ingénierie des instructions", "D'IA qui analyse et classe"], "bonne": 2, "explication": "C'est l'exemple donné pour l'IA en général, qui analyse, reconnaît, prédit et classe." },
+        { "id": "q4", "niveau": "difficile", "question": "Selon le manuel, que l'IA générative ne remplace-t-elle pas ?", "options": ["La rédaction de brouillons", "L'esprit critique, la méthodologie et la responsabilité scientifique du chercheur", "La recherche d'idées"], "bonne": 1, "explication": "« Elle ne remplace ni son esprit critique, ni sa méthodologie, ni sa responsabilité scientifique » (À retenir du chapitre 3)." }
+      ],
+      "aRetenir": [
+        "L'IA est un domaine global ; l'IA générative en est une catégorie particulière.",
+        "L'IA analyse, reconnaît, prédit, classe ; l'IA générative crée des contenus.",
+        "L'IA générative ne remplace ni l'esprit critique, ni la méthodologie, ni la responsabilité du chercheur."
+      ]
+    },
+    {
+      "id": "4-1",
+      "numero": "4.1",
+      "titre": "Qu'est-ce que l'ingénierie des instructions ?",
+      "categorie": "prompts",
+      "dureeMin": 5,
+      "objectifs": [
+        "Définir l'ingénierie des instructions et le prompt.",
+        "Identifier ce dont dépend la qualité d'une réponse."
+      ],
+      "enBref": "L'ingénierie des instructions consiste à concevoir, formuler et améliorer les demandes adressées à une IA générative, afin d'obtenir des réponses plus précises, pertinentes et adaptées à un objectif.",
+      "infographie": {
+        "type": "grid",
+        "titre": "Ce dont dépend la qualité d'une réponse",
+        "legende": "D'après la définition du chapitre 4.1. Touche un facteur pour l'expliquer.",
+        "items": [
+          { "id": "clarte", "label": "La clarté de la demande", "detail": "Une demande claire indique précisément ce que l'on attend de l'IA.", "exemple": "« Parle-moi de l'intelligence artificielle dans l'éducation » est trop imprécis." },
+          { "id": "contexte", "label": "Le contexte fourni", "detail": "Le contexte présente la situation et le sujet.", "exemple": "« Je prépare un mémoire sur le chômage des jeunes en Côte d'Ivoire. »" },
+          { "id": "consignes", "label": "Les consignes formulées", "detail": "Les consignes définissent les règles à respecter.", "exemple": "« Évite les sujets trop généraux et privilégie une approche empirique. »" }
+        ]
+      },
+      "explications": [
+        { "titre": "Concevoir, formuler, améliorer", "texte": "L'ingénierie des instructions consiste à concevoir, formuler et améliorer les demandes adressées à une IA générative afin d'obtenir des réponses plus précises, pertinentes et adaptées à un objectif." },
+        { "titre": "Qu'est-ce qu'un prompt ?", "texte": "Un prompt est une instruction, une question ou un ensemble de consignes transmis à l'IA." },
+        { "titre": "La qualité dépend de la demande", "texte": "La qualité de la réponse dépend de la clarté de la demande, du contexte fourni et des consignes formulées.", "attention": "Un bon prompt ne se mesure pas à sa longueur, mais à la pertinence des informations fournies." }
+      ],
+      "exemples": [
+        { "titre": "Un prompt trop imprécis", "contexte": "Exemple du manuel", "texte": "« Parle-moi de l'intelligence artificielle dans l'éducation. » Sans rôle, sans contexte ni consignes, la réponse a peu de chances d'être adaptée à un objectif de recherche." }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "Qu'est-ce qu'un prompt ?", "options": ["Une instruction, une question ou un ensemble de consignes transmis à l'IA", "Le résultat produit par l'IA", "Un logiciel de traitement de texte"], "bonne": 0, "explication": "Définition du chapitre 4.1." },
+        { "id": "q2", "niveau": "moyen", "question": "De quoi dépend la qualité de la réponse d'une IA générative ?", "options": ["Du nombre de mots du prompt", "De la clarté de la demande, du contexte fourni et des consignes formulées", "De l'heure à laquelle on pose la question"], "bonne": 1, "explication": "Le manuel cite trois facteurs : la clarté de la demande, le contexte fourni et les consignes formulées." },
+        { "id": "q3", "niveau": "moyen", "question": "Quel est l'objectif de l'ingénierie des instructions ?", "options": ["Rendre l'IA plus rapide", "Remplacer le chercheur", "Obtenir des réponses plus précises, pertinentes et adaptées à un objectif"], "bonne": 2, "explication": "Elle vise des réponses plus précises, pertinentes et adaptées à un objectif." },
+        { "id": "q4", "niveau": "difficile", "question": "Quelle affirmation est exacte ?", "options": ["Plus un prompt est long, meilleur il est", "Un bon prompt se mesure à la pertinence des informations fournies", "Un prompt ne doit jamais contenir de contexte"], "bonne": 1, "explication": "« Un bon prompt ne se mesure pas à sa longueur, mais à la pertinence des informations fournies » (chapitre 4.4)." }
+      ],
+      "aRetenir": [
+        "L'ingénierie des instructions : concevoir, formuler et améliorer ses demandes à l'IA.",
+        "Un prompt est une instruction, une question ou un ensemble de consignes.",
+        "La qualité de la réponse dépend de la clarté, du contexte et des consignes."
+      ]
+    },
+    {
+      "id": "4-2",
+      "numero": "4.2 – 4.3",
+      "titre": "Les six éléments d'un prompt efficace",
+      "categorie": "prompts",
+      "dureeMin": 10,
+      "objectifs": [
+        "Construire un prompt selon six éléments.",
+        "Améliorer un prompt imprécis."
+      ],
+      "enBref": "Un prompt efficace réunit six éléments : le rôle, le contexte, l'objectif, les consignes, le format et les critères de qualité.",
+      "infographie": {
+        "type": "grid",
+        "titre": "La structure d'un prompt efficace",
+        "legende": "D'après le tableau 8 du manuel. Touche un élément pour voir sa fonction et un exemple.",
+        "items": [
+          { "id": "role", "label": "1. Le rôle", "detail": "Préciser l'expertise à mobiliser.", "exemple": "« Agis comme un chercheur spécialisé en sociologie. »" },
+          { "id": "contexte", "label": "2. Le contexte", "detail": "Présenter la situation et le sujet.", "exemple": "« Je prépare un mémoire sur le chômage des jeunes en Côte d'Ivoire. »" },
+          { "id": "objectif", "label": "3. L'objectif", "detail": "Indiquer le travail attendu.", "exemple": "« Propose cinq problématiques de recherche pertinentes. »" },
+          { "id": "consignes", "label": "4. Les consignes", "detail": "Définir les règles à respecter.", "exemple": "« Évite les sujets trop généraux et privilégie une approche empirique. »" },
+          { "id": "format", "label": "5. Le format", "detail": "Préciser la forme de la réponse.", "exemple": "« Présente les propositions dans un tableau avec les objectifs associés. »" },
+          { "id": "criteres", "label": "6. Les critères de qualité", "detail": "Fixer les exigences de rigueur.", "exemple": "« Signale les limites, distingue les faits des hypothèses et n'invente aucune référence. »" }
+        ]
+      },
+      "explications": [
+        { "titre": "Qui, quoi, pourquoi", "texte": "Le rôle précise l'expertise à mobiliser, le contexte présente la situation et le sujet, l'objectif indique le travail attendu." },
+        { "titre": "Comment", "texte": "Les consignes définissent les règles à respecter, le format précise la forme de la réponse, les critères de qualité fixent les exigences de rigueur.", "attention": "Dans les critères de qualité, demandez de distinguer les faits des hypothèses et de n'inventer aucune référence." },
+        { "titre": "Améliorer un prompt imprécis", "texte": "La version améliorée d'un prompt précise le rôle, le sujet, le contexte géographique, l'objectif et la structure attendue." }
+      ],
+      "exemples": [
+        { "titre": "Avant", "contexte": "Prompt trop imprécis", "texte": "« Parle-moi de l'intelligence artificielle dans l'éducation. »" },
+        { "titre": "Après", "contexte": "Prompt amélioré", "texte": "« Agis comme un spécialiste en sciences de l'éducation. Analyse les effets de l'IA générative sur les pratiques pédagogiques dans l'enseignement supérieur en Afrique de l'Ouest. Présente les opportunités, les limites et les enjeux éthiques. Structure ta réponse en trois parties et adopte un langage académique. »" }
+      ],
+      "quiz": [
+        { "id": "q1", "niveau": "facile", "question": "« Agis comme un chercheur spécialisé en sociologie » correspond à quel élément ?", "options": ["Le rôle", "Le format", "L'objectif"], "bonne": 0, "explication": "Le rôle précise l'expertise à mobiliser." },
+        { "id": "q2", "niveau": "facile", "question": "Lequel de ces éléments ne fait pas partie des six éléments d'un prompt efficace ?", "options": ["Le contexte", "La longueur minimale", "Les critères de qualité"], "bonne": 1, "explication": "Les six éléments sont : rôle, contexte, objectif, consignes, format, critères de qualité." },
+        { "id": "q3", "niveau": "moyen", "question": "« Présente les propositions dans un tableau » relève de quel élément ?", "options": ["Les consignes", "Le contexte", "Le format"], "bonne": 2, "explication": "Le format précise la forme de la réponse." },
+        { "id": "q4", "niveau": "difficile", "question": "Qu'ajoute la version améliorée du prompt « Parle-moi de l'IA dans l'éducation » ?", "options": ["Le rôle, le sujet, le contexte géographique, l'objectif et la structure attendue", "Uniquement des formules de politesse", "Une liste de références inventées"], "bonne": 0, "explication": "Le manuel précise que la version améliorée ajoute le rôle, le sujet, le contexte géographique, l'objectif et la structure attendue (chapitre 4.3)." }
+      ],
+      "aRetenir": [
+        "Six éléments : rôle, contexte, objectif, consignes, format, critères de qualité.",
+        "Les critères de qualité demandent de distinguer faits et hypothèses et de n'inventer aucune référence.",
+        "Un prompt imprécis s'améliore en précisant rôle, sujet, contexte, objectif et structure."
+      ]
+    }
+  ]
+}

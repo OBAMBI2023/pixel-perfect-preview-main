@@ -27,6 +27,7 @@ import { Route as SeanceIdRouteImport } from './routes/seance.$id'
 import { Route as ExercicesARendreIdRouteImport } from './routes/exercices_.a-rendre.$id'
 import { Route as FormateurSeanceDirectIdRouteImport } from './routes/formateur_.seance-direct.$id'
 import { Route as FormateurSeanceGroupeIdRouteImport } from './routes/formateur_.seance.$groupeId'
+import { Route as FormationsSlugChapitresChapitreRouteImport } from './routes/formations_.$slug_.chapitres.$chapitre'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -118,6 +119,12 @@ const FormateurSeanceGroupeIdRoute = FormateurSeanceGroupeIdRouteImport.update({
   path: '/formateur/seance/$groupeId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const FormationsSlugChapitresChapitreRoute =
+  FormationsSlugChapitresChapitreRouteImport.update({
+    id: '/formations_/$slug_/chapitres/$chapitre',
+    path: '/formations/$slug/chapitres/$chapitre',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -138,6 +145,7 @@ export interface FileRoutesByFullPath {
   '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
   '/formateur/seance-direct/$id': typeof FormateurSeanceDirectIdRoute
   '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
+  '/formations/$slug/chapitres/$chapitre': typeof FormationsSlugChapitresChapitreRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -158,6 +166,7 @@ export interface FileRoutesByTo {
   '/exercices/a-rendre/$id': typeof ExercicesARendreIdRoute
   '/formateur/seance-direct/$id': typeof FormateurSeanceDirectIdRoute
   '/formateur/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
+  '/formations/$slug/chapitres/$chapitre': typeof FormationsSlugChapitresChapitreRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -179,6 +188,7 @@ export interface FileRoutesById {
   '/exercices_/a-rendre/$id': typeof ExercicesARendreIdRoute
   '/formateur_/seance-direct/$id': typeof FormateurSeanceDirectIdRoute
   '/formateur_/seance/$groupeId': typeof FormateurSeanceGroupeIdRoute
+  '/formations_/$slug_/chapitres/$chapitre': typeof FormationsSlugChapitresChapitreRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -201,6 +211,7 @@ export interface FileRouteTypes {
     | '/exercices/a-rendre/$id'
     | '/formateur/seance-direct/$id'
     | '/formateur/seance/$groupeId'
+    | '/formations/$slug/chapitres/$chapitre'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -221,6 +232,7 @@ export interface FileRouteTypes {
     | '/exercices/a-rendre/$id'
     | '/formateur/seance-direct/$id'
     | '/formateur/seance/$groupeId'
+    | '/formations/$slug/chapitres/$chapitre'
   id:
     | '__root__'
     | '/'
@@ -241,6 +253,7 @@ export interface FileRouteTypes {
     | '/exercices_/a-rendre/$id'
     | '/formateur_/seance-direct/$id'
     | '/formateur_/seance/$groupeId'
+    | '/formations_/$slug_/chapitres/$chapitre'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -262,6 +275,7 @@ export interface RootRouteChildren {
   ExercicesARendreIdRoute: typeof ExercicesARendreIdRoute
   FormateurSeanceDirectIdRoute: typeof FormateurSeanceDirectIdRoute
   FormateurSeanceGroupeIdRoute: typeof FormateurSeanceGroupeIdRoute
+  FormationsSlugChapitresChapitreRoute: typeof FormationsSlugChapitresChapitreRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -392,6 +406,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof FormateurSeanceGroupeIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/formations_/$slug_/chapitres/$chapitre': {
+      id: '/formations_/$slug_/chapitres/$chapitre'
+      path: '/formations/$slug/chapitres/$chapitre'
+      fullPath: '/formations/$slug/chapitres/$chapitre'
+      preLoaderRoute: typeof FormationsSlugChapitresChapitreRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -414,6 +435,7 @@ const rootRouteChildren: RootRouteChildren = {
   ExercicesARendreIdRoute: ExercicesARendreIdRoute,
   FormateurSeanceDirectIdRoute: FormateurSeanceDirectIdRoute,
   FormateurSeanceGroupeIdRoute: FormateurSeanceGroupeIdRoute,
+  FormationsSlugChapitresChapitreRoute: FormationsSlugChapitresChapitreRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

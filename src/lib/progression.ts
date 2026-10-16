@@ -1,5 +1,6 @@
 import { CATEGORIES, NIVEAUX, questionsComprendreIA } from "@/lib/qcm-comprendre-ia";
 import { ELEMENTS_PROMPT, exercicesComprendreIA, TYPES_EXERCICE, type Exercice } from "@/lib/exercices-comprendre-ia";
+import { COURS_CHAPITRES, idQuestion, NIVEAU_DB, toutesLesLecons } from "@/data/chapitres";
 import { getSupabase, type NouvelleTentative } from "@/lib/supabase";
 
 /** Clés localStorage utilisées par /exercices (progression sans compte). */
@@ -117,6 +118,18 @@ for (const e of exercicesComprendreIA) {
     lireReponse: (r) => r || "—",
     bonneReponse: corrige(e),
   });
+}
+
+// Questions des leçons interactives, enregistrées sous « <chapitre>:<question> ».
+for (const c of toutesLesLecons) {
+  for (const q of c.quiz) {
+    const id = idQuestion(c.id, q.id);
+    index.set(id, {
+      id, type: "qcm", genre: `Leçon ${c.numero}`, enonce: q.question, categorie: c.categorie, niveau: NIVEAU_DB[q.niveau], chapitre: c.numero.split(" ")[0]!, cours: COURS_CHAPITRES,
+      lireReponse: (r) => (r === null ? "—" : q.options[Number(r)] ?? r),
+      bonneReponse: q.options[q.bonne] ?? "—",
+    });
+  }
 }
 
 export const infoQuestion = (id: string) => index.get(id);

@@ -1,10 +1,11 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, notFound } from "@tanstack/react-router";
 import { ModuleDetail, ModuleNotFound } from "@/components/ModuleDetail";
 import { getFormationModule } from "@/lib/content";
 
 // `formations_` : route sœur de /formations (pas imbriquée), l'URL reste /formations/$slug.
 export const Route = createFileRoute("/formations_/$slug")({
-  loader: ({ params }) => ({ module: getFormationModule(params.slug) }),
+  loader: ({ params }) => { const module = getFormationModule(params.slug); if (!module) throw notFound(); return { module }; },
+  notFoundComponent: ModuleNotFound,
   head: ({ loaderData }) => {
     const m = loaderData?.module;
     const title = m ? `${m.title} — Formations — IA et la Recherche` : "Module introuvable — IA et la Recherche";

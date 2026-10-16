@@ -44,18 +44,39 @@ function isH3SwallowedErrorBody(body: string): boolean {
   }
 }
 
+// En-têtes de sécurité, seulement sur Vercel : l'éditeur Lovable affiche le site dans une iframe
+// d'un autre domaine, que `frame-ancestors 'self'` bloquerait. Les fichiers statiques sont servis
+// par le CDN de Vercel sans passer par ici.
+const SUR_VERCEL = typeof process !== "undefined" && !!process.env["VERCEL"];
+const ENTETES_SECURITE: Record<string, string> = {
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "X-Frame-Options": "SAMEORIGIN",
+  "Content-Security-Policy": "frame-ancestors 'self'",
+};
+
+function avecEntetesSecurite(response: Response): Response {
+  if (!SUR_VERCEL) return response;
+  // Les en-têtes d'une Response peuvent être en lecture seule : on en recrée une copie.
+  const headers = new Headers(response.headers);
+  for (const [nom, valeur] of Object.entries(ENTETES_SECURITE)) if (!headers.has(nom)) headers.set(nom, valeur);
+  return new Response(response.body, { status: response.status, statusText: response.statusText, headers });
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
-      return await normalizeCatastrophicSsrResponse(response);
+      return avecEntetesSecurite(await normalizeCatastrophicSsrResponse(response));
     } catch (error) {
       console.error(error);
-      return new Response(renderErrorPage(), {
-        status: 500,
-        headers: { "content-type": "text/html; charset=utf-8" },
-      });
+      return avecEntetesSecurite(
+        new Response(renderErrorPage(), {
+          status: 500,
+          headers: { "content-type": "text/html; charset=utf-8" },
+        }),
+      );
     }
   },
 };

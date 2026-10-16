@@ -2,7 +2,14 @@ import { Link } from "@tanstack/react-router";
 import { ArrowLeft, BookOpen, Download, ExternalLink, FileText } from "lucide-react";
 import { useEffect, useState } from "react";
 import { PageHero, SiteLayout } from "@/components/SiteLayout";
+import { SlidesPresentation } from "@/components/SlidesPresentation";
+import { slidesComprendreIA } from "@/data/slides-comprendre-ia";
 import type { FormationModule } from "@/lib/content";
+
+/** Présentations en diapositives affichées au-dessus du support PDF, par module. */
+const PRESENTATIONS: Record<string, { titre: string; slides: typeof slidesComprendreIA }> = {
+  "comprendre-ia": { titre: "L'IA et la recherche — l'essentiel", slides: slidesComprendreIA },
+};
 
 type FileStatus = "checking" | "available" | "missing";
 
@@ -99,6 +106,7 @@ function ManuelSection({ module, pdfStatus }: { module: FormationModule; pdfStat
 
 export function ModuleDetail({ module }: { module: FormationModule }) {
   const status = useFileStatus(module.pdfUrl);
+  const presentation = PRESENTATIONS[module.slug];
 
   return (
     <SiteLayout>
@@ -110,6 +118,8 @@ export function ModuleDetail({ module }: { module: FormationModule }) {
         </div>
 
         {module.manuelTitle &&<ManuelSection module={module} pdfStatus={status} />}
+
+        {presentation && <SlidesPresentation titre={presentation.titre} slides={presentation.slides} pdfUrl={module.pdfUrl} />}
 
         <section id="visionneuse" className="mt-8 scroll-mt-24 rounded-2xl bg-card p-5 shadow-card md:p-7">
           <div className="flex flex-col gap-4 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between">

@@ -109,13 +109,15 @@ function Elements({ type, items }: { type: "timeline" | "flow" | "grid" | "funne
       </ol>
     );
   } else if (type === "flow") {
-    // En colonne sur téléphone, en ligne à partir de la tablette ; numérotation visible.
+    // En colonne sur téléphone ; sur grand écran, en ligne jusqu'à 5 étapes, au-delà en grille
+    // de 4 colonnes (une ligne de 8 étapes déborderait). Numérotation toujours visible.
+    const enLigne = items.length <= 5;
     liste = (
-      <ol className="flex flex-col items-stretch gap-1 md:flex-row md:items-stretch md:gap-1.5">
+      <ol className={`flex flex-col items-stretch gap-1 ${enLigne ? "md:flex-row md:items-stretch md:gap-1.5" : "md:grid md:grid-cols-4 md:gap-2"}`}>
         {items.map((x, i) => {
           const a = apparition(i);
           return (
-            <li key={x.id} className={`flex flex-col items-stretch md:flex-1 md:flex-row md:items-center ${a.className}`} style={a.style}>
+            <li key={x.id} className={`flex flex-col items-stretch ${enLigne ? "md:flex-1 md:flex-row md:items-center" : ""} ${a.className}`} style={a.style}>
               {bouton(
                 x,
                 "flex min-h-12 w-full flex-1 items-center gap-2.5 rounded-xl border-2 px-3 py-2 text-left text-sm font-semibold leading-snug md:h-full md:flex-col md:justify-center md:text-center",
@@ -125,7 +127,7 @@ function Elements({ type, items }: { type: "timeline" | "flow" | "grid" | "funne
                 </>,
               )}
               {i < items.length - 1 && (
-                <span className="grid place-items-center py-0.5 text-navy md:px-0.5 md:py-0" aria-hidden="true">
+                <span className={`grid place-items-center py-0.5 text-navy md:px-0.5 md:py-0 ${enLigne ? "" : "md:hidden"}`} aria-hidden="true">
                   <ArrowDown className="h-4 w-4 md:hidden" />
                   <ArrowRight className="hidden h-4 w-4 md:block" />
                 </span>
